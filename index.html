@@ -116,11 +116,14 @@ body.pvon #mute{display:none}
 /* ---- sisi kiri/kanan kosong dipakai untuk tombol ---- */
 #stage{width:var(--aw,100%)!important;background:radial-gradient(ellipse at 50% 50%,#1a1030 0,#0a0714 70%,#050309 100%)}
 canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!important;height:100%!important}
+
+#dashBtn{left:auto!important;right:108px;bottom:98px}
+#zhint{display:block;left:14px;right:auto;top:auto;bottom:42%;width:150px;text-align:left;font-size:13px;opacity:.35}#zhint.off{opacity:0}
 </style>
 </head>
 <body>
 <div id="rot"><i>📱</i><div>Putar HP ke Landscape</div><small style="opacity:.7;font-weight:normal">Game ini dimainkan mendatar</small></div>
-<div id="wrap"><div id="stage"><div id="zhint" class="off">◀ geser di sini untuk bergerak ▶</div>
+<div id="wrap"><div id="stage"><div id="zhint" class="off">◀ geser untuk bergerak ▶</div>
 <canvas id="c" width="800" height="480"></canvas>
 <button id="ult" class="hide">🌑 ULT</button>
 <button id="dashBtn" class="hide">💨 DASH</button>
@@ -3276,7 +3279,7 @@ function draw0(){
   const ns=minions.filter(m=>!m.undead&&!m.army).length,nu=minions.filter(m=>m.undead).length;
   let ht='';if(P.sumCap)ht+='👻'+ns+'/'+P.sumCap+' ';if(P.raise)ht+='💀'+nu+'/'+P.undeadCap+' ';if(P.army.length)ht+='🛡️'+P.army.length+' ';if(P.relics.length)ht+='🏺'+P.relics.length+' ';if(P.holy>0)ht+='✨'+P.holy+' ';if(P.weapon==='excal')ht+='⚔️'+Math.max(0,Math.ceil(P.judgeCd))+'s';if(P.furyMax)ht+='🩸'+P.fury+'/'+P.furyMax+' ';
   ctx.fillText(ht,175,22);
-  ctx.fillStyle='#400';ctx.fillRect(W-150,12,142,10);ctx.fillStyle='#e33';ctx.fillRect(W-150,12,142*P.hp/P.max,10);
+  ctx.fillStyle='#400';ctx.fillRect(W-270,12,142,10);ctx.fillStyle="#e33";ctx.fillRect(W-270,12,142*P.hp/P.max,10);
   ctx.fillStyle='#ffd24d';ctx.font='bold 13px sans-serif';ctx.fillText('💰 '+Math.floor(P.gold),8,52);
   const mi=minions.find(x=>x.mini);
   if(mi){const q=P.minis.find(z=>z.mt===mi.mt);ctx.fillStyle='#9affb0';ctx.font='bold 12px sans-serif';ctx.textAlign='left';ctx.fillText('⭐ '+MINI[mi.mt].name+' (sisa '+(q?q.left:0)+' wave)',90,52)}
@@ -6473,7 +6476,7 @@ if(window.visualViewport)visualViewport.addEventListener('resize',fitStage);
  addEventListener('touchend',endT,true);addEventListener('touchcancel',endT,true);
  stg.addEventListener('touchstart',e=>{if(e.target!==stg||state!=='play')return;zt=1;const p=pt(e);touch={sx:p.x,sy:p.y,x:p.x,y:p.y};e.preventDefault();hintDone=true;const h=document.getElementById('zhint');if(h)h.classList.add('off')},{passive:false});
  stg.addEventListener('touchmove',e=>{if(!zt)return;const p=pt(e);if(touch){touch.x=p.x;touch.y=p.y}e.preventDefault()},{passive:false});
- setInterval(()=>{const h=document.getElementById('zhint');if(!h)return;const on=state==='play'&&stg.dataset.tall==='1'&&!hintDone&&!(PV&&PV.on);h.classList.toggle('off',!on)},500);
+ setInterval(()=>{const h=document.getElementById('zhint');if(!h)return;const on=state==='play'&&!hintDone&&!(PV&&PV.on);h.classList.toggle('off',!on)},500);
 }
 
 // ===== nv17: LANDSCAPE =====
