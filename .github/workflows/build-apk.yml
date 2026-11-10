@@ -62,6 +62,13 @@ jobs:
           npm i -D @capacitor/assets@3 && npx capacitor-assets generate --android --iconBackgroundColor '#12121a' || echo "ikon default dipakai"
           npx cap sync android
 
+      - name: Tanda tangan tetap + nomor versi naik (agar bisa update tanpa bentrok)
+        run: |
+          mkdir -p ~/.android && cp debug.keystore ~/.android/debug.keystore
+          sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          sed -i 's/versionName "1.0"/versionName "1.${{ github.run_number }}"/' android/app/build.gradle
+          grep -n "versionCode\|versionName" android/app/build.gradle
+
       - name: Build APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
