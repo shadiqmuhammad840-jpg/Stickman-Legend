@@ -112,6 +112,10 @@ body.pvon #mute{display:none}
 .sdp{top:58%;bottom:0;width:36%;grid-auto-rows:1fr;align-content:stretch;gap:7px;padding:4px 8px calc(8px + env(safe-area-inset-bottom,0px))}
 .sdp.mv,.sdp.ac{width:36%;grid-template-rows:1fr 1fr;grid-auto-rows:1fr}
 .sdb{aspect-ratio:auto;height:100%;align-self:stretch;font-size:22px;background:#2a1450aa}
+
+/* ---- sisi kiri/kanan kosong dipakai untuk tombol ---- */
+#stage{width:var(--aw,100%)!important;background:radial-gradient(ellipse at 50% 50%,#1a1030 0,#0a0714 70%,#050309 100%)}
+canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!important;height:100%!important}
 </style>
 </head>
 <body>
@@ -206,7 +210,7 @@ body.pvon #mute{display:none}
 
 <script>
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
-const ASP=(()=>{let a=innerWidth/innerHeight;if(!(a>1.2))a=1.78;return Math.max(1.5,Math.min(2.3,a))})(),VW=Math.round(480*ASP/2)*2,VH=480,WW0=1440,WH0=1800,BGW=VW,BGH=VH;cv.width=VW;cv.height=VH;let W=WW0,H=WH0;const CAM={x:0,y:0};const VCX=()=>CAM.x+VW/2,VCY=()=>CAM.y+VH/2;
+const ASP=(()=>{let a=innerWidth/innerHeight;if(!(a>1.2))a=1.78;return Math.max(1.5,Math.min(2.6,a))})(),VW=Math.round(480*ASP/2)*2,VH=480,WW0=1440,WH0=1800,BGW=VW,BGH=VH;cv.width=VW;cv.height=VH;let W=WW0,H=WH0;const CAM={x:0,y:0};const VCX=()=>CAM.x+VW/2,VCY=()=>CAM.y+VH/2;
 const $=id=>document.getElementById(id);
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -6459,7 +6463,7 @@ addEventListener('contextmenu',e=>e.preventDefault());
 setInterval(()=>{try{document.body.classList.toggle('pvon',!!(PV&&PV.on))}catch(e){}},300);
 function fitStage(){try{const w=document.getElementById('wrap'),cs=getComputedStyle(w),
  aw=w.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=w.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom),A=VW/VH;
- const sw=Math.max(200,Math.min(aw,ah*A)),st=document.getElementById('stage').style;st.setProperty('--sw',sw+'px');st.setProperty('--sh',(sw/A)+'px');st.setProperty('--pvt',(sw/A*.6)+'px')}catch(e){}}
+ const sw=Math.max(200,Math.min(aw,ah*A)),st=document.getElementById('stage').style;st.setProperty('--sw',sw+'px');st.setProperty('--aw',aw+'px');st.setProperty('--sh',(sw/A)+'px');st.setProperty('--pvt',(sw/A*.6)+'px')}catch(e){}}
 fitStage();addEventListener('resize',fitStage);addEventListener('orientationchange',()=>setTimeout(fitStage,150));
 if(window.visualViewport)visualViewport.addEventListener('resize',fitStage);
 {const stg=document.getElementById('stage');let tid=null,zt=0,hintDone=false;
