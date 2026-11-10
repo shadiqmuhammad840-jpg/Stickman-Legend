@@ -339,9 +339,9 @@ let bossImg=null,userPhoto=false;
 // ---- class ----
 const CLASSES={
  warrior:{n:'🗡️ Warrior',d:'Tebasan jarak dekat, HP besar',hp:160,spd:150,dmg:16,rate:.55,range:58,type:'melee',sum:0,col:'#e0a050'},
- archer:{n:'🏹 Archer',d:'Panah cepat jarak jauh',hp:100,spd:165,dmg:9,rate:.32,range:280,type:'proj',sum:0,col:'#60d060'},
- mage:{n:'🔮 Mage',d:'Ledakan area, lambat tapi kuat',hp:90,spd:150,dmg:20,rate:1,range:230,type:'aoe',sum:0,col:'#6aa0ff'},
- summoner:{n:'👻 Summoner',d:'Memanggil minion yang bertarung untukmu',hp:95,spd:150,dmg:7,rate:.7,range:200,type:'proj',sum:3,col:'#c070ff'},
+ archer:{n:'🏹 Archer',d:'Panah cepat jarak jauh',hp:110,spd:165,dmg:10.5,rate:.32,range:280,type:'proj',sum:0,col:'#60d060'},
+ mage:{n:'🔮 Mage',d:'Ledakan area, lambat tapi kuat',hp:110,spd:150,dmg:20,rate:1,range:230,type:'aoe',sum:0,col:'#6aa0ff'},
+ summoner:{n:'👻 Summoner',d:'Memanggil minion yang bertarung untukmu',hp:115,spd:150,dmg:9,rate:.7,range:200,type:'proj',sum:4,col:'#c070ff'},
  anime:{n:'⚡ Anime',d:'Pahlawan shonen: kombo cepat & jurus ikonik, senjata bergaya anime',hp:125,spd:160,dmg:11,rate:.38,range:66,type:'melee',sum:0,col:'#ff9a3a'}
 };
 const cl=$('classes');
@@ -464,8 +464,8 @@ function nextFloor(){
   tickPots();
   if(P.drake)P.drakeCd=0;
   P.st={burn:0,poison:0,slow:0,shock:0};tw=null;tbubs=[];vfx=[];if(P.hist)P.hist=[];
-  if(floor>1){P.max+=4;P.hp+=4;P.dmg*=1.015;sfx('level')}
-  P.hp=Math.min(P.max,P.hp+P.max*.25);
+  if(floor>1){P.max+=6;P.hp+=6;P.dmg*=1.015;sfx('level')}
+  P.hp=Math.min(P.max,P.hp+P.max*.35);
   if(!keepPos){P.x=W/2;P.y=BOSSLV[floor]?H-120:H*.8}
   for(const t of P.army)minions.push(mkAlly(t,P.x+rnd(-50,50),P.y+rnd(-30,50)));
   if(P.spirits&&P.spirits.length){const keep=[];for(const sp of P.spirits){
@@ -481,7 +481,7 @@ function nextFloor(){
     shopNext=()=>{boss=makeBoss(bt);enemies.push(boss);sfx('boss');spawnLeft=Math.max(3,Math.round(Math.min(16,6+Math.floor(floor/12))*DIFF[diff].n));spawnT=3;flash('⚠️ '+boss.name)};
     openShop(BNAME[bt]);
   }else{
-    spawnLeft=Math.max(3,Math.round(Math.min(90,18+Math.floor(floor*.7))*DIFF[diff].n));spawnT=0;flash('⚔️ Gelombang '+floor);
+    spawnLeft=Math.max(3,Math.round(Math.min(72,16+Math.floor(floor*.6))*DIFF[diff].n));spawnT=0;flash('⚔️ Gelombang '+floor);
     if(MINI[floor]){spawnMini(floor);flash('⭐ MINI BOSS: '+MINI[floor].name)}
     else pickTwist();
   }
@@ -602,11 +602,11 @@ function spawnSwarm(){
 }
 
 // ===== BALANCE ADAPTIF: HP musuh menyesuaikan kekuatan senjata & tingkat kesulitan =====
-const RARPOW={Common:0,Uncommon:.1,Rare:.18,Epic:.36,Legendary:.54,Mythic:.72};
+const RARPOW={Common:0,Uncommon:.1,Rare:.16,Epic:.3,Legendary:.44,Mythic:.58};
 function playerPower(){if(!P)return 1;const c=CLASSES[P.cls]||CLASSES.warrior,dm=P.dmg/((typeof comboBuff!=='undefined'&&comboBuff>0)?1.25:1),rt=P.rate*((typeof frenzy!=='undefined'&&frenzy>0)?.67:1);
   return (dm/Math.max(.15,rt))/(c.dmg/c.rate)}
-function rarityBonus(){if(!P)return 1;const w=WEAPONS[P.weapon],r=w?w.r:'Common';let b=1+(RARPOW[r]||0);if(typeof isEvo==='function'&&isEvo())b+=P.evoM?.3:.18;return b}
-function adaptMul(){if(!P)return 1;const g=1+.05*floor,ratio=playerPower()/g;return clp(Math.pow(Math.max(.01,ratio),.85)*rarityBonus(),.7,9)}
+function rarityBonus(){if(!P)return 1;const w=WEAPONS[P.weapon],r=w?w.r:'Common';let b=1+(RARPOW[r]||0);if(typeof isEvo==='function'&&isEvo())b+=P.evoM?.22:.13;return b}
+function adaptMul(){if(!P)return 1;const g=1+.05*floor,ratio=playerPower()/g;return clp(Math.pow(Math.max(.01,ratio),.72)*rarityBonus(),.7,5.5)}
 function spawnEnemy(px,py,fk,force){
   let x=px,y=py;
   if(x===undefined){[x,y]=edgePos()}
@@ -617,15 +617,15 @@ function spawnEnemy(px,py,fk,force){
   else{const r=Math.random();
     if(r>.8)kind='fast';else if(r>.66&&f>3)kind='shooter';else if(r>.56&&f>6)kind='tank';else if(r>.44&&f>2)kind='mage';else if(r>.34&&f>4)kind='assassin'}
   const late=Math.min(Math.max(f-30,0),70)*.2;
-  let e={x,y,r:12,hp:20+f*7,spd:50+Math.min(f,30)*1.3+late,dmg:5+f*.45,col:'#d05050',kind,cd:0,gold:2+gb,th};
+  let e={x,y,r:12,hp:18+f*5.6,spd:50+Math.min(f,30)*1.3+late,dmg:5+f*.38,col:'#d05050',kind,cd:0,gold:2+gb,th};
   if(kind==='fast'){e.r=9;e.hp*=.5;e.spd*=1.6;e.col='#e0e050'}
   else if(kind==='shooter'){e.hp*=.8;e.col='#e08040';e.cd=rnd(1,2);e.gold=3+gb}
-  else if(kind==='tank'){e.r=18;e.hp*=2.5;e.spd*=.6;e.col='#a04080';e.gold=5+gb}
+  else if(kind==='tank'){e.r=18;e.hp*=2.1;e.spd*=.6;e.col='#a04080';e.gold=5+gb}
   else if(kind==='mage'){e.hp*=.85;e.dmg*=.8;e.spd*=.9;e.cd=rnd(.8,1.8);e.gold=4+gb;e.col=TPA[th]}
   else if(kind==='assassin'){e.r=10;e.hp*=.55;e.spd*=1.55;e.dmg*=1.1;e.cd=rnd(.6,1.6);e.gold=4+gb;e.col=TPA[th]}
   else if(kind==='swarm'){e.r=7;e.hp*=.22;e.spd*=1.1;e.dmg*=.55;e.gold=1;e.col=TPC[th]}
   e.sty=(kind==='mage'||kind==='assassin'||kind==='swarm')?kind:STY[th][kind];
-  if(!fk&&!force&&f>=6&&Math.random()<.05+f*.002){e.elite=true;e.hp*=3.2;e.dmg*=1.3;e.gold=(e.gold||2)*4;e.r*=1.25}
+  if(!fk&&!force&&f>=6&&Math.random()<.05+f*.002){e.elite=true;e.hp*=2.6;e.dmg*=1.2;e.gold=(e.gold||2)*4;e.r*=1.25}
   e.hp*=DIFF[diff].hp*adaptMul();e.max=e.hp;e.dmg*=DIFF[diff].dm||1;if(diff==='hell')e.spd*=1.12;enemies.push(e);
 }
 
@@ -5494,7 +5494,7 @@ const dioCine=(c1,c2)=>({bg(t,T){cGrad('#0a0210',c2);cStars(T,40,c1);ctx.save();
   else{const p=cl01((t-2.2)/.8),q=cl01((t-3)/.15);ctx.save();ctx.globalCompositeOperation='saturation';ctx.fillStyle='#808080';ctx.globalAlpha=Math.min(1,cl01((t-2.1)/.2)*2);ctx.fillRect(0,0,W,H);ctx.restore();ctx.save();const yy=-300+(H*.55+300)*(p*p);ctx.translate(W/2,yy);ctx.fillStyle='#e8b830';ctx.strokeStyle='#5a3a00';ctx.lineWidth=5;ctx.fillRect(-120,-150,240,90);ctx.strokeRect(-120,-150,240,90);ctx.fillStyle='#ff3b3b';ctx.fillRect(-70,-200,140,50);ctx.fillStyle='#555';ctx.fillRect(-170,-70,340,140);ctx.strokeRect(-170,-70,340,140);ctx.fillStyle='#888';ctx.beginPath();ctx.ellipse(0,70,170,34,0,0,7);ctx.fill();ctx.stroke();ctx.restore();if(t>3&&t<3.12){ctx.save();ctx.globalCompositeOperation='difference';ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.restore()}cFlash(t,3.0,.15,'#fff');onoma('GILAS!!',t,3.1,'#ff2a50',H*.2,52);onoma('RATA! RATA! RATA!',t,3.6,c1,H*.82,40)}}});
 CINE.A_dio=dioCine('#ffcf3a','#3a0614');CINE.A_dioE=dioCine('#ff6a3a','#4a0a08');
 // ===== TIER GODLY + Bajak Laut Karet (5 tingkat/varian) =====
-RCOL.Godly='#b06bff';RARPOW.Godly=.9;NWR.Godly=6;EVM[6]=2.2;
+RCOL.Godly='#b06bff';RARPOW.Godly=.72;NWR.Godly=6;EVM[6]=2.2;
 WEAPONS.luffy={n:'🏴‍☠️ Bajak Laut Karet',r:'Godly',col:'#ff5a3a',only:'anime',bn:'T1: Karet Dasar',bd:'Tingkat 1: tinju karet melar jarak jauh. Skill: Pistol Karet, Hujan Pukulan Karet. ULT: Bazuka Karet. Ganti varian untuk Tingkat 2–5!',d:'Khusus Anime (GODLY). Tubuh karet: tinju melar menghantam dari jauh. 5 tingkat kekuatan dipilih lewat varian: T1 Karet Dasar, T2 Pompa Darah, T3 Raksasa Karet, T4 Raja Pantul, T5 Dewa Matahari.'};
 TIER.luffy=4;WCOL.luffy='#ff5a3a';WK.push('luffy');
 const LUC=[0,'#ff4a4a','#ff7aa8','#ff9a2a','#e0203a','#ffffff'],LUC2=[0,'#ffd0d0','#ffe0ec','#ffe27a','#ff6a6a','#ffd24d'];
