@@ -139,6 +139,7 @@ canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!import
   <div class="row">
     <button id="btnPlay" class="big">▶ MULAI MAIN</button>
     <button id="btnHow">📖 Cara Bermain</button>
+    <button id="btnTemple" style="border-color:#b080ff">💎 Kuil Abadi</button>
     <button id="btnSet">⚙️ Pengaturan</button>
   </div>
   <p id="bestTxt" class="best"></p>
@@ -6489,6 +6490,57 @@ function rotChk(){try{const pt0=matchMedia('(orientation:portrait) and (pointer:
  if(pt0&&state==='play'&&typeof togglePause==='function')togglePause();
  if(pt0&&PV.on&&!PV.paused&&PV.phase!=='end'){PV.paused=true;pvShowPause&&pvShowPause()}}catch(e){}}
 try{matchMedia('(orientation:portrait)').addEventListener('change',rotChk)}catch(e){}
+
+// ===== nv18: ITEM JATUHAN + KUIL ABADI (upgrade permanen) =====
+let meta={sh:0,lv:{}};try{const m=JSON.parse(localStorage.getItem('meta18')||'null');if(m&&typeof m==='object'){meta.sh=+m.sh||0;meta.lv=m.lv||{}}}catch(_){}
+const metaSave=()=>{try{localStorage.setItem('meta18',JSON.stringify(meta))}catch(_){}};
+const META_U=[
+ {id:'hp',n:'❤️ Raga Baja',d:'+6% HP maks / level',b:25,mx:10,f:l=>{P.max=Math.round(P.max*(1+.06*l));P.hp=P.max}},
+ {id:'dmg',n:'⚔️ Tangan Berat',d:'+4% damage / level',b:30,mx:10,f:l=>{P.dmg*=1+.04*l}},
+ {id:'gold',n:'💰 Mata Emas',d:'+6% emas / level',b:20,mx:10,f:l=>{P.goldMul+=.06*l}},
+ {id:'crit',n:'🎯 Bidikan Tajam',d:'+1.5% kritikal / level',b:25,mx:10,f:l=>{P.crit+=.015*l}},
+ {id:'armor',n:'🛡️ Kulit Batu',d:'-1% damage diterima / level',b:35,mx:10,f:l=>{P.armor+=.01*l}},
+ {id:'regen',n:'💚 Napas Hidup',d:'+0.15 HP/detik / level',b:30,mx:8,f:l=>{P.regen+=.15*l}},
+ {id:'start',n:'🪙 Bekal Awal',d:'+40 emas awal / level',b:15,mx:10,f:l=>{P.gold+=40*l}},
+ {id:'rev',n:'🔥 Bara Kehidupan',d:'Level 5: bangkit 1x saat mati',b:150,mx:5,f:l=>{if(l>=5)P.revive++}}];
+const metaCost=(u,l)=>Math.round(u.b*(1+l*.8));
+function templeMenu(){
+ const it=META_U.map(u=>{const l=meta.lv[u.id]||0,max=l>=u.mx,c=metaCost(u,l);
+  return{n:u.n+'  ·  Lv '+l+'/'+u.mx,d:u.d+(max?' — MAKS ✨':'  ·  💎 '+c),c:max?'#7fff9a':(meta.sh>=c?'#b080ff':'#777'),f:()=>{if(!max&&meta.sh>=c){meta.sh-=c;meta.lv[u.id]=l+1;metaSave();sfx('buy')}templeMenu()}}});
+ it.push({n:'⬅ Kembali',d:'ke menu utama',f:()=>{state='menu';updBest()}});
+ openModal('💎 Kuil Abadi','Kristal Jiwa: '+meta.sh+' — didapat tiap selesai bermain, upgrade berlaku permanen',it)}
+$('btnTemple').onclick=()=>templeMenu();
+{const _u=updBest;updBest=function(){_u();try{$('bestTxt').textContent+='  ·  💎 '+meta.sh}catch(e){}}}
+{const _e=endGame;endGame=function(win){_e(win);const g=Math.max(1,Math.floor(floor*2+stats.kills/10+(win?150:0)));meta.sh+=g;metaSave();$('endP').innerHTML+='<br>💎 Kristal Jiwa: <b>+'+g+'</b> (total '+meta.sh+') — belanja di Kuil Abadi'}}
+{const _s=start;start=function(k,w){_s(k,w);pks=[];pkPrev=[];rageT=0;for(const u of META_U){const l=meta.lv[u.id]||0;if(l)u.f(l)}}}
+// ---- item jatuhan ----
+const PK_T={heart:{ic:'❤️',col:'#ff6a8a'},bomb:{ic:'💣',col:'#ffb040'},rage:{ic:'🔥',col:'#ff5a3a'},shield:{ic:'🛡️',col:'#6ad0ff'},gold:{ic:'💰',col:'#ffd24d'}};
+let pks=[],pkPrev=[],rageT=0;
+function pkDrop(x,y,boss){const r=Math.random(),t=boss?['heart','gold','bomb'][Math.floor(Math.random()*3)]:r<.34?'heart':r<.55?'gold':r<.72?'bomb':r<.88?'rage':'shield';pks.push({x,y,t,life:14,ph:Math.random()*6})}
+function pkGet(p){const T=PK_T[p.t];sfx('buy');
+ if(p.t==='heart'){healP(.15);fx.push({x:P.x,y:P.y-40,t:1,txt:'+HP',col:'#ff8aa6',sz:15})}
+ else if(p.t==='gold'){const g=Math.round((15+floor*2.5)*(1+(P.goldMul||0)));P.gold+=g;stats.gold+=g;fx.push({x:P.x,y:P.y-40,t:1,txt:'+'+g+'💰',col:'#ffd24d',sz:15})}
+ else if(p.t==='bomb'){shake=Math.max(shake,.7);sfx('boom');for(const e of enemies){if(e.hp>0&&onScr(e)){e.hp-=P.dmg*(e.boss?4:9);burst(e.x,e.y,'#ffb040',8,160,.5)}}fx.push({x:P.x,y:P.y-40,t:1.1,txt:'💥 BOM!',col:'#ffb040',sz:17})}
+ else if(p.t==='rage'){if(!(rageT>0))P.dmg*=1.4;rageT=8;fx.push({x:P.x,y:P.y-40,t:1.1,txt:'🔥 NGAMUK 8d',col:'#ff6a3a',sz:16})}
+ else if(p.t==='shield'){P.inv=Math.max(P.inv,4);fx.push({x:P.x,y:P.y-40,t:1.1,txt:'🛡️ KEBAL 4d',col:'#8fdcff',sz:16})}
+ burst(P.x,P.y,T.col,8,130,.4)}
+{const _u=updExtras;updExtras=function(dt){_u(dt);
+ if(!P||state!=='play')return;
+ for(const e of pkPrev){if(e.hp<=0&&!e._pk&&!enemies.includes(e)){e._pk=1;const ch=e.boss?1:e.mini?.35:(e.elite||e.special||e.lord)?.18:.06;if(Math.random()<ch&&pks.length<8)pkDrop(e.x,e.y,e.boss)}}
+ pkPrev=enemies.slice();
+ for(let i=pks.length-1;i>=0;i--){const p=pks[i];p.life-=dt;p.ph+=dt*4;const d=Math.hypot(P.x-p.x,P.y-p.y);
+  if(d<120){const k=Math.min(1,dt*(260/Math.max(d,1)));p.x+=(P.x-p.x)*k;p.y+=(P.y-p.y)*k}
+  if(d<26){pkGet(p);pks.splice(i,1)}else if(p.life<=0)pks.splice(i,1)}
+ if(rageT>0){rageT-=dt;if(rageT<=0)P.dmg/=1.4}}}
+{const _n=nextFloor;nextFloor=function(){pks=[];pkPrev=[];return _n.apply(this,arguments)}}
+{const _d=draw0;draw0=function(){_d.apply(this,arguments);if(!P||!(state==='play'||state==='pause'))return;
+ const f=cv.width/VW;ctx.save();ctx.setTransform(f,0,0,f,0,0);ctx.translate(-CAM.x,-CAM.y);
+ for(const p of pks){if(!onScr(p))continue;const T0=PK_T[p.t],bob=Math.sin(p.ph)*3;if(p.life<3&&((p.life*6)|0)%2)continue;
+  ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(p.x,p.y+bob,2,p.x,p.y+bob,24);g.addColorStop(0,T0.col+'aa');g.addColorStop(1,T0.col+'00');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y+bob,24,0,7);ctx.fill();ctx.restore();
+  ctx.font='20px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(T0.ic,p.x,p.y+bob)}
+ if(rageT>0){ctx.globalAlpha=.5+.2*Math.sin(performance.now()/90);ctx.strokeStyle='#ff5a3a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(P.x,P.y-6,P.r+10,0,7);ctx.stroke()}
+ ctx.restore()}}
+updBest();
 
 TWISTS.survive.min=9999;
 </script>
