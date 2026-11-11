@@ -140,6 +140,7 @@ canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!import
     <button id="btnPlay" class="big">▶ MULAI MAIN</button>
     <button id="btnHow">📖 Cara Bermain</button>
     <button id="btnTemple" style="border-color:#b080ff">💎 Kuil Abadi</button>
+    <button id="btnTrain" style="border-color:#6ad0ff">🎯 Mode Latihan</button>
     <button id="btnSet">⚙️ Pengaturan</button>
   </div>
   <p id="bestTxt" class="best"></p>
@@ -6541,6 +6542,68 @@ function pkGet(p){const T=PK_T[p.t];sfx('buy');
  if(rageT>0){ctx.globalAlpha=.5+.2*Math.sin(performance.now()/90);ctx.strokeStyle='#ff5a3a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(P.x,P.y-6,P.r+10,0,7);ctx.stroke()}
  ctx.restore()}}
 updBest();
+
+// ===== nv19: MODE LATIHAN (spawn musuh / boss / buff / relik) =====
+const TR={on:false,god:true,cd:true,ts:1,dps:true,tab:0,n:1,elite:false,t:0,dh:[],open:false};
+{const _lc=levelClear;levelClear=function(){if(TR.on)return;return _lc.apply(this,arguments)}}
+{const _st=showTitle;showTitle=function(){TR.on=false;TR.open=false;return _st.apply(this,arguments)}}
+{const _bp=$('btnPlay').onclick;$('btnPlay').onclick=function(){TR.on=false;return _bp.apply(this,arguments)}}
+$('btnTrain').onclick=()=>{TR.on=true;$('title').classList.add('hide');$('menu').classList.remove('hide')};
+{const _s=start;start=function(k,w){_s(k,w);if(TR.on){enemies=[];eshots=[];shots=[];boss=null;bh=null;spawnLeft=0;tw=null;floor=1;TR.t=0;TR.dh=[];TR.open=false;P.hp=P.max;flash('🎯 MODE LATIHAN — ketuk 🛠️')}}}
+{const _u=update;update=function(dt){
+ if(TR.on&&P&&state==='play'){spawnLeft=0;tw=null;
+  if(TR.god){P.inv=Math.max(P.inv,1);P.hp=P.max}
+  if(TR.cd){P.ultCd=0;P.skCd=0;P.sk2Cd=0;P.dashCd=0}
+  dt*=TR.ts;TR.t+=dt;
+  for(const e of enemies)if(e.dum){const d=Math.max(0,e.max-e.hp);if(d>0){TR.dh.push([TR.t,d]);e.hp=e.max}}
+  while(TR.dh.length&&TR.dh[0][0]<TR.t-5)TR.dh.shift()}
+ return _u(dt)}}
+function trPos(){const a=Math.random()*6.283,d=140+Math.random()*100;return[Math.max(40,Math.min(W-40,P.x+Math.cos(a)*d)),Math.max(70,Math.min(H-40,P.y+Math.sin(a)*d))]}
+function trSpawn(kind,n){for(let i=0;i<n;i++){const[x,y]=trPos();const dm=kind==='dummy';spawnEnemy(x,y,null,dm?'grunt':kind);const e=enemies[enemies.length-1];if(!e)continue;
+ if(dm){e.hp=e.max=1e9;e.spd=0;e.dmg=0;e.dum=1;e.cd=1e9;e.gold=0;e.r=16}
+ else if(TR.elite&&!e.elite){e.elite=true;e.hp*=2.6;e.max=e.hp;e.dmg*=1.2;e.r*=1.25}}}
+function trBoss(bt){const B=makeBoss(bt);B.x=Math.max(80,Math.min(W-80,P.x));B.y=Math.max(100,P.y-260);enemies.push(B);boss=B;sfx('boss');flash('⚠️ '+B.name)}
+function trClear(){enemies=[];eshots=[];boss=null;bh=null;flash('Musuh dihapus')}
+const TR_BOSS=[['oni','👹 Oni'],['cyclops','👁️ Cyclops'],['horse','🎃 Headless Horseman'],['fairy','🧚 Ratu Peri'],['dragon','🐉 Naga Bayangan'],['pharaoh','🏺 Firaun Pasir'],['magma','🌋 Raksasa Magma'],['lich','❄️ Raja Lich Beku'],['mech','🤖 Kolos Mekanik'],['chaos','🌀 Dewa Kekacauan']];
+const TR_EN=[['grunt','🧟 Prajurit'],['fast','💨 Cepat'],['shooter','🏹 Penembak'],['tank','🛡️ Tank'],['mage','🔮 Penyihir'],['assassin','🗡️ Assassin'],['swarm','🐜 Kawanan'],['dummy','🎯 Dummy (HP ∞, ukur DPS)']];
+const TR_BUF=[['❤️ Pulihkan penuh',()=>{P.hp=P.max}],['➕ HP maks +100',()=>{P.max+=100;P.hp+=100}],['⚔️ Damage ×1.5',()=>{P.dmg*=1.5}],['⚔️ Damage ÷1.5',()=>{P.dmg/=1.5}],['⚡ Serangan lebih cepat',()=>{P.rate=Math.max(.1,P.rate*.8)}],['🐌 Serangan lebih lambat',()=>{P.rate*=1.25}],['🎯 Kritikal +10%',()=>{P.crit+=.1}],['💨 Kecepatan +10%',()=>{P.spd*=1.1}],['🛡️ Armor +10%',()=>{P.armor=Math.min(.8,P.armor+.1)}],['🩸 Lifesteal +5%',()=>{P.ls+=.05}],['💚 Regen +2/dtk',()=>{P.regen+=2}],['💰 Emas +500',()=>{P.gold+=500}],['🗡️ +1 Pasukan Ksatria',()=>{addArmy('knight')}],['🏹 +1 Pasukan Pemanah',()=>{addArmy('archer')}],['🔥 Isi ULT & skill',()=>{P.ultCd=0;P.skCd=0;P.sk2Cd=0}]];
+function trUI(){
+ if(document.getElementById('trBtn'))return;
+ const st=document.createElement('style');st.textContent='#trBtn{position:absolute;right:104px;top:6px;width:42px;height:36px;z-index:7;display:none;border-radius:10px;border:1px solid #6ad0ff;background:#0d1a2acc;color:#fff;font-size:18px;touch-action:none}#trp{position:absolute;left:0;top:0;bottom:0;width:min(330px,64%);z-index:8;background:#0b0916ee;border-right:1px solid #6ad0ff66;display:none;flex-direction:column;color:#fff;font-size:13px}#trp.on{display:flex}#trTabs{display:flex;gap:4px;padding:6px}#trTabs button{flex:1;padding:7px 2px;border-radius:8px;border:1px solid #6ad0ff55;background:#15203a;color:#fff;font-size:12px}#trTabs button.on{background:#2a5fa8}#trBody{flex:1;overflow:auto;padding:6px;display:grid;grid-template-columns:1fr 1fr;gap:5px;align-content:start}#trBody button{padding:9px 4px;border-radius:9px;border:1px solid #ffffff33;background:#1a1530;color:#fff;font-size:12px;min-height:38px}#trBody button.on{background:#2f7a4a}#trBody .sec{grid-column:1/3;font-weight:bold;opacity:.7;margin-top:4px}#trBody .wide{grid-column:1/3}#trDps{position:absolute;left:50%;top:42px;transform:translateX(-50%);z-index:6;display:none;background:#000a;border:1px solid #6ad0ff;border-radius:10px;padding:4px 12px;color:#fff;font-weight:bold;font-size:14px}';document.head.appendChild(st);
+ const stg=document.getElementById('stage');
+ const b=document.createElement('button');b.id='trBtn';b.textContent='🛠️';b.onclick=()=>{TR.open=!TR.open;trRender()};stg.appendChild(b);
+ const p=document.createElement('div');p.id='trp';p.innerHTML='<div id="trTabs"></div><div id="trBody"></div>';stg.appendChild(p);
+ const d=document.createElement('div');d.id='trDps';stg.appendChild(d);
+ ['touchstart','pointerdown'].forEach(ev=>p.addEventListener(ev,e=>e.stopPropagation()));
+ setInterval(()=>{const show=TR.on&&P&&(state==='play'||state==='pause');b.style.display=show?'block':'none';if(!show&&p.classList.contains('on')){TR.open=false;p.classList.remove('on')}
+  const hasD=TR.dps&&show&&enemies.some(e=>e.dum);d.style.display=hasD?'block':'none';if(hasD){let sum=0;for(const x of TR.dh)sum+=x[1];d.textContent='🎯 DPS: '+Math.round(sum/Math.max(1,Math.min(5,TR.t)))}},250)}
+function trRender(){
+ trUI();const p=document.getElementById('trp'),tabs=document.getElementById('trTabs'),body=document.getElementById('trBody');
+ p.classList.toggle('on',TR.open);if(!TR.open)return;
+ const T=['Musuh','Boss','Buff','Relik','Opsi'];tabs.innerHTML='';T.forEach((n,i)=>{const x=document.createElement('button');x.textContent=n;if(i===TR.tab)x.className='on';x.onclick=()=>{TR.tab=i;trRender()};tabs.appendChild(x)});
+ body.innerHTML='';
+ const add=(t,f,cls)=>{const x=document.createElement('button');x.textContent=t;if(cls)x.className=cls;x.onclick=()=>{f();sfx('buy')};body.appendChild(x);return x};
+ const sec=t=>{const d=document.createElement('div');d.className='sec';d.textContent=t;body.appendChild(d)};
+ if(TR.tab===0){
+  sec('Jumlah per ketukan: '+TR.n+(TR.elite?' · ELITE':''));
+  [1,5,20].forEach(n=>add('×'+n,()=>{TR.n=n;trRender()},TR.n===n?'on':''));add('⭐ Elite: '+(TR.elite?'ON':'OFF'),()=>{TR.elite=!TR.elite;trRender()},TR.elite?'on':'');
+  sec('Wave/level musuh: '+floor);[-10,-1,1,10].forEach(v=>add((v>0?'+':'')+v,()=>{floor=Math.max(1,Math.min(100,floor+v));trRender()}));
+  sec('Spawn musuh');TR_EN.forEach(([k,n])=>add(n,()=>trSpawn(k,k==='dummy'?1:TR.n),k==='dummy'?'wide':''));
+  sec('Mini boss');Object.keys(MINI).forEach(l=>add('⭐ '+MINI[l].name+' (w'+l+')',()=>spawnMini(+l)));
+  add('🗑️ Hapus semua musuh',()=>{trClear();TR.dh=[]},'wide')}
+ else if(TR.tab===1){sec('Boss (stat mengikuti level musuh & kesulitan)');TR_BOSS.forEach(([k,n])=>add(n,()=>trBoss(k)));add('🗑️ Hapus semua musuh',()=>trClear(),'wide')}
+ else if(TR.tab===2){sec('Buff & stat');TR_BUF.forEach(([n,f])=>add(n,f))}
+ else if(TR.tab===3){sec('Relik (ketuk untuk memakai)');(typeof REL!=='undefined'?REL:[]).forEach(r=>add(r.n+' ['+r.r+']',()=>{addRelic(r);flash(r.n)}))}
+ else{
+  sec('Opsi latihan');
+  add('🛡️ Kebal: '+(TR.god?'ON':'OFF'),()=>{TR.god=!TR.god;trRender()},TR.god?'on':'');
+  add('♾️ Cooldown 0: '+(TR.cd?'ON':'OFF'),()=>{TR.cd=!TR.cd;trRender()},TR.cd?'on':'');
+  add('📊 Meter DPS: '+(TR.dps?'ON':'OFF'),()=>{TR.dps=!TR.dps;trRender()},TR.dps?'on':'');
+  add('📍 Reset posisi',()=>{P.x=W/2;P.y=H*.8});
+  sec('Kecepatan waktu');[[.3,'🐢 ×0.3'],[1,'▶ ×1'],[2,'⏩ ×2']].forEach(([v,n])=>add(n,()=>{TR.ts=v;trRender()},TR.ts===v?'on':''));
+  add('🔁 Ganti class/senjata',()=>{TR.open=false;trRender();state='menu';$('menu').classList.remove('hide')},'wide');
+  add('🚪 Keluar ke menu utama',()=>{showTitle()},'wide')}}
+trUI();
 
 TWISTS.survive.min=9999;
 </script>
