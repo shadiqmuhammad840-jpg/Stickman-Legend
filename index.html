@@ -7375,6 +7375,96 @@ const SXA={
 };
 for(const k in SXA){const o=BM[k];if(!o)continue;BM[k]=function(e,f,T){try{SXA[k](e,T,0)}catch(_){}o(e,f,T);try{SXA[k](e,T,1)}catch(_){}}}
 
+// ===== nv23: CLASS 'BOSS' (senjata rahasia) + skin boss + senjata mirip boss + bar HP megah + jurus tanda tangan boss rahasia =====
+CLASSES.boss={n:'👹 Boss',d:'Pewaris boss rahasia: pakai senjata hasil mengalahkan boss rahasia. Skin & jurusmu berubah menjadi sang boss, makin garang saat HP menurun',hp:150,spd:155,dmg:14,rate:.5,range:70,type:'melee',sum:0,col:'#ff2a3a'};
+const bossBtn=document.createElement('button');bossBtn.className='cls';bossBtn.style.cssText='border-color:#ff2a3a;box-shadow:0 0 14px #ff2a3a88';
+const bossUnl=()=>Object.keys(SECWD).filter(id=>SECU[id]).length;
+const bossLbl=()=>{const n=bossUnl();bossBtn.innerHTML='<b style="color:#ff6a7a">'+CLASSES.boss.n+(n?'':' 🔒')+'</b><small>'+CLASSES.boss.d+'</small><small style="display:block;margin-top:3px;color:#ffe27a">'+(n?'Senjata rahasia terbuka: '+n+'/5':'Kalahkan boss rahasia untuk membuka senjatanya')+'</small>'};
+bossBtn.onclick=()=>{bossLbl();if(!bossUnl()){flash('🔒 Kalahkan boss rahasia (chance kecil di wave 10-50) untuk membuka Class Boss');return}pickWeapon('boss')};
+cl.appendChild(bossBtn);bossLbl();
+{const _t=showTitle;showTitle=function(){_t.apply(this,arguments);bossLbl()}}
+{const _r=secReward;secReward=function(b){_r(b);bossLbl()}}
+SKILLS.def_boss={n:'Aura Boss',ic:'👹',col:'#ff2a3a',cd:10,fn(){for(const e of enemies)if(dist(e,P)<180+e.r){hit(e,P.dmg*3,'#ff4a5a');if(!e.boss)e.stun=1.2}fx.push({x:P.x,y:P.y,ring:180,t:.45,col:'#ff2a3a'});shake=.3;sfx('boom')}};
+SKILLS2.def_boss={n:'Haus Darah',ic:'🩸',col:'#ff2a3a',cd:12,fn(){healP(.1);P.inv=Math.max(P.inv,1);fx.push({x:P.x,y:P.y,ring:90,t:.5,col:'#ff6a7a'})}};
+// senjata rahasia kini khusus Class Boss
+for(const id in SECWD){const w=SECWD[id],o=w.init,oc=CLASSES[w.cls];
+ WEAPONS[id].only='boss';WEAPONS[id].d=w.d.replace(/Khusus \w+/,'Khusus Class Boss');
+ w.init=function(){P.type=oc.type;P.range=oc.range;P.rate=oc.rate;P.dmg*=oc.dmg/CLASSES.boss.dmg;if(oc.sum)P.sumCap=(P.sumCap||0)+oc.sum;o.call(this)}}
+// ---- skin: karakter berubah jadi boss (makin lengkap tiap "fase" HP) ----
+K.horns=col=>(x,y,r)=>{const hy=y-r*.95,hr=r*.42;ctx.fillStyle=col;for(const s of[-1,1]){ctx.beginPath();ctx.moveTo(x+s*hr*.5,hy-hr*.7);ctx.quadraticCurveTo(x+s*hr*1.6,hy-hr*1.1,x+s*hr*1.35,hy-hr*2.6);ctx.quadraticCurveTo(x+s*hr*.9,hy-hr*1.3,x+s*hr*.2,hy-hr*.9);ctx.fill()}};
+K.cyc=col=>(x,y,r,f)=>{const hy=y-r*.95,hr=r*.42;ctx.save();ctx.shadowColor=col;ctx.shadowBlur=10;ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(x+f*hr*.1,hy,hr*.78,hr*.52,0,0,7);ctx.fill();ctx.fillStyle=col;ctx.beginPath();ctx.arc(x+f*hr*.28,hy,hr*.3,0,7);ctx.fill();ctx.fillStyle='#000';ctx.beginPath();ctx.arc(x+f*hr*.3,hy,hr*.13,0,7);ctx.fill();ctx.restore()};
+K.flameHead=col=>(x,y,r,f,T)=>{const hy=y-r*.95,hr=r*.42;ctx.save();ctx.globalAlpha=.85;for(let i=-2;i<=2;i++){const w=Math.sin(T*9+i)*.25;ctx.fillStyle=i%2?col:'#e0ffd0';ctx.beginPath();ctx.moveTo(x+i*hr*.35-hr*.25,hy-hr*.4);ctx.quadraticCurveTo(x+i*hr*.35+w*hr,hy-hr*(1.5+(2-Math.abs(i))*.35),x+i*hr*.35+hr*.25,hy-hr*.4);ctx.fill()}ctx.restore()};
+const bph=()=>{if(!P)return 0;const q=P.hp/P.max;return q<.34?2:q<.67?1:0};
+const sxLay=(key,pa)=>(x,y,r,f,T)=>{try{SXA[key]({x,y:y-r*.1,r:r*1.0,ph:bph()},T,pa)}catch(_){}};
+const bossSkin=(id,key,col,dk,head)=>{SKIN[id]={col,pre:[sxLay(key,0),K.cape(dk,1.5)],post:head.concat([sxLay(key,1)])}};
+bossSkin('moonblade','sx_oni','#ffd0d8','#2a050c',[K.horns('#ff2a3a'),K.eyes('#ff2a3a')]);
+bossSkin('eclipsefist','sx_cyclops','#ffcf8a','#241006',[K.cyc('#ff9a2a'),K.armor('#3a1c08')]);
+bossSkin('gravebow','sx_horse','#c8f0c0','#0c1a0a',[K.hood('#0c1a0a'),K.flameHead('#4aff7a'),K.eyes('#8aff5a')]);
+bossSkin('nightstaff','sx_fairy','#e0c8ff','#14062a',[K.crown('#b06aff'),K.eyes('#ff2a6a')]);
+bossSkin('doomstaff','sx_dragon','#ffb090','#2a0606',[K.horns('#ff6a1a'),K.eyes('#ffcf40')]);
+// ---- senjata: tampilan jauh lebih mirip boss ----
+Object.assign(AW,{
+ moonblade:(r,oc,T)=>{ctx.save();ctx.shadowColor='#ff2a3a';ctx.shadowBlur=18;ctx.strokeStyle='#3a1018';ctx.lineWidth=Math.max(3,r*.26);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-r*.55,r*.18);ctx.lineTo(r*.55,0);ctx.stroke();ctx.strokeStyle='#ff2a3a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-r*.35,r*.12);ctx.lineTo(r*.35,0);ctx.stroke();
+  crescentX(r*.75,-r*.05,r*2.0,-Math.PI/2+.2,'#ffe8ec',22);crescentX(r*.75,-r*.05,r*1.45,-Math.PI/2+.2,'#ff2a3a',9);
+  for(let i=0;i<3;i++){const a=T*2+i*2.094;crescentX(r*.75+Math.cos(a)*r*1.2,Math.sin(a)*r*.9,r*.3,a+1.57,'#ffb0bc',8)}
+  ctx.fillStyle='#ff2a3a';for(let i=0;i<4;i++){const t=(T*1.3+i*.25)%1;ctx.globalAlpha=1-t;ctx.beginPath();ctx.arc(r*(.4+i*.35),r*(.2+t*1.4),r*.07,0,7);ctx.fill()}ctx.restore()},
+ eclipsefist:(r,oc,T)=>{ctx.save();ctx.shadowColor='#ff9a2a';ctx.shadowBlur=18;ctx.fillStyle='#1c0c04';ctx.beginPath();ctx.arc(r*1.0,-r*.1,r*.8,0,7);ctx.fill();ctx.strokeStyle='#ff9a2a';ctx.lineWidth=3;ctx.stroke();
+  ctx.globalCompositeOperation='lighter';ctx.strokeStyle='rgba(255,210,120,.6)';ctx.lineWidth=2;for(let i=0;i<14;i++){const a=T*.8+i*.449;ctx.beginPath();ctx.moveTo(r*1.0+Math.cos(a)*r*.85,-r*.1+Math.sin(a)*r*.85);ctx.lineTo(r*1.0+Math.cos(a)*r*(1.15+(i%2)*.25),-r*.1+Math.sin(a)*r*(1.15+(i%2)*.25));ctx.stroke()}ctx.globalCompositeOperation='source-over';
+  ctx.strokeStyle='#ffcf6a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(r*.6,-r*.3);ctx.lineTo(r*.9,-r*.05);ctx.lineTo(r*.75,r*.1);ctx.lineTo(r*1.1,r*.35);ctx.stroke();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(r*1.15,-r*.1,r*.3,r*.2,0,0,7);ctx.fill();ctx.fillStyle='#ff9a2a';ctx.beginPath();ctx.arc(r*1.2,-r*.1,r*.1,0,7);ctx.fill();
+  for(let i=0;i<3;i++){ctx.fillStyle='#ffcf6a';ctx.beginPath();ctx.moveTo(r*1.55,-r*.3+i*r*.22);ctx.lineTo(r*1.85,-r*.22+i*r*.22);ctx.lineTo(r*1.55,-r*.14+i*r*.22);ctx.fill()}ctx.restore()},
+ gravebow:(r,oc,T)=>{ctx.save();ctx.shadowColor='#8aff5a';ctx.shadowBlur=14;ctx.strokeStyle='#d8e8d0';ctx.lineWidth=Math.max(3,r*.24);ctx.beginPath();ctx.arc(-r*.2,0,r*1.55,-1.2,1.2);ctx.stroke();
+  ctx.strokeStyle='#8aff5a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(-r*.2,0,r*1.55,-1.2,1.2);ctx.stroke();
+  ctx.strokeStyle='rgba(180,255,180,.8)';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(-r*.2+Math.cos(-1.2)*r*1.55,Math.sin(-1.2)*r*1.55);ctx.quadraticCurveTo(-r*.7+Math.sin(T*10)*r*.06,0,-r*.2+Math.cos(1.2)*r*1.55,Math.sin(1.2)*r*1.55);ctx.stroke();
+  ctx.fillStyle='#e8f0e0';ctx.beginPath();ctx.arc(r*.35,0,r*.3,0,7);ctx.fill();ctx.fillStyle='#0c1a0a';ctx.fillRect(r*.25,-r*.1,r*.1,r*.12);ctx.fillRect(r*.42,-r*.1,r*.1,r*.12);
+  for(let i=0;i<5;i++){const a=-1.1+i*.55;const t=(T*1.2+i*.2)%1;ctx.globalAlpha=1-t;ctx.fillStyle='#4aff7a';ctx.beginPath();ctx.moveTo(-r*.2+Math.cos(a)*r*1.55,Math.sin(a)*r*1.55);ctx.quadraticCurveTo(-r*.2+Math.cos(a)*r*1.7+Math.sin(T*8+i)*3,Math.sin(a)*r*1.7-r*.3*t,-r*.2+Math.cos(a)*r*1.6,Math.sin(a)*r*1.6-r*.8*t);ctx.lineTo(-r*.2+Math.cos(a)*r*1.5,Math.sin(a)*r*1.5);ctx.fill()}ctx.restore()},
+ nightstaff:(r,oc,T)=>{ctx.save();ctx.strokeStyle='#2a1a4a';ctx.lineWidth=Math.max(3,r*.22);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,r*1.0);ctx.lineTo(0,-r*1.6);ctx.stroke();
+  ctx.fillStyle='#6a3aaa';for(let i=0;i<5;i++){const y=r*.8-i*r*.5,s=i%2?1:-1;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(s*r*.35,y-r*.25);ctx.lineTo(0,y-r*.12);ctx.fill()}
+  ctx.shadowColor='#b06aff';ctx.shadowBlur=16;crescentX(0,-r*2.05+Math.sin(T*3)*2,r*.7,-.5,'#e8dcff',18);ctx.fillStyle='#ff2a6a';ctx.beginPath();ctx.arc(r*.05,-r*2.05+Math.sin(T*3)*2,r*.12,0,7);ctx.fill();
+  for(let i=0;i<6;i++){const a=T*1.4+i*1.047;ctx.save();ctx.translate(Math.cos(a)*r*.9,-r*1.6+Math.sin(a)*r*.5);ctx.rotate(a*2);ctx.fillStyle='rgba(220,160,255,.85)';ctx.beginPath();ctx.ellipse(0,0,r*.14,r*.07,0,0,7);ctx.fill();ctx.restore()}ctx.restore()},
+ doomstaff:(r,oc,T)=>{ctx.save();ctx.strokeStyle='#3a0a0a';ctx.lineWidth=Math.max(3,r*.24);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,r*1.0);ctx.lineTo(0,-r*1.5);ctx.stroke();bGlow(0,-r*2.0,r*1.2,'#ff4a2a',.7);
+  ctx.fillStyle='#efe0c8';ctx.beginPath();ctx.moveTo(-r*.38,-r*1.7);ctx.lineTo(r*.38,-r*1.7);ctx.lineTo(r*.3,-r*2.3);ctx.lineTo(0,-r*2.5);ctx.lineTo(-r*.3,-r*2.3);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#ff6a1a';for(const s of[-1,1]){ctx.beginPath();ctx.moveTo(s*r*.25,-r*2.3);ctx.quadraticCurveTo(s*r*.8,-r*2.5,s*r*.7,-r*3.0);ctx.quadraticCurveTo(s*r*.5,-r*2.5,s*r*.15,-r*2.2);ctx.fill()}
+  ctx.fillStyle='#ffcf40';ctx.fillRect(-r*.2,-r*2.1,r*.12,r*.14);ctx.fillRect(r*.08,-r*2.1,r*.12,r*.14);
+  for(let i=0;i<8;i++){const t=(T*.9+i*.125)%1,a=i*.8+T;ctx.globalAlpha=1-t;ctx.fillStyle=i%2?'#ffb040':'#ff4a1a';ctx.beginPath();ctx.arc(Math.cos(a)*r*.7*(1+t),-r*2.0-t*r*1.4+Math.sin(a)*r*.3,r*.07,0,7);ctx.fill()}ctx.restore()}
+});
+// ---- bar HP boss rahasia: megah ----
+{const _db=drawBar;drawBar=function(e,T,x0,y0,bw,isMini){
+ if(!e||!e.secret||isMini)return _db.apply(this,arguments);
+ const S=SECD[e.base]||{col:'#ff2a3a',dk:'#2a050c',sub:''},c=S.col,hp=clp(e.hp/e.max,0,1),ph=e.ph||0,cx=x0+bw/2,bx=x0,bh=14,by=y0+22,mid=by+bh/2;
+ ctx.save();
+ // aura besar di belakang
+ ctx.globalCompositeOperation='lighter';const pul=.5+.25*Math.sin(T*(ph>=2?7:3.5));
+ ctx.save();ctx.translate(cx,mid);ctx.scale(1,.3);const g=ctx.createRadialGradient(0,0,10,0,0,bw*.95);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.globalAlpha=.35*pul+.15;ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,bw*.95,0,7);ctx.fill();ctx.restore();
+ ctx.strokeStyle=c;ctx.lineWidth=1.5;ctx.globalAlpha=.35;for(let i=0;i<18;i++){const a=T*.3+i/18*6.283,l=bw*.12+Math.sin(T*3+i)*6;ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*(bw*.5+10),mid+Math.sin(a)*22);ctx.lineTo(cx+Math.cos(a)*(bw*.5+10+l),mid+Math.sin(a)*(22+l*.4));ctx.stroke()}
+ ctx.restore();ctx.save();
+ _db.apply(this,arguments);
+ // kilau bergerak di isi bar
+ ctx.save();ctx.beginPath();ctx.rect(bx,by,bw*hp,bh);ctx.clip();const sx=bx+((T*.55)%1.4-.2)*bw;const sg=ctx.createLinearGradient(sx-40,0,sx+40,0);sg.addColorStop(0,'rgba(255,255,255,0)');sg.addColorStop(.5,'rgba(255,255,255,.65)');sg.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=sg;ctx.fillRect(bx,by,bw,bh);ctx.restore();
+ // bingkai emas ganda + paku
+ ctx.shadowColor=c;ctx.shadowBlur=14;const gg=ctx.createLinearGradient(bx,0,bx+bw,0);gg.addColorStop(0,'#ffe27a');gg.addColorStop(.5,'#fff6c8');gg.addColorStop(1,'#ffe27a');ctx.strokeStyle=gg;ctx.lineWidth=2;ctx.strokeRect(bx-8,by-8,bw+16,bh+11);ctx.lineWidth=1;ctx.strokeRect(bx-11,by-11,bw+22,bh+16);
+ ctx.fillStyle='#ffe27a';for(const s of[-1,1]){const px=s<0?bx-11:bx+bw+11;ctx.beginPath();ctx.moveTo(px,mid-9);ctx.lineTo(px+s*14,mid);ctx.lineTo(px,mid+9);ctx.closePath();ctx.fill();ctx.fillStyle=c;ctx.beginPath();ctx.arc(px+s*5,mid,2.2,0,7);ctx.fill();ctx.fillStyle='#ffe27a'}
+ ctx.shadowBlur=0;
+ // permata fase
+ const n=e.phs||3;for(let i=1;i<n;i++){const gx=bx+bw*(1-i/n),on=ph>=n-i;ctx.save();ctx.translate(gx,by-11);ctx.rotate(.785);ctx.fillStyle=on?'#1a1a1a':c;ctx.strokeStyle='#ffe27a';ctx.lineWidth=1.5;ctx.shadowColor=c;ctx.shadowBlur=on?0:10;ctx.fillRect(-4,-4,8,8);ctx.strokeRect(-4,-4,8,8);ctx.restore()}
+ // percikan naik dari ujung HP
+ ctx.globalCompositeOperation='lighter';for(let i=0;i<9;i++){const t=(T*.9+i*.111)%1,px=bx+bw*hp-t*26+Math.sin(T*5+i*2)*6,py=by+bh*.5-t*30;ctx.globalAlpha=(1-t)*.9;ctx.fillStyle=i%2?'#fff0c0':c;ctx.beginPath();ctx.arc(px,py,2.2*(1-t)+.6,0,7);ctx.fill()}
+ ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+ // judul rahasia
+ ctx.font='bold 11px "Segoe UI",sans-serif';ctx.shadowColor=c;ctx.shadowBlur=10;ctx.fillStyle=Math.floor(T*2)%2?'#ffe27a':'#fff';ctx.textAlign='center';
+ ctx.font='italic 10px "Segoe UI",sans-serif';ctx.shadowBlur=4;ctx.fillStyle=c;ctx.fillText(S.sub||'',cx,by+bh+30);
+ // persen HP
+ ctx.font='bold 10px "Segoe UI",sans-serif';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText(Math.ceil(hp*100)+'%',cx,by+bh-3);
+ ctx.restore();ctx.restore()}}
+// ---- jurus tanda tangan boss rahasia (tidak dimiliki boss lain) ----
+defP('sxCrimsonVerdict','Vonis Merah',c=>{c.st(3.4);for(let k=0;k<2;k++)c.T(k*1.5,()=>{const q=c.tg(),a0=Math.random()*3.14;c.Z(q.x,q.y,60,1.3,1.1,{col:'#ff2a3a',after:h=>{for(let i=0;i<4;i++)c.L(h.x,h.y,a0+i*Math.PI/4,520,.3,.5,.9,{w:13,col:'#ffd0d8',rot:.6});c.ring(h.x,h.y,10,120,.4,{col:'#ff8a9a',shp:'moon'},a0)}})});return 4.6});
+defP('sxJudgementPillar','Pilar Penghakiman',c=>{c.st(3.2);const mk=n=>{if(n<=0)return;const q=c.tg();c.Z(q.x,q.y,52,1.1,.9,{col:'#ffcf6a',after:h=>{c.L(h.x,-10,Math.PI/2,H+30,.1,.55,1.3,{w:54,col:'#ffe08a'});c.ring(h.x,h.y,12,130,.4,{col:'#ffb040',shp:'ember'});c.T(.5,()=>mk(n-1))}})};mk(3);return 4.8});
+defP('sxHeadHunt','Kepala Buruan',c=>{c.st(2.4);const S=c.src();for(let k=0;k<3;k++)c.T(k*.55,()=>c.B(S.x,S.y,c.ang()+rnd(-.5,.5),130,.9,{r:16,col:'#bfffd0',shp:'rider',t:6,home:1.3,split:{n:12,at:2.7,sp:150,d:c.D*.4}}));for(let i=0;i<3;i++){const y=clp(rnd(110,H-60),100,H-40),fl=i%2===0;c.L(fl?0:W,y,fl?0:Math.PI,W,.1,.6,0,{w:6,col:'#8aff5a'});c.T(.7+i*.3,()=>c.B(fl?-12:W+12,y,fl?0:Math.PI,360,.8,{r:12,col:'#8aff5a',shp:'rider',t:3}))}return 4});
+defP('sxThornCage','Sangkar Duri',c=>{c.st(2.6);const q=c.tg(),n=18,g=Math.floor(rnd(0,n)),R=210;for(let i=0;i<n;i++){if(i===g||i===(g+1)%n)continue;const a=i/n*6.283,x=q.x+Math.cos(a)*R,y=q.y+Math.sin(a)*R;c.B(x,y,a+Math.PI,62,.6,{col:'#8a4aff',r:8,shp:'petal',t:4.2})}for(let i=0;i<3;i++){const p=c.rp();c.Z(p.x,p.y,48,1.2+i*.4,1,{col:'#e0b0ff',after:h=>c.ring(h.x,h.y,8,100,.35,{col:'#e0b0ff',shp:'petal'})})}return 4.4});
+defP('sxDoomRain','Hujan Meteor Kiamat',c=>{c.st(3.4);const S=c.src();for(let i=0;i<7;i++){const p=i<2?c.tg():c.rp();c.Z(p.x,p.y,62,.9+i*.28,1.2,{col:'#ff5a1a',st:'burn',sd:2,linger:2})}c.L(S.x,S.y,c.ang()-.9,900,1.8,2.2,1.2,{fol:true,rot:.85,w:32,col:'#ff3a1a'});return 5});
+{const SIG={sx_oni:'sxCrimsonVerdict',sx_cyclops:'sxJudgementPillar',sx_horse:'sxHeadHunt',sx_fairy:'sxThornCage',sx_dragon:'sxDoomRain'};
+ for(const k in SIG)if(BATK[k])BATK[k].forEach((a,i)=>{a.push(SIG[k],SIG[k]);if(i>=1)a.push(SIG[k])})}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
