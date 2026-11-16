@@ -7938,6 +7938,47 @@ MUS.push(
  {bpm:152,root:29,scale:[0,1,2,6,7,11],prog:[0,6,1,11],lead:'sawtooth',leadLp:5500,bass:'square',bassLp:760,dens:1,kick:[0,3,6,8,11,14],snare:[4,10,14],pad:'sawtooth',glitch:true}
 );for(let i=b;i<MUS.length;i++)MUS[i].b0=MUS[i].bpm}
 
+// ===== nv27: Kaisar Kaldera didesain ulang (beda dari Titan Gerhana) =====
+// siluet: gunung berapi segitiga + dada raja magma, tangan batu melayang, awan abu & kristal obsidian
+BM.sx_magma=(e,f,T)=>{const x=e.x,y=e.y,r=e.r,ph=e.ph||0,c='#ff2a4a',A=e._an||ZA,br=Math.sin(T*1.8)*r*.03;ctx.save();
+ // awan abu & petir vulkanik di belakang
+ bGlow(x,y-r*.4,r*3.4,'#ff1a3a',.26+.08*ph);
+ for(let i=0;i<6;i++){const a=T*.3+i*1.05,px=x+Math.cos(a)*r*1.4,py=y-r*1.9+Math.sin(a*1.3)*r*.25;ctx.fillStyle='rgba(60,55,70,.7)';ctx.beginPath();ctx.ellipse(px,py,r*.55,r*.3,0,0,7);ctx.fill()}
+ if(Math.sin(T*3)>.6){ctx.strokeStyle='#ffd0a0';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-r*.6,y-r*1.9);ctx.lineTo(x-r*.45,y-r*1.5);ctx.lineTo(x-r*.65,y-r*1.3);ctx.stroke()}
+ // tubuh gunung: kerucut lebar dengan sungai lava
+ bPoly([[x-r*2.0,y+r*1.75],[x-r*.8,y-r*.3+br],[x+r*.8,y-r*.3+br],[x+r*2.0,y+r*1.75]],'#2a2630','#ff2a4a');
+ ctx.strokeStyle='#4a4450';ctx.lineWidth=1.5;for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(x-r*(.7+i*.28),y-r*.1+i*r*.3);ctx.lineTo(x+r*(.7+i*.28),y-r*.1+i*r*.3);ctx.stroke()}
+ ctx.shadowColor='#ff3a1a';ctx.shadowBlur=12;for(const[o,w]of[[-1.2,.3],[-.55,.5],[.4,.4],[1.1,.3]]){ctx.strokeStyle='#ffa030';ctx.lineWidth=3.2;ctx.beginPath();ctx.moveTo(x+o*r*.35,y+r*.1);let cx=x+o*r*.35;for(let k=1;k<=5;k++){cx+=Math.sin(T*2+k+o)*r*.08+o*r*.12;ctx.lineTo(cx,y+r*.1+k*r*.33)}ctx.stroke();ctx.strokeStyle='#fff0a0';ctx.lineWidth=1.2;ctx.stroke()}ctx.shadowBlur=0;
+ ctx.fillStyle='rgba(255,90,20,.55)';ctx.beginPath();ctx.ellipse(x,y+r*1.78,r*2.3,r*.28,0,0,7);ctx.fill();
+ for(let i=0;i<7;i++){const t=(T*.5+i/7)%1;ctx.fillStyle='rgba(255,210,100,'+(1-t)+')';ctx.beginPath();ctx.arc(x+Math.sin(i*2.3)*r*1.8,y+r*1.75-t*r*.4,r*.06,0,7);ctx.fill()}
+ // kristal obsidian di lereng
+ for(const s of[-1,1])for(let i=0;i<3;i++){const px=x+s*r*(1.0+i*.35),py=y+r*(.9+i*.25);bPoly([[px-r*.1,py+r*.15],[px+s*r*.05,py-r*(.5+(i%2)*.25)],[px+r*.12,py+r*.15]],'#14101c','#ff2a4a')}
+ // dada raja magma muncul dari kawah
+ const hy=y-r*.95+br;bPoly([[x-r*.95,y-r*.1+br],[x-r*.6,hy+r*.2],[x+r*.6,hy+r*.2],[x+r*.95,y-r*.1+br]],'#1a1620','#ff2a4a');
+ ctx.strokeStyle='#ff6a2a';ctx.lineWidth=2.4;ctx.shadowColor='#ff3a10';ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(x-r*.5,hy+r*.35);ctx.lineTo(x-r*.2,hy+r*.6);ctx.lineTo(x-r*.35,hy+r*.85);ctx.moveTo(x+r*.5,hy+r*.35);ctx.lineTo(x+r*.25,hy+r*.62);ctx.lineTo(x+r*.4,hy+r*.9);ctx.stroke();ctx.shadowBlur=0;
+ bGlow(x,hy+r*.55,r*.5,'#ff8a30',.7+.2*Math.sin(T*4));bPoly([[x,hy+r*.4],[x+r*.16,hy+r*.58],[x,hy+r*.76],[x-r*.16,hy+r*.58]],'#fff0a0','#ff6a1a');
+ // kepala: topeng obsidian bertanduk melengkung ke atas + mahkota api
+ for(const s of[-1,1]){ctx.strokeStyle='#14101c';ctx.lineWidth=r*.17;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x+s*r*.3,hy-r*.1);ctx.quadraticCurveTo(x+s*r*1.15,hy-r*.2,x+s*r*.85,hy-r*1.05-ph*r*.15);ctx.stroke();ctx.strokeStyle='#ff2a4a';ctx.lineWidth=2;ctx.stroke()}
+ bPoly([[x-r*.36,hy-r*.35],[x+r*.36,hy-r*.35],[x+r*.4,hy+r*.2],[x+r*.18,hy+r*.42],[x-r*.18,hy+r*.42],[x-r*.4,hy+r*.2]],'#14101c','#ff2a4a');
+ ctx.fillStyle='#ff2a4a';ctx.beginPath();ctx.moveTo(x-r*.3,hy-r*.12);ctx.lineTo(x-r*.06,hy);ctx.lineTo(x-r*.3,hy+r*.06);ctx.fill();ctx.beginPath();ctx.moveTo(x+r*.3,hy-r*.12);ctx.lineTo(x+r*.06,hy);ctx.lineTo(x+r*.3,hy+r*.06);ctx.fill();
+ bEye(x-r*.18,hy-r*.03,r*.07,'#ffd24d',0);bEye(x+r*.18,hy-r*.03,r*.07,'#ffd24d',0);
+ ctx.fillStyle='#ff9a30';ctx.fillRect(x-r*.14,hy+r*.2,r*.28,r*.05);
+ for(let i=-3;i<=3;i++){const w=Math.sin(T*9+i)*.22;ctx.fillStyle=i%2?'#ffb040':'#ff2a1a';ctx.globalAlpha=.85;ctx.beginPath();ctx.moveTo(x+i*r*.1-r*.07,hy-r*.35);ctx.quadraticCurveTo(x+i*r*.1+w*r,hy-r*(.95+(3-Math.abs(i))*.17+ph*.12),x+i*r*.1+r*.07,hy-r*.35);ctx.fill()}ctx.globalAlpha=1;
+ // tangan batu melayang (tanpa lengan), menetes lava
+ for(const s of[-1,1]){const sw=Math.sin(T*2+(s>0?0:1.8))*r*.12,hx=x+s*r*(1.75+A.atk*.25),hyy=y-r*.15+sw-A.atk*r*.7+A.pulse*r*.9;
+  bGlow(hx,hyy,r*.7,'#ff3a1a',.4);
+  bPoly([[hx-r*.3,hyy-r*.1],[hx-r*.15,hyy-r*.4],[hx+r*.18,hyy-r*.38],[hx+r*.32,hyy-r*.05],[hx+r*.2,hyy+r*.3],[hx-r*.18,hyy+r*.32]],'#241e2a','#ff2a4a');
+  for(let k=0;k<3;k++){const fx=hx+(k-1)*r*.2;bPoly([[fx-r*.07,hyy+r*.28],[fx,hyy+r*.62],[fx+r*.07,hyy+r*.28]],'#14101c','#ff4a2a')}
+  ctx.strokeStyle='#ff8a30';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(hx-r*.15,hyy-r*.2);ctx.lineTo(hx,hyy);ctx.lineTo(hx+r*.15,hyy+r*.1);ctx.stroke();
+  for(let k=0;k<3;k++){const t=(T*1.3+k/3+(s>0?0:.4))%1;ctx.fillStyle='rgba(255,140,40,'+(1-t)+')';ctx.beginPath();ctx.arc(hx+(k-1)*r*.12,hyy+r*.5+t*r*.8,r*.06,0,7);ctx.fill()}
+  ctx.strokeStyle='rgba(255,90,30,.35)';ctx.lineWidth=2;ctx.setLineDash([5,6]);ctx.beginPath();ctx.moveTo(x+s*r*.9,y-r*.1);ctx.lineTo(hx-s*r*.3,hyy);ctx.stroke();ctx.setLineDash([])}
+ // batu gunung berapi mengorbit
+ for(let i=0;i<(ph>=1?7:4);i++){const a=T*.7+i*(6.283/(ph>=1?7:4)),px=x+Math.cos(a)*r*2.5,py=y-r*.7+Math.sin(a)*r*.55;bPoly([[px-r*.13,py],[px,py-r*.18],[px+r*.15,py+r*.03],[px+r*.02,py+r*.17]],'#2a2630','#ff4a2a');bGlow(px,py,r*.25,'#ff4a1a',.5)}
+ if(ph>=2){bGlow(x,hy-r*.3,r*1.6,'#ff1030',.25+.14*Math.sin(T*9));for(let i=0;i<8;i++){const t=(T*1.1+i/8)%1;ctx.fillStyle='rgba(255,170,60,'+(1-t)+')';ctx.beginPath();ctx.arc(x+Math.sin(i*5)*r*.5,hy-r*.8-t*r*1.6,r*.07,0,7);ctx.fill()}}
+ ctx.restore()};
+SXA.sx_magma=(e,T,pa)=>{const x=e.x,y=e.y,r=e.r;ctx.save();if(!pa){bGlow(x,y,r*2.8,'#ff2a4a',.4);bPoly([[x-r*1.5,y+r*1.1],[x-r*.5,y-r*.3],[x+r*.5,y-r*.3],[x+r*1.5,y+r*1.1]],'#2a2630','#ff2a4a');ctx.strokeStyle='#ffa030';ctx.lineWidth=2.4;for(const o of[-.8,0,.7]){ctx.beginPath();ctx.moveTo(x+o*r*.4,y);ctx.lineTo(x+o*r*.7,y+r*1.0);ctx.stroke()}ctx.fillStyle='rgba(255,90,20,.5)';ctx.beginPath();ctx.ellipse(x,y+r*1.1,r*1.7,r*.22,0,0,7);ctx.fill()}else{for(const s of[-1,1]){ctx.strokeStyle='#14101c';ctx.lineWidth=r*.16;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x+s*r*.3,y-r*.8);ctx.quadraticCurveTo(x+s*r*1.0,y-r*.9,x+s*r*.8,y-r*1.6);ctx.stroke();ctx.strokeStyle='#ff2a4a';ctx.lineWidth=1.8;ctx.stroke()}for(let i=-2;i<=2;i++){const w=Math.sin(T*8+i)*.2;ctx.fillStyle=i%2?'#ffb040':'#ff2a1a';ctx.globalAlpha=.85;ctx.beginPath();ctx.moveTo(x+i*r*.12-r*.07,y-r*.95);ctx.quadraticCurveTo(x+i*r*.12+w*r,y-r*(1.5+(2-Math.abs(i))*.15),x+i*r*.12+r*.07,y-r*.95);ctx.fill()}ctx.globalAlpha=1}ctx.restore()};
+SECD.magma.col='#ff2a4a';if(BCOL.sx_magma)BCOL.sx_magma='#ff2a4a';if(BCOL.magma&&0)0;
+
 TWISTS.survive.min=9999;
 </script>
 </body>
