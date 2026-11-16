@@ -7979,6 +7979,65 @@ BM.sx_magma=(e,f,T)=>{const x=e.x,y=e.y,r=e.r,ph=e.ph||0,c='#ff2a4a',A=e._an||ZA
 SXA.sx_magma=(e,T,pa)=>{const x=e.x,y=e.y,r=e.r;ctx.save();if(!pa){bGlow(x,y,r*2.8,'#ff2a4a',.4);bPoly([[x-r*1.5,y+r*1.1],[x-r*.5,y-r*.3],[x+r*.5,y-r*.3],[x+r*1.5,y+r*1.1]],'#2a2630','#ff2a4a');ctx.strokeStyle='#ffa030';ctx.lineWidth=2.4;for(const o of[-.8,0,.7]){ctx.beginPath();ctx.moveTo(x+o*r*.4,y);ctx.lineTo(x+o*r*.7,y+r*1.0);ctx.stroke()}ctx.fillStyle='rgba(255,90,20,.5)';ctx.beginPath();ctx.ellipse(x,y+r*1.1,r*1.7,r*.22,0,0,7);ctx.fill()}else{for(const s of[-1,1]){ctx.strokeStyle='#14101c';ctx.lineWidth=r*.16;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x+s*r*.3,y-r*.8);ctx.quadraticCurveTo(x+s*r*1.0,y-r*.9,x+s*r*.8,y-r*1.6);ctx.stroke();ctx.strokeStyle='#ff2a4a';ctx.lineWidth=1.8;ctx.stroke()}for(let i=-2;i<=2;i++){const w=Math.sin(T*8+i)*.2;ctx.fillStyle=i%2?'#ffb040':'#ff2a1a';ctx.globalAlpha=.85;ctx.beginPath();ctx.moveTo(x+i*r*.12-r*.07,y-r*.95);ctx.quadraticCurveTo(x+i*r*.12+w*r,y-r*(1.5+(2-Math.abs(i))*.15),x+i*r*.12+r*.07,y-r*.95);ctx.fill()}ctx.globalAlpha=1}ctx.restore()};
 SECD.magma.col='#ff2a4a';if(BCOL.sx_magma)BCOL.sx_magma='#ff2a4a';if(BCOL.magma&&0)0;
 
+// ===== nv28: variasi serangan — tiap boss punya ULT & mekanik unik (bukan lagi kisi lingkaran AMAN) =====
+const ban28=(t,col)=>{fx.push({x:W/2,y:150,t:2,txt:'⚠ '+t,col,sz:15});flash('⚠ '+t.split(' — ')[0])};
+const alive28=e=>enemies.includes(e)&&e.hp>0;
+Object.assign(BULT,{
+ // ONI: spiral berputar dengan celah yang ikut berputar -> kejar celahnya
+ oni:(e,ph)=>{ban28('AMUKAN ONI — ikuti celah spiral!','#ff4a3a');e.stand=4;const n=22+ph*3,N=14,off=rnd(0,6.283);
+  for(let i=0;i<n;i++)later(.9+i*.1,()=>{if(!alive28(e))return;for(let k=0;k<N;k++){if(k<3)continue;ebul(e.x,e.y,off+i*.24+k/N*6.283,165,e.dmg*.5,{col:k%2?'#ff4a3a':'#ff9a3a',r:6,t:5})}});
+  ering(e,18,120,e.dmg*.4,{col:'#ff7a3a'},.2);return 3.6},
+ // CYCLOPS: gelombang gempa menyapu layar dari satu sisi, ada satu baris celah
+ cyclops:(e,ph)=>{ban28('GEMPA RAKSASA — gelombang menyapu, lewati celah!','#c09060');e.stand=3.6;const L=CAM.x+40,R=CAM.x+VW-40,cols=10,dir=Math.random()<.5?1:-1,gy=rnd(CAM.y+150,CAM.y+VH-130);
+  for(let i=0;i<cols;i++){const x=dir>0?L+i*(R-L)/(cols-1):R-i*(R-L)/(cols-1),dl=1.0+i*.3;for(let y=CAM.y+50;y<CAM.y+VH+50;y+=80){if(Math.abs(y-gy)<85)continue;warn(x,y,48,dl,e.dmg*1.5,{col:'#a67c52',after:h=>ering(h,4,110,e.dmg*.3,{col:'#c09060',r:7})})}}
+  return 1+cols*.3+1.4},
+ // HORSE: kepala labu melayang lalu memburu (homing, pecah)
+ horse:(e,ph)=>{ban28('KUTUKAN LABU — kepala memburumu!','#ff8c1a');e.stand=3;const n=3+ph;
+  for(let i=0;i<n;i++)later(.4+i*.4,()=>{if(!alive28(e))return;ringV(e.x,e.y,10,70,'#ff8c1a',.3,3);ebul(e.x,e.y,i/n*6.283,90,e.dmg*.8,{r:15,col:'#ff8c1a',home:1.7,t:6.5,split:{n:10,at:3.6,sp:150,d:e.dmg*.4}})});
+  for(let k=0;k<3;k++)later(1.4+k*.6,()=>warn(P.x,P.y,66,.9,e.dmg*1.2,{col:'#ff8c1a',st:'burn',sd:2}));return 3.4},
+ // FAIRY: bunga-bunga stasioner menyemburkan spiral -> menyelinap di antara spiral
+ fairy:(e,ph)=>{ban28('TAMAN TERLARANG — bunga mekar berputar!','#ff9ad0');e.stand=4.4;const E=3+Math.min(ph,2);
+  for(let k=0;k<E;k++){const x=rx(90,90),y=ry(140,90);warn(x,y,36,.9,0,{col:'#ff9ad0'});for(let i=0;i<26;i++)later(1+i*.11,()=>{if(!alive28(e))return;for(const o of[0,Math.PI])ebul(x,y,k*1.3+i*.45*(k%2?-1:1)+o,105,e.dmg*.4,{col:'#ff9ad0',r:5,t:5})})}return 4.6},
+ // DRAGON: lajur sinar vertikal, satu lajur aman tiap gelombang
+ dragon:(e,ph)=>{ban28('GERHANA BAYANGAN — pilih lajur aman!','#b050ff');e.stand=3.8;const nL=7,lw=(VW-60)/nL,V=2+(ph>=2?1:0);
+  for(let v=0;v<V;v++){const safe=Math.floor(rnd(0,nL));for(let i=0;i<nL;i++){if(i===safe)continue;beam({x:CAM.x+30+lw*(i+.5),y:CAM.y},VH+80,1.2+v*1.5,.45,e.dmg*1.3,{a:Math.PI/2,w:lw*.85,col:'#b050ff'})}}return 1.2+V*1.5+.8},
+ // PHARAOH: tarikan pusaran pasir + cincin peluru ber-celah
+ pharaoh:(e,ph)=>{ban28('BADAI PASIR ABADI — lawan tarikannya, lewati celah cincin!','#e0c070');e.stand=4.2;warn(e.x,e.y,150,.8,e.dmg*1.2,{col:'#e0c070',st:'slow'});later(.9,()=>{if(alive28(e))e.pullT=3.4});
+  for(let k=0;k<4;k++)later(1+k*.8,()=>{if(!alive28(e))return;const N=22,g=Math.floor(rnd(0,N)),off=rnd(0,6.28);for(let i=0;i<N;i++){if(Math.min((i-g+N)%N,(g-i+N)%N)<=1)continue;ebul(e.x,e.y,off+i/N*6.283,125,e.dmg*.45,{col:'#e0c070',st:'slow',sd:2,r:6})}});return 4.4},
+ // MAGMA: ledakan yang mengantisipasi arah lari -> jangan lari lurus
+ magma:(e,ph)=>{ban28('LETUSAN GUNUNG — jangan lari lurus!','#ff5a1a');e.stand=3.8;const n=14+ph*3;let px=P.x,py=P.y;
+  for(let i=0;i<n;i++)later(.8+i*.24,()=>{if(!alive28(e))return;const lx=clp(P.x+(P.x-px)*3.2,40,W-40),ly=clp(P.y+(P.y-py)*3.2,80,H-40);px=P.x;py=P.y;warn(lx,ly,56,.75,e.dmg*1.1,{col:'#ff5a1a',st:'burn',sd:2.5,linger:i%4===3?2.2:0})});return n*.24+1.6},
+ // LICH: sangkar es menyempit dari segala arah, masuk lewat celah
+ lich:(e,ph)=>{ban28('MUSIM DINGIN ABADI — masuk celah sangkar es!','#8fdcff');e.stand=4;const cx=P.x,cy=P.y,N=26,R=260;
+  for(let w=0;w<2+(ph>=2?1:0);w++){const g=Math.floor(rnd(0,N));later(.8+w*1.4,()=>{if(!alive28(e))return;fx.push({x:cx,y:cy,ring:R,t:.5,col:'#8fdcff'});for(let i=0;i<N;i++){if(Math.min((i-g+N)%N,(g-i+N)%N)<=1)continue;const a=i/N*6.283;ebul(clp(cx+Math.cos(a)*R,14,W-14),clp(cy+Math.sin(a)*R,14,H-14),a+Math.PI,115,e.dmg*.6,{col:'#8fdcff',st:'slow',sd:2,r:7,t:4})}})}return 4.4},
+ // MECH: satelit penembak pelacak dari tepi layar + ranjau hitung mundur
+ mech:(e,ph)=>{ban28('PROTOKOL PEMUSNAH — hindari sinar pelacak!','#6ad0ff');e.stand=3.8;const n=3+ph;
+  for(let k=0;k<n;k++){const s=k%4,sx=s===0?CAM.x+10:s===1?CAM.x+VW-10:rx(80,80),sy=s<2?ry(120,90):(s===2?CAM.y+10:CAM.y+VH-10);fx.push({x:sx,y:sy,ring:30,t:.8,col:'#6ad0ff'});beam({x:sx,y:sy},1400,1.3+k*.45,.5,e.dmg*.95,{fr:1.1,w:13,col:'#6ad0ff',st:'shock',sd:1.5})}
+  for(let i=0;i<4+ph;i++){const q=i%2?rndP():{x:P.x+rnd(-50,50),y:P.y+rnd(-50,50)};warn(q.x,q.y,60,2.2+i*.3,e.dmg*1.2,{col:'#ffe066',st:'shock',sd:1.5})}return 4.2},
+ // CHAOS: roulette — serangan acak dari boss lain, tidak bisa dihafal
+ chaos:(e,ph)=>{ban28('KEHANCURAN REALITAS — serangan acak!','#ff4aff');e.stand=4.4;const pool=['quake','petalTornado','eruption','laserGrid','meteors','iceSpikes','rift','chaosOrbs','vortex','boulderRow','headThrow','gatling','sandstorm','geyserGrid'].filter(k=>ATK[k]);
+  for(let i=0;i<6;i++)later(.4+i*.75,()=>{if(!alive28(e))return;const k=pool[Math.floor(rnd(0,pool.length))];fx.push({x:e.x,y:e.y-e.r-30,t:.7,txt:NEWN[k]||k,col:'#ff4aff',sz:13});try{ATK[k](e,ph)}catch(_){}});return 5.2}
+});
+// ---- serangan dasar yang sebelumnya kembar (dinding peluru / sinar putar) dibuat beda ----
+Object.assign(ATK,{
+ curseWall(e,ph){e.stand=1.6;const n=3+ph;for(let i=0;i<n;i++){const q=i?rndP():{x:P.x,y:P.y};warn(q.x,q.y,58,1+i*.3,e.dmg,{col:'#e0c070',st:'slow',sd:2,after:h=>{for(let k=0;k<2;k++)ebul(h.x,h.y,rnd(0,6.283),120,e.dmg*.5,{home:1.5,col:'#d8b030',r:5,t:5})}})}return n*.3+1.4},
+ lavaWall(e,ph){e.stand=1.8;const L=4+ph,a0=aim(e);for(let k=0;k<L;k++){const a=a0+k/L*6.283+rnd(-.2,.2);for(let i=1;i<=6;i++)warn(e.x+Math.cos(a)*i*70,e.y+Math.sin(a)*i*70,44,.6+i*.13+k*.05,e.dmg*.9,{col:'#ff6a2a',st:'burn',sd:2.5})}return 2.2},
+ iceWall(e,ph){e.stand=1.2;const n=3+ph;for(let i=0;i<n;i++){const a=i/n*6.283+rnd(0,1),x=clp(P.x+Math.cos(a)*150,30,W-30),y=clp(P.y+Math.sin(a)*150,60,H-30);warn(x,y,28,.4,0,{col:'#bff0ff'});later(.4,()=>ebul(x,y,0,0,e.dmg*.5,{r:15,col:'#bff0ff',st:'slow',sd:2,t:2,split:{n:12,at:1.3,sp:150,d:e.dmg*.4}}))}return 2},
+ soulBeams(e,ph){e.stand=1;const n=4+ph*2;for(let i=0;i<n;i++)later(i*.22,()=>ebul(e.x,e.y,aim(e)+rnd(-1.5,1.5),110,e.dmg*.6,{home:1.8,col:'#9fe8ff',st:'slow',sd:2,r:7,t:6}));return 2.2},
+ magmaBeam(e,ph){e.stand=2.4;const a=aim(e),n=2+ph;for(let k=0;k<n;k++)beam(e,1000,1.1+k*.35,.5,e.dmg*.9,{a:a+(k-(n-1)/2)*.55,w:20,col:'#ff5a1a',st:'burn'});later(.9,()=>{const b=aim(e);for(let k=0;k<n;k++)beam(e,1000,.8+k*.3,.45,e.dmg*.9,{a:b+(k-(n-1)/2)*.55+(k%2?.3:-.3),w:20,col:'#ff5a1a',st:'burn'})});return 3},
+ sandstorm(e,ph){e.stand=2.6;const dir=Math.random()<.5?1:-1,n=24+ph*8;for(let i=0;i<n;i++)later(.4+i*.1,()=>{ebul(dir>0?CAM.x:CAM.x+VW,ry(100,60),dir>0?0:Math.PI,230,e.dmg*.4,{col:'#e0c070',st:'slow',sd:2,r:6,t:5});P.x=clp(P.x+dir*5,P.r,W-P.r)});return 3.2}
+});
+Object.assign(NEWN,{curseWall:'Peti Terkutuk',lavaWall:'Retakan Lantai',iceWall:'Kristal Ledak',soulBeams:'Jiwa Memburu',magmaBeam:'Sapuan Silang Magma',sandstorm:'Angin Pasir'});
+// ---- ULT boss rahasia yang tadinya kisi lingkaran AMAN ----
+PAT.totalEclipse=c=>{c.st(3.6);if(!c.ally)ban28('GERHANA TOTAL — matahari meledak berantai!','#ffa52a');
+ for(let i=0;i<4;i++){const q=i?c.rp():c.tg(),x=clp(q.x,70,W-70),y=clp(q.y,110,H-70);c.Z(x,y,44,.4+i*.3,0,{col:'#ffa52a'});c.Z(x,y,105,1.8+i*.4,1.3,{col:'#ffa52a',after:h=>{c.ring(h.x,h.y,14,140,.4,{col:'#ffd080',r:6});c.T(.6,()=>c.ring(h.x,h.y,14,140,.4,{col:'#ffd080',r:6},.22))}})}return 3.6};
+PAT.sxAbsoluteZero=c=>{c.st(3.6);const S=c.src();
+ if(c.ally){const q=c.tg();c.Z(q.x,q.y,300,1.2,2.2,{col:'#8fe8ff',st:'slow'});c.ring(q.x,q.y,18,130,.4,{col:'#bff6ff'});return 3}
+ ban28('NOL MUTLAK — DIAM! jangan bergerak saat membeku!','#8fe8ff');
+ addV(3,p=>{ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.min(.5,p*.8)*(p>.85?(1-p)/.15:1);ctx.fillStyle='#8fe8ff';ctx.fillRect(0,0,W,H);ctx.globalAlpha=.9;ctx.fillStyle='#fff';ctx.font='bold 26px sans-serif';ctx.textAlign='center';if(p>.45&&p<.85)ctx.fillText('❄ DIAM ❄',W/2,H/2)});
+ let hit=false;for(const t of[2.0,2.3,2.6])c.T(t,()=>{if(hit||P.hp<=0)return;if(Math.hypot(mvx,mvy)>.12||P.dashT>0){hit=true;dmgPlayer(c.D*1.8);applyStatus('slow',3);fx.push({x:P.x,y:P.y-30,t:.8,txt:'BEKU!',col:'#8fe8ff',sz:16})}});
+ c.T(2.9,()=>c.ring(S.x,S.y,22,150,.4,{col:'#bff6ff',st:'slow',sd:2}));return 3.6};
+
 TWISTS.survive.min=9999;
 </script>
 </body>
