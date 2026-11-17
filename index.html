@@ -120,7 +120,7 @@ canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!import
 #dashBtn{left:auto!important;right:108px;bottom:98px}
 #zhint{display:block;left:14px;right:auto;top:auto;bottom:42%;width:150px;text-align:left;font-size:13px;opacity:.35}#zhint.off{opacity:0}
 </style>
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#000000"><link rel="icon" href="icon.png"></head>
+</head>
 <body>
 <div id="rot"><i>📱</i><div>Putar HP ke Landscape</div><small style="opacity:.7;font-weight:normal">Game ini dimainkan mendatar</small></div>
 <div id="wrap"><div id="stage"><div id="zhint" class="off">◀ geser untuk bergerak ▶</div>
@@ -2233,6 +2233,7 @@ function drawGround(T){
     ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,7);ctx.fill();ctx.stroke();
     for(let i=0;i<6;i++){const a=T*2+i*1.05,rr=z.r*.7;ctx.fillStyle=fz?'rgba(255,210,90,'+al*3+')':'rgba(255,255,255,'+al*3+')';ctx.fillRect(z.x+Math.cos(a)*rr,z.y+Math.sin(a*1.3)*rr,3,3)}}
   for(const h of hazards){
+    if(h.beam&&window.BEAMFX&&BEAMFX(h))continue;
     if(h.beam){const ex=h.x+Math.cos(h.a)*h.len,ey=h.y+Math.sin(h.a)*h.len;ctx.lineCap='round';
       if(h.t<h.delay){ctx.strokeStyle='rgba(255,60,60,'+(.25+.45*h.t/h.delay)+')';ctx.lineWidth=h.d>0?h.w*.6:4;ctx.setLineDash([10,8]);ln(h.x,h.y,ex,ey);ctx.setLineDash([])}
       else if(h.d>0){ctx.shadowColor=h.col;ctx.shadowBlur=18;ctx.strokeStyle=h.col;ctx.globalAlpha=.25;ctx.lineWidth=h.w*3.6;ln(h.x,h.y,ex,ey);ctx.globalAlpha=.85;ctx.lineWidth=h.w*2;ln(h.x,h.y,ex,ey);ctx.strokeStyle='#fff';ctx.lineWidth=h.w*.8;ln(h.x,h.y,ex,ey);ctx.shadowBlur=0;ctx.globalAlpha=1}
@@ -8713,7 +8714,59 @@ for(const id in XW){const X=XW[id],w=SECWD[id];if(!w){console.warn('no weapon '+
 {const _s=start;start=function(){const r=_s.apply(this,arguments);if(P){P._hh=[];P.sxn2=0}return r}}
 }
 
+// ===== nv37: visual LASER baru — unik per boss, lebar tampilan = area bahaya sebenarnya =====
+{const TAU=6.2832,PI=3.1416;
+const BS={};for(const b in SECD)BS[SECD[b].key]=b;
+const PAL={oni:['#ff3a3a','#ffd0c0'],cyclops:['#ffa23a','#fff0c0'],horse:['#7fffd0','#eafff6'],fairy:['#ff8ad8','#ffffff'],dragon:['#b05aff','#e8c8ff'],pharaoh:['#ffd24d','#fff6c8'],magma:['#ff5a1a','#ffe0a0'],lich:['#8fe8ff','#ffffff'],mech:['#4ab8ff','#ffffff'],chaos:['#ff4aff','#ffffff'],def:['#ff4a4a','#ffe0e0']};
+const sr=(i,s)=>{const v=Math.sin(i*127.1+s*311.7)*43758.5453;return v-Math.floor(v)};
+const cap=(L,R)=>{ctx.beginPath();ctx.arc(0,0,R,PI/2,PI*1.5);ctx.arc(L,0,R,-PI/2,PI/2);ctx.closePath()};
+const styleOf=h=>{const bt=h.bt;if(!bt)return'def';if(/^m\d/.test(bt)){return'def'}return BS[bt]||bt};
+// bagian khas tiap boss, digambar di ruang lokal (x sepanjang laser, y melintang), HW = setengah lebar bahaya
+const ST={
+oni(h,L,HW,E,T,C,K){for(let s=0;s<2;s++){ctx.strokeStyle=s?K:C;ctx.lineWidth=2.5;ctx.beginPath();for(let x=0;x<=L;x+=24){const y=(sr(x/24,Math.floor(T*22)+s)-.5)*HW*1.5;x?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
+ for(let i=0;i<10;i++){const x=sr(i,Math.floor(T*16))*L,y=(sr(i+9,Math.floor(T*16))-.5)*HW*1.8;ctx.fillStyle=K;ctx.fillRect(x,y,10,2)}},
+cyclops(h,L,HW,E,T,C,K){for(let k=0;k<Math.ceil(L/110)+1;k++){const x=((T*520+k*110)%(L+110));ctx.strokeStyle=K;ctx.globalAlpha=E*.7;ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(x,0,HW*.22,HW*.92,0,0,TAU);ctx.stroke()}ctx.globalAlpha=E;
+ const g=ctx.createRadialGradient(0,0,2,0,0,HW*2.2);g.addColorStop(0,K);g.addColorStop(.3,C);g.addColorStop(1,'rgba(255,120,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,HW*2.2,0,TAU);ctx.fill()},
+horse(h,L,HW,E,T,C,K){ctx.fillStyle=K;for(let i=0;i<22;i++){const x=((i*53+T*260)%L),y=Math.sin(x*.04+T*9+i)*HW*.7;ctx.globalAlpha=E*.8;ctx.beginPath();ctx.arc(x,y,3+(i%3),0,TAU);ctx.fill()}ctx.globalAlpha=E},
+fairy(h,L,HW,E,T,C,K){for(let s=0;s<2;s++){ctx.strokeStyle=s?K:C;ctx.lineWidth=3;ctx.beginPath();for(let x=0;x<=L;x+=14){const y=Math.sin(x*.035-T*12+s*PI)*HW*.55;x?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
+ ctx.fillStyle=K;for(let i=0;i<9;i++){const x=sr(i,Math.floor(T*10))*L,y=(sr(i+4,Math.floor(T*10))-.5)*HW*1.7,r=4+sr(i,2)*4;ctx.fillRect(x-r,y-1,r*2,2);ctx.fillRect(x-1,y-r,2,r*2)}},
+dragon(h,L,HW,E,T,C,K){ctx.fillStyle='rgba(10,2,22,'+.9*E+')';ctx.globalCompositeOperation='source-over';cap(L,HW*.55);ctx.fill();ctx.globalCompositeOperation='lighter';
+ ctx.fillStyle=K;for(let i=0;i<26;i++){const x=((i*41+T*340)%L),a=x*.05+T*13+i,y=Math.sin(a)*HW*.8;ctx.globalAlpha=E*.75;ctx.beginPath();ctx.arc(x,y,2.5,0,TAU);ctx.fill()}ctx.globalAlpha=E;ctx.strokeStyle=C;ctx.lineWidth=3;cap(L,HW*.9);ctx.stroke()},
+pharaoh(h,L,HW,E,T,C,K){ctx.fillStyle=K;ctx.globalAlpha=E*.85;for(let x=-((T*200)%60);x<L;x+=60){ctx.fillRect(x,-HW*.55,5,HW*1.1);ctx.fillRect(x+10,-HW*.2,14,4);ctx.fillRect(x+10,HW*.15,14,4)}
+ ctx.fillStyle='#e8c070';for(let i=0;i<30;i++){const x=sr(i,Math.floor(T*14))*L,y=(sr(i+3,Math.floor(T*14))-.5)*HW*2;ctx.fillRect(x,y,2,2)}ctx.globalAlpha=E;
+ ctx.strokeStyle=C;ctx.lineWidth=2;ctx.setLineDash([14,10]);ctx.lineDashOffset=-T*120;ctx.beginPath();ctx.moveTo(0,-HW*.92);ctx.lineTo(L,-HW*.92);ctx.moveTo(0,HW*.92);ctx.lineTo(L,HW*.92);ctx.stroke();ctx.setLineDash([])},
+magma(h,L,HW,E,T,C,K){ctx.fillStyle='rgba(60,10,0,'+.55*E+')';ctx.globalCompositeOperation='source-over';for(let x=0;x<L;x+=48){const o=sr(x,3)*HW*.4;ctx.fillRect(x,-HW*.92,26,o*.5+4);ctx.fillRect(x+10,HW*.92-o*.5-4,26,o*.5+4)}ctx.globalCompositeOperation='lighter';
+ for(let i=0;i<18;i++){const x=((i*67+T*150)%L),y=((T*90+i*37)%(HW*1.8))-HW*.9;ctx.fillStyle=i%2?K:C;ctx.globalAlpha=E*.8;ctx.beginPath();ctx.arc(x,-y*.9,3+(i%3)*1.5,0,TAU);ctx.fill()}ctx.globalAlpha=E},
+lich(h,L,HW,E,T,C,K){ctx.fillStyle=K;ctx.globalAlpha=E*.85;for(let x=0;x<L;x+=30){const o=6+sr(x,1)*8;ctx.beginPath();ctx.moveTo(x,-HW*.92);ctx.lineTo(x+14,-HW*.92-o*.0);ctx.lineTo(x+7,-HW*.92+o);ctx.closePath();ctx.fill();ctx.beginPath();ctx.moveTo(x,HW*.92);ctx.lineTo(x+14,HW*.92);ctx.lineTo(x+7,HW*.92-o);ctx.closePath();ctx.fill()}
+ ctx.strokeStyle=K;ctx.lineWidth=1.5;ctx.beginPath();for(let x=0;x<=L;x+=26){const y=((x/26)%2?1:-1)*HW*.3;x?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();ctx.globalAlpha=E},
+mech(h,L,HW,E,T,C,K){ctx.fillStyle=K;ctx.globalAlpha=E*.9;for(let x=-((T*700)%90);x<L;x+=90)ctx.fillRect(x,-HW*.3,34,HW*.6);
+ ctx.strokeStyle=K;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-HW*.92);ctx.lineTo(L,-HW*.92);ctx.moveTo(0,HW*.92);ctx.lineTo(L,HW*.92);ctx.stroke();ctx.fillRect(-4,-HW*1.1,6,HW*2.2);ctx.globalAlpha=E},
+chaos(h,L,HW,E,T,C,K){const cols=['rgba(255,40,80,.22)','rgba(40,255,255,.22)','rgba(255,60,255,.22)'],q=Math.floor(T*18);
+ for(let c=0;c<3;c++){ctx.fillStyle=cols[c];for(let x=0;x<L;x+=60){const o=(sr(x/60+c*7,q)-.5)*HW*.7;ctx.fillRect(x,-HW*.7+o,60,HW*1.4)}}
+ ctx.fillStyle='#fff';for(let i=0;i<6;i++){const x=sr(i,q)*L,y=(sr(i+5,q)-.5)*HW*1.8;ctx.fillRect(x,y,30+sr(i,9)*60,3)}}
+};
+window.BEAMFX=function(h){
+ const st=styleOf(h),P2=PAL[st]||PAL.def,C=P2[0],K=P2[1],HW=h.w+(P?P.r:14),L=h.len;
+ if(h.t<h.delay+h.dur===false)return true;
+ ctx.save();ctx.translate(h.x,h.y);ctx.rotate(h.a);
+ if(h.t<h.delay){
+  const p=h.t/h.delay;
+  if(h.d>0){ctx.fillStyle=C;ctx.globalAlpha=.05+.12*p;cap(L,HW);ctx.fill();ctx.globalAlpha=.55+.4*p;ctx.strokeStyle=C;ctx.lineWidth=2;ctx.setLineDash([12,8]);cap(L,HW);ctx.stroke();ctx.setLineDash([]);
+   ctx.globalAlpha=.18+.3*p;ctx.fillStyle=C;cap(L,HW*p);ctx.fill();
+   ctx.globalAlpha=.6;ctx.strokeStyle=K;ctx.lineWidth=2;ctx.beginPath();for(let x=-((h.t*160)%44);x<L;x+=44){if(x<20)continue;ctx.moveTo(x-6,-7);ctx.lineTo(x,0);ctx.lineTo(x-6,7)}ctx.stroke();
+   ctx.globalAlpha=.4+.5*p;ctx.fillStyle=K;ctx.shadowColor=C;ctx.shadowBlur=14;ctx.beginPath();ctx.arc(0,0,5+HW*.45*p,0,TAU);ctx.fill()}
+  else{ctx.globalAlpha=.4+.4*p;ctx.strokeStyle=C;ctx.lineWidth=3;ctx.setLineDash([10,8]);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(L,0);ctx.stroke();ctx.setLineDash([])}
+  ctx.restore();return true}
+ if(h.d<=0){ctx.restore();return true}
+ const tt=h.t-h.delay,E=Math.min(1,tt/.05)*Math.min(1,Math.max(0,(h.dur-tt))/.14+.0001),fl=.9+.1*Math.sin(h.t*60);
+ ctx.globalCompositeOperation='lighter';ctx.globalAlpha=E*.22;ctx.fillStyle=C;ctx.shadowColor=C;ctx.shadowBlur=18;cap(L,HW*1.22);ctx.fill();ctx.shadowBlur=0;
+ ctx.globalAlpha=E*.62*fl;const g=ctx.createLinearGradient(0,-HW,0,HW);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.1,C);g.addColorStop(.38,C);g.addColorStop(.5,K);g.addColorStop(.62,C);g.addColorStop(.9,C);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;cap(L,HW*.97);ctx.fill();
+ ctx.globalAlpha=E;(ST[st]||ST.oni.__d||function(h,L,HW,E,T,C,K){ctx.fillStyle=K;ctx.globalAlpha=E*.9;ctx.fillRect(0,-HW*.18,L,HW*.36);ctx.globalAlpha=E})(h,L,HW,E,h.t,C,K);
+ ctx.globalAlpha=E*.55;const m=ctx.createRadialGradient(0,0,2,0,0,HW*1.4);m.addColorStop(0,K);m.addColorStop(.35,C);m.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=m;ctx.beginPath();ctx.arc(0,0,HW*1.7,0,TAU);ctx.fill();
+ ctx.restore();return true};
+}
+
 TWISTS.survive.min=9999;
 </script>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{})</script></body>
+</body>
 </html>
