@@ -8441,6 +8441,65 @@ const _d=drawBC;drawBC=function(){const B=BC;if(!B||B.mini||!B.fk||(B.kind!=='in
  ctx.save();ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='10px sans-serif';ctx.textAlign='right';ctx.fillText('ketuk untuk lewati',VW-10,VH-VH*.13-6);ctx.restore()}}
 }
 
+// ===== nv33: Misi & Pencapaian, Misi Harian, Mutator, Altar Perjanjian =====
+{
+const isTR=()=>typeof TR!=='undefined'&&TR.on;
+const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+let Q={t:{kills:0,boss:0,runs:0,wins:0,best:0,combo:0,gold:0},c:{},d:{k:'',kills:0,boss:0,combo:0,best:0,c:{}}};
+try{const j=JSON.parse(localStorage.getItem('q33')||'null');if(j&&typeof j==='object'){Object.assign(Q.t,j.t||{});Q.c=j.c||{};Object.assign(Q.d,j.d||{});if(!Q.d.c)Q.d.c={}}}catch(_){}
+const qSave=()=>{try{localStorage.setItem('q33',JSON.stringify(Q))}catch(_){}};
+let lastChk=0;const chkDay=(f)=>{const n=Date.now();if(!f&&n-lastChk<30000)return;lastChk=n;const k=dayKey();if(Q.d.k!==k)Q.d={k,kills:0,boss:0,combo:0,best:0,c:{}}};
+let MU={};try{MU=JSON.parse(localStorage.getItem('mut33')||'{}')||{}}catch(_){}
+const muSave=()=>{try{localStorage.setItem('mut33',JSON.stringify(MU))}catch(_){}};
+// ---- pencapaian ----
+const AT=[['kills','⚔️ Pemburu','musuh dikalahkan',[100,500,2000,10000],[10,30,80,200]],['boss','👑 Pembunuh Raja','boss dikalahkan',[1,10,50],[15,60,150]],['best','🏔️ Penakluk Wave','wave tertinggi',[10,25,50,100],[10,40,100,300]],['combo','🔥 Raja Kombo','kombo terbaik',[25,75,150],[15,50,120]],['wins','🏆 Juara','kali tamat 100 wave',[1,5],[100,250]],['runs','🎮 Veteran','kali bermain',[10,50],[20,60]],['gold','💰 Kolektor','emas terkumpul',[1000,10000,50000],[15,60,150]]];
+const ACH=[];AT.forEach(([m,n,u,tg,rw])=>tg.forEach((x,i)=>ACH.push({id:m+i,m,n:n+' '+['I','II','III','IV'][i],d:x.toLocaleString('id-ID')+' '+u,tg:x,rw:rw[i]})));
+const DP=[['kills',100,'Kalahkan 100 musuh',12],['kills',250,'Kalahkan 250 musuh',25],['boss',1,'Kalahkan 1 boss',15],['boss',2,'Kalahkan 2 boss',30],['combo',30,'Capai kombo 30',15],['combo',60,'Capai kombo 60',30],['best',15,'Capai wave 15',15],['best',30,'Capai wave 30',35]];
+function dailies(){let s=0;const k=dayKey();for(const ch of k)s=(s*31+ch.charCodeAt(0))>>>0;const rn=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296},pool=DP.slice(),out=[],used={};while(out.length<3&&pool.length){const q=pool.splice(Math.floor(rn()*pool.length),1)[0];if(used[q[0]])continue;used[q[0]]=1;out.push({m:q[0],t:q[1],n:q[2],rw:q[3]})}return out}
+const claimable=()=>{chkDay(1);let n=0;dailies().forEach((q,i)=>{if((Q.d[q.m]||0)>=q.t&&!Q.d.c[i])n++});ACH.forEach(a=>{if((Q.t[a.m]||0)>=a.tg&&!Q.c[a.id])n++});return n};
+function questMenu(){chkDay(1);const it=[];
+ dailies().forEach((q,i)=>{const v=Math.min(q.t,Q.d[q.m]||0),done=v>=q.t,cl=Q.d.c[i];it.push({o:cl?3:done?0:1,n:'📅 Harian: '+q.n+(cl?'  ✔':''),d:v+'/'+q.t+' · 💎 +'+q.rw+(done&&!cl?'  — KETUK untuk klaim!':''),c:cl?'#777':done?'#7fff9a':'#6ad0ff',f:()=>{if(done&&!cl){Q.d.c[i]=1;meta.sh+=q.rw;metaSave();qSave();sfx('win')}questMenu()}})});
+ ACH.forEach(a=>{const v=Math.min(a.tg,Q.t[a.m]||0),done=v>=a.tg,cl=Q.c[a.id];it.push({o:cl?4:done?0:2,n:a.n+(cl?'  ✔':''),d:a.d+' · '+v.toLocaleString('id-ID')+'/'+a.tg.toLocaleString('id-ID')+' · 💎 +'+a.rw+(done&&!cl?'  — KETUK untuk klaim!':''),c:cl?'#777':done?'#7fff9a':'#ffd24d',f:()=>{if(done&&!cl){Q.c[a.id]=1;meta.sh+=a.rw;metaSave();qSave();sfx('win')}questMenu()}})});
+ it.sort((a,b)=>a.o-b.o);it.push({n:'⬅ Kembali',d:'ke menu utama',f:()=>{state='menu';updBest()}});
+ openModal('🏆 Misi & Pencapaian','Kristal Jiwa: '+meta.sh+' · Misi harian berganti tiap hari',it)}
+// ---- mutator ----
+const MUT={glass:{n:'💀 Kaca',d:'HP maks -45%, damage +60%',b:.35},swift:{n:'⚡ Kilat',d:'Game berjalan 25% lebih cepat',b:.3},dark:{n:'🌑 Kegelapan',d:'Penglihatan gelap, hanya sekitar karakter yang terlihat',b:.3},blast:{n:'💥 Ledakan Maut',d:'Musuh meledak setelah mati (hindari lingkaran jingga)',b:.4},swarm:{n:'🐜 Kawanan',d:'Musuh 50% lebih banyak tiap wave',b:.3},tough:{n:'🛡️ Musuh Tangguh',d:'HP musuh +50% (boss +25%)',b:.35}};
+const muAct=()=>Object.keys(MUT).filter(k=>MU[k]),muMult=()=>1+muAct().reduce((s,k)=>s+MUT[k].b,0);
+function mutMenu(){const it=Object.keys(MUT).map(k=>({n:(MU[k]?'✅ ':'⬜ ')+MUT[k].n,d:MUT[k].d+' · +'+Math.round(MUT[k].b*100)+'% 💎',c:MU[k]?'#ff7a9a':'#777',f:()=>{MU[k]=!MU[k];muSave();sfx('buy');mutMenu()}}));
+ it.push({n:'⬅ Kembali',d:'Total bonus Kristal Jiwa: x'+muMult().toFixed(2),f:()=>{state='menu';updBest()}});
+ openModal('🌀 Mutator','Tambah tantangan sebelum main: makin banyak yang aktif, makin besar bonus Kristal Jiwa. Berlaku di mode normal (bukan Latihan).',it)}
+let muRun=false;
+{const _s=start;start=function(k,w){_s(k,w);muRun=false;if(isTR()||!P)return;const a=muAct();if(!a.length)return;muRun=true;
+  if(MU.glass){P.max=Math.round(P.max*.55);P.hp=P.max;P.dmg*=1.6}
+  setTimeout(()=>{if(muRun)flash('🌀 '+a.length+' Mutator aktif (bonus 💎 x'+muMult().toFixed(2)+')')},50)}}
+{const _u=update;update=function(dt){return _u(muRun&&MU.swift&&state==='play'?dt*1.25:dt)}}
+{const _n=nextFloor;nextFloor=function(){_n.apply(this,arguments);if(muRun&&MU.swarm&&spawnLeft<500&&!BOSSLV[floor])spawnLeft=Math.round(spawnLeft*1.5)}}
+{const _x=updExtras;updExtras=function(dt){_x(dt);if(muRun&&MU.tough&&state==='play')for(const e of enemies)if(!e._tg){e._tg=1;if(!e.ally&&!e.conv){const m=e.boss?1.25:1.5;e.hp*=m;if(e.max)e.max*=m}}}}
+{const _d=draw;draw=function(){_d();if(!muRun||!MU.dark||state!=='play'||!P||BC)return;ctx.save();ctx.setTransform(cv.width/VW,0,0,cv.width/VW,0,0);const px=P.x-CAM.x,py=P.y-CAM.y,g=ctx.createRadialGradient(px,py,VH*.14,px,py,VH*.52);g.addColorStop(0,'rgba(2,2,10,0)');g.addColorStop(1,'rgba(2,2,10,.93)');ctx.fillStyle=g;ctx.fillRect(0,46,VW,VH-46);ctx.restore()}}
+// ---- pelacakan & hadiah ----
+{const _k=killHook;killHook=function(e){_k(e);try{if(!P||isTR())return;chkDay();Q.t.kills++;Q.d.kills++;if(e.boss){Q.t.boss++;Q.d.boss++}if(combo>Q.t.combo)Q.t.combo=combo;if(combo>Q.d.combo)Q.d.combo=combo;if(Q.t.kills%25===0)qSave();
+  if(muRun&&MU.blast&&!e.boss&&!e.mini&&!e.ally&&hazards.length<40)warn(e.x,e.y,66,.75,Math.max(6,(e.dmg||10)*1.1),{col:'#ff8a3a'})}catch(_){}}}
+{const _e=endGame;endGame=function(win){const before=meta.sh,tr=isTR(),run=muRun,mm=muMult();_e.apply(this,arguments);
+  try{if(!tr){chkDay(1);Q.t.runs++;if(win)Q.t.wins++;Q.t.best=Math.max(Q.t.best,floor);Q.t.gold+=(stats&&stats.gold)||0;Q.d.best=Math.max(Q.d.best,floor);
+   if(run){const b=Math.round((meta.sh-before)*(mm-1));if(b>0){meta.sh+=b;metaSave();$('endP').innerHTML+='<br>🌀 Bonus Mutator: <b>+'+b+'</b> 💎 (x'+mm.toFixed(2)+')'}}
+   qSave();const c=claimable();if(c>0)$('endP').innerHTML+='<br>🏆 '+c+' hadiah misi siap diklaim di menu Misi'}}catch(_){}
+  muRun=false}}
+{const _sh=showTitle;showTitle=function(){muRun=false;return _sh.apply(this,arguments)}}
+addEventListener('pagehide',qSave);
+// ---- tombol menu ----
+{const bt=$('btnTemple');if(bt){const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;width:100%;justify-content:center';const mk=(id,c,f)=>{const b=document.createElement('button');b.id=id;b.style.borderColor=c;b.style.flex='1';b.onclick=f;return b};const b1=mk('btnQuest','#ffd24d',questMenu),b2=mk('btnMut','#ff7a9a',mutMenu);b1.textContent='🏆 Misi';b2.textContent='🌀 Mutator';row.append(b1,b2);bt.after(row);
+ const _u=updBest;updBest=function(){_u();try{const c=claimable();b1.textContent='🏆 Misi'+(c?' ('+c+'!)':'');const n=muAct().length;b2.textContent='🌀 Mutator'+(n?' ('+n+')':'')}catch(_){}};try{updBest()}catch(_){}}}
+// ---- Altar Perjanjian (kejadian wave baru) ----
+TWISTS.altar={n:'🩸 Altar Perjanjian',min:7,w:1.6};
+{const _p=pickTwist;pickTwist=function(){_p.apply(this,arguments);if(tw!=='altar')return;spawnLeft=0;altar()}}
+function altar(){const cost=60+floor*6,it=[
+ {n:'🩸 Pacta Darah',d:'HP maks -20% selamanya, damage +30%',c:'#ff4a5a',f:()=>{P.max=Math.round(P.max*.8);P.hp=Math.min(P.hp,P.max);P.dmg*=1.3;state='play';sfx('boom');fx.push({x:P.x,y:P.y-50,t:1.6,txt:'🩸 Damage +30%',col:'#ff4a5a',sz:16})}},
+ {n:'🌬️ Pacta Angin',d:'Serang 25% lebih cepat, damage diterima +12%',c:'#6ad0ff',f:()=>{P.rate*=.75;P.armor-=.12;state='play';sfx('level');fx.push({x:P.x,y:P.y-50,t:1.6,txt:'🌬️ Serangan lebih cepat',col:'#6ad0ff',sz:16})}}];
+ if(P.gold>=cost)it.push({n:'💰 Pacta Emas',d:'Bayar '+cost+' emas, dapat 1 peti relik',c:'#ffd24d',f:()=>{P.gold-=cost;P.chests++;state='play';sfx('buy')}});
+ it.push({n:'🙏 Tolak Perjanjian',d:'Pulihkan 20% HP lalu lanjut',f:()=>{healP(.2);state='play'}});
+ openModal('🩸 Altar Perjanjian','Sebuah altar menawarkan kekuatan dengan harga tertentu. Pilih satu.',it)}
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
