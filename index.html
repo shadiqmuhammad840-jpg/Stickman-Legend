@@ -9959,6 +9959,68 @@ Object.assign(AW,{
 });
 }
 
+
+// ===== nv50: deskripsi senjata dirapikan (ringkas & terstruktur) + pasif Meme yang lebih proper =====
+{const MW=window.__MW;
+// ---- pasif Meme yang benar-benar bekerja ----
+{const _s=start;start=function(k,w){const r=_s.apply(this,arguments);if(P&&MW[P.weapon]){const id=P.weapon;
+  if(id==='nyan')P.spd*=1.12;          // Kucing Pelangi: lari lebih cepat
+  if(id==='sigma')P.dodge=(P.dodge||0)+.1;   // Aura Sigma: 10% menghindar
+  if(id==='croc')P.crit+=.1;           // Brainrot: kritis +10%
+  P._sh=0}return r}}
+{const _a=atkExtra;atkExtra=function(t){_a(t);if(!P)return;if(P.weapon==='rick'&&t&&t.hp>0&&Math.random()<.15){if(t.boss||t.mini)t.slow=Math.max(t.slow||0,.6);else t.stun=Math.max(t.stun||0,.5);fx.push({x:t.x,y:t.y-24,t:.6,txt:'🎵',col:'#ff8a8a',sz:14})}}}
+setInterval(()=>{if(!P||state!=='play'||P.weapon!=='tung')return;const low=P.hp<P.max*.5;if(low&&!P._sh){P._sh=1;P.rate*=.8;fx.push({x:P.x,y:P.y-40,t:1,txt:'RITUAL SAHUR!',col:'#ffd8a0',sz:13})}else if(!low&&P._sh){P._sh=0;P.rate/=.8}},300);
+// ---- deskripsi Meme (manual) ----
+const MD={
+ bonk:'Palu plastik legendaris. Pukulan jarak dekat +10% damage.\n✨ Pasif Bonk: 25% pukulan membuat musuh pusing; tiap 5 pukulan = Bonk Massal (gelombang dorong).\n🎯 Skill: Penjara Bonk (hantam area + stun) • Perisai Doge (heal 12% + kebal).',
+ nyan:'Kucing roti terbang. Tembakan pelangi +10% damage.\n✨ Pasif: kecepatan gerak +12%; tiap 4 tembakan = kipas 5 pelangi.\n🎯 Skill: Lari Pelangi (dash menembus musuh) • Hujan Pelangi (area + perlambat).',
+ rick:'Gitar nada yang memperlambat musuh. +15% damage.\n✨ Pasif Lagu Nyangkut: 15% nada membuat musuh terpaku 0,5 dtk; tiap 5 nada = Rickroll (musuh tertarik & terpaku).\n🎯 Skill: Never Gonna Solo (sinar nada) • Kena Rickroll! (semua musuh dekat terpaku 2 dtk).',
+ tung:'Kayu pemukul sahur. Pukulan +40% damage.\n✨ Pasif Ritual Sahur: HP di bawah 50% = kecepatan serang +20%; tiap 3 pukulan = SAHUR! (gelombang drum 360°).\n🎯 Skill: Tung Tung Tung (3 dentuman beruntun) • Bangunin Sahur (musuh sekitar pusing).',
+ toilet:'Skibidi Toilet: toilet bernyanyi pemanggil pasukan. Minion +2 dan lebih kuat.\n✨ Pasif: tiap 3 serangan memanggil 2 toilet joget.\n🎯 Skill: Flush! (pusaran air menyedot) • Banjir Toilet (gelombang menembus).\n⚡ ULT: Armada Toilet (pasukan toilet + banjir satu arena).',
+ mic:'Mic SIUUU: gelombang suara +60% damage, kritis +15%.\n✨ Pasif Hype: +2% damage tiap kill (maks 15 tumpuk); tiap 5 serangan = SIUUU!! (kerucut suara + dorong).\n🎯 Skill: RAGE QUIT (teriakan 360°) • Lompat SIUUU (lompat ke kerumunan).\n⚡ ULT: SIUUUUUUU!!! (tiga gelombang teriakan satu arena).',
+ sigma:'Patung Sigma Abadi: sinar mata menembus +40% damage, kritis +18%.\n✨ Pasif Aura: menghindar +10%; tiap 3 serangan = Aura Sigma (cincin tekanan).\n🎯 Skill: Tatapan Maut (sinar menyapu) • Mewing Aura (heal + kebal + aura).\n⚡ ULT: Grindset Tanpa Akhir (patung raksasa menembakkan sinar).',
+ croc:'Bombardiro Crocodilo: bom dari langit +40% damage.\n✨ Pasif Brainrot: kritis +10%; tiap 3 serangan = Bom Karpet (3 bom beruntun).\n🎯 Skill: Serangan Udara (pesawat menjatuhkan bom) • Buaya Kecil (3 minion).\n⚡ ULT: Skuadron Brainrot (armada pesawat membombardir arena).'};
+for(const id in MD)if(WEAPONS[id])WEAPONS[id].d=MD[id];
+// ---- perapih otomatis untuk deskripsi lama yang panjang & bertumpuk ----
+const sent=s=>s.split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý⚡🔮])/).map(x=>x.trim()).filter(Boolean);
+const cut=s=>s.replace(/[\s,;.]+$/,'').trim();
+function tidy(d,w){
+  if(!d||d.includes('\n'))return d;
+  const segs=d.split(' | ').map(s=>s.trim()).filter(Boolean);
+  let main=segs[0].replace(/^Khusus [^.]*?(\([^)]*\))?\.\s*/,'');
+  const desc=[],pas=[],skl=[],ult=[],evo=[];
+  const sortS=(s,fromExtra)=>{
+    if(/[Bb]erevolusi|^Evolusi|^EVOLUSI|[Ee]volusi:/.test(s)){evo.push(cut(s.replace(/^Bisa b/,'B')));return}
+    const mu=s.match(/^ULT[: ]\s*(.*)$/i);if(mu){ult.push(cut(mu[1]));return}
+    const ms=s.match(/^Skill:?\s*(.*)$/i);if(ms){
+      const p=ms[1].split(/\.?\s*ULT[: ]\s*/i);if(p[0])skl.push(cut(p[0]));if(p[1])ult.push(cut(p[1]));return}
+    if(/^(Tiap|Setiap|Tiap-tiap)\b|\bper \d+ detik|Tiap \d+ (detik|serangan|tembakan|pukulan|tebasan|nada)/i.test(s)){pas.push(cut(s));return}
+    desc.push(cut(s))};
+  // segmen utama: kalimat demi kalimat
+  for(const s of sent(main))sortS(s);
+  // segmen tambahan
+  for(const g of segs.slice(1)){
+    if(/^V\d+\s/.test(g))continue;                       // catatan versi internal: dibuang
+    let m=g.match(/^[A-Z]+\s*★+:\s*(.*)$/);
+    if(m){const t=cut(m[1]);if(/tanpa passive|sederhana/i.test(t))continue;pas.push(t);continue}
+    m=g.match(/^(Common|Uncommon|Rare|Epic|Legendary|Mythic|Godly):\s*(.*)$/);
+    if(m){const p=m[2].split(/\.?\s*ULT[: ]?\s*/i);if(p[0])skl.push(cut(p[0]));if(p[1])ult.push(cut(p[1]));continue}
+    for(const s of sent(g))sortS(s,1)}
+  // jika kalimat deskripsi terlalu banyak, 2 pertama jadi deskripsi dan sisanya pasif
+  while(desc.length>2)pas.unshift(desc.pop());
+  if(!desc.length)desc.push('Senjata '+((w&&w.only)?w.only.charAt(0).toUpperCase()+w.only.slice(1):'umum'));
+  const L=[];
+  if(desc.length)L.push(desc.join('. ')+'.');
+  if(pas.length)L.push('✨ Pasif: '+pas.join('; ')+'.');
+  if(skl.length)L.push('🎯 Skill: '+skl.join('; ')+'.');
+  if(ult.length)L.push('⚡ ULT: '+ult.join('; ')+'.');
+  if(evo.length)L.push('🔮 '+evo[0].replace(/^(Evolusi:?\s*|EVOLUSI:?\s*)/,'Evolusi: ').replace(/^(?!Evolusi)/,'Evolusi: ')+'.');
+  return L.join('\n')}
+for(const id in WEAPONS){if(MD[id]||id==='default')continue;const w=WEAPONS[id];try{w.d=tidy(w.d,w)}catch(_){}}
+const st=document.createElement('style');st.textContent='#wpnList small{white-space:pre-line;line-height:1.45;text-align:left}#wpnList button b{display:block;margin-bottom:3px}';document.head.appendChild(st);
+window.__tidy=tidy;
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
