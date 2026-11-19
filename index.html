@@ -10194,10 +10194,6 @@ window.__BGM={T,bgAct,cur:()=>cur,st:()=>st};
 const _lt={};const speak=(txt,lang,pitch,rate,name,gap)=>{try{if(muted||!window.speechSynthesis)return;const now=performance.now();if(_lt[name]&&now-_lt[name]<(gap||1800))return;_lt[name]=now;const u=new SpeechSynthesisUtterance(txt);u.lang=lang;u.pitch=pitch;u.rate=rate;u.volume=1;const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lang.slice(0,2).toLowerCase()));if(vs.length)u.voice=vs[0];speechSynthesis.cancel();speechSynthesis.speak(u)}catch(_){}};
 const _mv=window.memeVoice;
 window.memeVoice=function(n,p,kind){try{
- if(n==='rick'){if(muted||!ac())return;
-   // fanfare kuningan + gores piringan + teriak "Rickroll!"
-   [0,.14,.28,.46].forEach((d,i)=>{const f=[392,494,587,784][i];tone(f,.3,'sawtooth',.07,1,d);tone(f/2,.3,'square',.04,1,d)});
-   noise&&noise(.18,.12,3000);speak('Rick roll!','en-US',.9,1,'rk',1800);return}
  if(n==='nyan'){if(muted||!ac())return;
    const sc=[784,880,988,1175,1319,1568,1760,2093];sc.forEach((f,i)=>tone(f,.12,'square',.05,1,i*.06));
    sc.slice().reverse().forEach((f,i)=>tone(f,.12,'triangle',.04,1,.5+i*.06));speak('Nyan','ja-JP',1.5,1.4,'ny',2000);return}
