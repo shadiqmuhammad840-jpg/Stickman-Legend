@@ -160,6 +160,8 @@ canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!import
     <b>Skill:</b> tiap senjata punya skill aktif (tombol ✨ atas / Q / Z) dengan cooldown pendek, selain ULT. Skill kedua: tombol ✨ paling atas / X / C.<br>
     <b>Variasi Wave:</b> tiap wave bisa punya twist acak: Gelombang Kawanan, Serbuan Assassin, Perkumpulan Penyihir, Perburuan Elit, Hujan Meteor, Ruang Harta, Bulan Darah, Bertahan 25 Detik, Mata Air Suci (peti + pulih), atau Pedagang Keliling (toko).<br>
     <b>Ultimate:</b> senjata Epic, Legendary, dan hasil evolusi punya skill ULT dengan cutscene (tombol ULT / Spasi / E, cooldown 40-60 detik). Tongkat Archmage punya Blackhole.<br>
+    <b>Musuh baru:</b> 💰 <b>Pencuri Emas</b> (kabur terus, buru sebelum 14 detik untuk emas besar), 🧲 <b>Penarik</b> (menyedot kamu mendekat), 🔇 <b>Penyegel</b> (skill &amp; ULT jadi lebih lambat saat kamu di dekatnya).<br>
+    <b>Tanpa Akhir:</b> setelah menamatkan wave 100, tekan ♾️ Lanjut untuk wave 101+ dengan musuh dan boss yang makin kuat. Riwayat tiap run ada di menu 📜 Riwayat Run.<br>
     <b>Tips:</b> pilih upgrade tiap 2 wave, belanja pasukan di toko, dan jangan diam saat boss menyiapkan serangan area (lingkaran merah).
   </div>
   <button id="howBack">⬅ Kembali</button>
@@ -10202,6 +10204,92 @@ window.memeVoice=function(n,p,kind){try{
    speak('Skibidi dop dop dop yes yes','en-US',1.6,1.2,'skb',2200);return}
  }catch(_){}
  return _mv.apply(this,arguments)};
+}
+
+// ===== nv54: UPDATE BESAR — balancing senjata, 3 musuh baru, mode Tanpa Akhir, Riwayat Run =====
+{
+// ---------- 1) BALANCING SENJATA (berdasarkan simulasi DPS 51 senjata; pengali damage per senjata) ----------
+const BAL={bladefist:2,bonk:2,kata:1.6,chain:1.3,stand:1.8,ki:1.5,mic:1.4,sunbow:1.2,
+ glitchcube:2,sigma:2.2,gravebow:2,luffy:2.2,doomstaff:2,moonblade:1.8,croc:1.5,omegacannon:1.6,kingbanner:1.3,nightstaff:1.2,eclipsefist:1.15,permafrost:1.15,
+ fbow:1.8,grim:1.4,hammer:1.15,excal:1.15,nyan:1.1,
+ riftblade:.8,prismstaff:.85,khopesh:.85,babelbow:.9,calderahammer:.9,ragna:.85,abyss:.8};
+{const _s=start;start=function(k,w){const r=_s.apply(this,arguments);if(P&&BAL[P.weapon]&&!P._bal){P._bal=1;P.dmg*=BAL[P.weapon]}return r}}
+window.__BAL=BAL;
+
+// ---------- 2) MUSUH BARU: Pencuri Emas 💰, Penarik 🧲, Penyegel 🔇 (properti xk, tidak bentrok dengan musuh lama) ----------
+const EJ={gt:'💰',mg:'🧲',sl:'🔇'};
+const emj=(ch,x,y,s,al)=>{ctx.save();ctx.globalAlpha=al==null?1:al;ctx.font=s+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(ch,x,y);ctx.restore()};
+{const _se=spawnEnemy;spawnEnemy=function(px,py,fk,force){
+  const n0=enemies.length;_se.apply(this,arguments);if(enemies.length===n0)return;
+  const e=enemies[enemies.length-1];if(!e||e.boss)return;
+  if(floor>100){const k=1+(floor-100)*.03;e.hp*=k;e.max=e.hp;e.dmg*=k}      // skala Tanpa Akhir
+  if(force||fk||e.elite||e.nk||floor<5||!(e.kind==='grunt'||e.kind==='fast'||e.kind==='tank'))return;
+  if(Math.random()>Math.min(.13,.04+floor*.0012))return;
+  const r=Math.random();let t=r<.5?'gt':r<.8?'mg':'sl';
+  if(t==='mg'&&floor<14)t='gt';if(t==='sl'&&floor<18)t='gt';
+  e.xk=t;
+  if(t==='gt'){e.r=10;e.hp*=1.3;e.max=e.hp;e.bspd=Math.max(150,e.spd*2.4);e.spd=0;e.dmg=0;e.col='#ffd040';e.gold=Math.round(18+floor*1.3);e.life=14}
+  else if(t==='mg'){e.r=Math.max(e.r,16);e.hp*=2.2;e.max=e.hp;e.spd*=.5;e.dmg*=.5;e.col='#9060e0';e.gold=(e.gold||2)+5}
+  else{e.hp*=1.1;e.max=e.hp;e.spd*=.8;e.col='#8a9099';e.gold=(e.gold||2)+5}
+  addV(180,()=>{if(e.hp<=0||state==='end')return;
+    if(t==='mg'){ctx.globalAlpha=.07+.04*Math.sin(performance.now()/300);ctx.fillStyle='#9060e0';ctx.beginPath();ctx.arc(e.x,e.y,260,0,6.283);ctx.fill();ctx.globalAlpha=.3;ctx.strokeStyle='#b090ff';ctx.lineWidth=1.5;ctx.setLineDash([8,8]);ctx.beginPath();ctx.arc(e.x,e.y,260,0,6.283);ctx.stroke()}
+    if(t==='sl'){ctx.globalAlpha=.07+.03*Math.sin(performance.now()/300);ctx.fillStyle='#9aa0aa';ctx.beginPath();ctx.arc(e.x,e.y,320,0,6.283);ctx.fill();ctx.globalAlpha=.28;ctx.strokeStyle='#c8ccd4';ctx.lineWidth=1.5;ctx.setLineDash([4,10]);ctx.beginPath();ctx.arc(e.x,e.y,320,0,6.283);ctx.stroke()}
+    if(t==='gt'){ctx.globalAlpha=.5+.3*Math.sin(performance.now()/120);ctx.strokeStyle='#ffe070';ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x,e.y,e.r+7,0,6.283);ctx.stroke()}
+    emj(EJ[t],e.x,e.y-e.r-10,16)});
+  if(t==='gt')fx.push({x:e.x,y:e.y-30,t:1.4,txt:'💰 Pencuri Emas!',col:'#ffd040',sz:14});
+  if(t==='sl'&&!window.__slw){window.__slw=1;flash('🔇 Penyegel: skill melambat saat dekat dia!')}
+  if(t==='mg'&&!window.__mgw){window.__mgw=1;flash('🧲 Penarik: menyedot kamu mendekat!')}}}
+{const _u=update;update=function(dt){_u(dt);
+  if(state!=='play'||!P)return;
+  let sil=false;
+  for(const e of enemies){if(!e.xk||e.hp<=0)continue;const d=Math.hypot(e.x-P.x,e.y-P.y)||1;
+    if(e.xk==='gt'){const a=Math.atan2(e.y-P.y,e.x-P.x)+Math.sin(performance.now()/400+e.x)*.5;
+      let nx=e.x+Math.cos(a)*e.bspd*dt,ny=e.y+Math.sin(a)*e.bspd*dt;
+      if(nx<30||nx>W-30)nx=e.x-Math.cos(a)*e.bspd*dt*.4;if(ny<30||ny>H-30)ny=e.y-Math.sin(a)*e.bspd*dt*.4;
+      e.x=Math.max(20,Math.min(W-20,nx));e.y=Math.max(20,Math.min(H-20,ny));
+      e.life-=dt;if(e.life<=0){e.gold=0;e.hp=0;fx.push({x:e.x,y:e.y-20,t:1,txt:'kabur!',col:'#ffd040',sz:13})}}
+    else if(e.xk==='mg'){if(d<260){const f=Math.min(1,(260-d)/260)*48+14;P.x+=(e.x-P.x)/d*f*dt;P.y+=(e.y-P.y)/d*f*dt;P.x=Math.max(14,Math.min(W-14,P.x));P.y=Math.max(14,Math.min(H-14,P.y))}}
+    else if(e.xk==='sl'){if(d<320)sil=true}}
+  if(sil){const b=dt*.55;if(P.skCd>0)P.skCd+=b;if(P.sk2Cd>0)P.sk2Cd+=b;if(P.ultCd>0)P.ultCd+=b}
+}}
+
+// ---------- 3) MODE TANPA AKHIR (setelah menamatkan wave 100) ----------
+window.__endless=false;
+{const bt=['oni','cyclops','horse','fairy','dragon','pharaoh','magma','lich','mech','chaos'];
+ for(let l=110;l<=600;l+=10)BOSSLV[l]=bt[(l/10-1)%10];}
+{const _mb=makeBoss;makeBoss=function(t){const b=_mb.apply(this,arguments);if(floor>100){const k=1+(floor-100)*.05;b.hp*=k;if(b.max)b.max*=k;b.dmg*=1+(floor-100)*.008;if(b.name&&!/∞/.test(b.name))b.name='∞ '+b.name}return b}}
+{const _lc=levelClear;levelClear=function(){
+  if(floor>=MAXL&&window.__endless){const g=Math.round(4+floor*1.0);P.gold+=g;stats.gold+=g;
+    const go=()=>{if(floor%2===0||BOSSLV[floor])showUpg();else nextFloor()};
+    const chest=()=>{if(P.chests>0){P.chests--;chestMenu(chest)}else go()};chest();return}
+  return _lc.apply(this,arguments)}}
+{const _ub=updBest;updBest=function(){_ub();if(bestLv>MAXL)$('bestTxt').textContent='🏆 Rekor: Wave '+bestLv+' ♾️ Tanpa Akhir'}}
+
+// ---------- 4) RIWAYAT RUN ----------
+const HK='runHist';
+const hist=()=>{try{return JSON.parse(localStorage.getItem(HK)||'[]')}catch(_){return[]}};
+{const _eg=endGame;endGame=function(win){
+  try{if(P&&!P._rec){P._rec=1;const h=hist();const w=WEAPONS[P.weapon]||{};
+    h.unshift({w:(w.n||P.weapon),c:P.cls,f:floor,k:stats.kills,t:Math.round(stats.time),win:!!win,en:!!window.__endless,d:Date.now(),df:diff});
+    localStorage.setItem(HK,JSON.stringify(h.slice(0,15)))}}catch(_){}
+  _eg.apply(this,arguments);
+  // tombol lanjut Tanpa Akhir setelah menang wave 100
+  try{const old=document.getElementById('endlessBtn');if(old)old.remove();
+    if(win&&floor>=MAXL){const b=document.createElement('button');b.id='endlessBtn';b.textContent='♾️ Lanjut Tanpa Akhir (wave 101+)';b.style.cssText='border-color:#c080ff;margin-top:8px';
+      b.onclick=()=>{b.remove();window.__endless=true;P._rec=0;$('end').classList.add('hide');state='play';nextFloor();flash('♾️ TANPA AKHIR — musuh makin kuat tiap wave')};
+      $('again').before(b)}}catch(_){}
+}}
+{const o=document.createElement('div');o.id='hist';o.className='ov hide';
+ o.innerHTML='<h1>📜 Riwayat Run</h1><div class="how" id="histBody"></div><button id="histBack">⬅ Kembali</button>';document.body.appendChild(o);
+ const btn=document.createElement('button');btn.id='btnHist';btn.textContent='📜 Riwayat Run';btn.style.borderColor='#ffcf6a';$('btnSet').before(btn);
+ const CN={warrior:'🗡️',archer:'🏹',mage:'🔮',summoner:'👻',anime:'🌀',boss:'👹',meme:'🤣'};
+ btn.onclick=()=>{$('title').classList.add('hide');const h=hist();
+   $('histBody').innerHTML=h.length?h.map((r,i)=>{const dt=new Date(r.d);const m=Math.floor(r.t/60),s=r.t%60;
+     return '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.1)"><b>'+(r.win?'🏆':'💀')+' '+(CN[r.c]||'')+' '+r.w+'</b> — Wave <b>'+r.f+'</b>'+(r.en?' ♾️':'')+'<br><small style="opacity:.7">⚔️ '+r.k+' kill · ⏱️ '+m+':'+String(s).padStart(2,'0')+' · '+(r.df||'normal')+' · '+dt.toLocaleDateString('id-ID')+'</small></div>'}).join(''):'Belum ada run. Ayo main dulu!';
+   o.classList.remove('hide')};
+ $('histBack').onclick=()=>{o.classList.add('hide');$('title').classList.remove('hide')};
+ const _h=hideAll;hideAll=function(){_h();o.classList.add('hide')}}
+window.__NV54={hist};
 }
 
 TWISTS.survive.min=9999;
