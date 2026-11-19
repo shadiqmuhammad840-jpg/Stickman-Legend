@@ -118,7 +118,7 @@ body.pvon #mute{display:none}
 canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!important;height:100%!important}
 
 #dashBtn{left:auto!important;right:108px;bottom:98px}
-#zhint{display:block;left:14px;right:auto;top:auto;bottom:42%;width:150px;text-align:left;font-size:13px;opacity:.35}#zhint.off{opacity:0}
+#zhint{display:block;z-index:3;left:14px;right:auto;top:auto;bottom:42%;width:150px;text-align:left;font-size:13px;opacity:.35}#zhint.off{opacity:0}
 </style>
 </head>
 <body>
@@ -10157,11 +10157,11 @@ const T={
        [48,83,1],[49,83,1],[50,81,1],[51,79,1],[52,76,2],[56,74,2],[58,71,1],[59,74,1],[60,76,3]],
   kick:[0,4,8,12],snare:[4,12],hat:2,off:true}};
 const KEY={nyan:'nyan',rick:'rick',toilet:'toilet'};
-const act=()=>!!(P&&KEY[P.weapon]&&['play','cut','pause','shop','upg','modal'].includes(state));
+const bgAct=()=>!!(P&&KEY[P.weapon]&&['play','cut','pause','shop','upg','modal'].includes(state));
 // opsional: kalau kamu menaruh sfx/bgm-<nama>.mp3 sendiri, file itu dipakai (diulang) menggantikan versi sintesis
 const FB={};for(const k in KEY){try{const a=new Audio('sfx/bgm-'+k+'.mp3');a.loop=true;a.preload='auto';a.addEventListener('canplaythrough',()=>{FB[k]=a});a.addEventListener('error',()=>{})}catch(_){}}
 let cur=null,st=0,nx=0,timer=null;
-function step(k,s,t,spb){const T0=T[k],b=Math.floor(s/16)%4,i=s%16,g=s%64,r=T0.root[b];
+function bgStep(k,s,t,spb){const T0=T[k],b=Math.floor(s/16)%4,i=s%16,g=s%64,r=T0.root[b];
  if(i===0){for(const d of T0.tri[b])mnote(mtof(r+24+d),t,spb*15,T0.pad,.025,1400)}
  // bass
  if(T0.off){if(i%4===2)mnote(mtof(r),t,spb*1.6,T0.bass,.2,500)}
@@ -10173,8 +10173,8 @@ function step(k,s,t,spb){const T0=T[k],b=Math.floor(s/16)%4,i=s%16,g=s%64,r=T0.r
  if(T0.kick.includes(i))mdrum('kick',t,.5);
  if(T0.snare.includes(i))mdrum('snare',t,k==='rick'?.2:.24);
  if(i%T0.hat===0)mdrum('hat',t,.05)}
-function loop(){
- const on=act()&&!muted;const k=on?KEY[P.weapon]:null;
+function bgLoop(){
+ const on=bgAct()&&!muted;const k=on?KEY[P.weapon]:null;
  if(k!==cur){ // ganti lagu / berhenti
   if(cur&&FB[cur]){try{FB[cur].pause()}catch(_){}}
   cur=k;st=0;if(AC)nx=AC.currentTime+.1;
@@ -10185,10 +10185,10 @@ function loop(){
  if(!ac())return;musOn=false;
  AC.music.gain.setTargetAtTime(state==='play'?vol.mus*1.15:vol.mus*.3,AC.currentTime,.15);
  const spb=60/T[k].bpm/4;if(nx<AC.currentTime)nx=AC.currentTime+.05;
- while(nx<AC.currentTime+.35){step(k,st,nx,spb);nx+=spb;st++}}
-timer=setInterval(()=>{try{loop()}catch(_){}},100);
-{const _m=musicSet;musicSet=function(t){if(act()){musTheme=t;musOn=false;return}return _m.apply(this,arguments)}}
-window.__BGM={T,act,cur:()=>cur,st:()=>st};
+ while(nx<AC.currentTime+.35){bgStep(k,st,nx,spb);nx+=spb;st++}}
+timer=setInterval(()=>{try{bgLoop()}catch(_){}},100);
+{const _m=musicSet;musicSet=function(t){if(bgAct()){musTheme=t;musOn=false;return}return _m.apply(this,arguments)}}
+window.__BGM={T,bgAct,cur:()=>cur,st:()=>st};
 
 // ---- efek ULT/skill: bukan lagi file mp3 — suara ikonik buatan sendiri, tanpa lirik ----
 const _lt={};const speak=(txt,lang,pitch,rate,name,gap)=>{try{if(muted||!window.speechSynthesis)return;const now=performance.now();if(_lt[name]&&now-_lt[name]<(gap||1800))return;_lt[name]=now;const u=new SpeechSynthesisUtterance(txt);u.lang=lang;u.pitch=pitch;u.rate=rate;u.volume=1;const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lang.slice(0,2).toLowerCase()));if(vs.length)u.voice=vs[0];speechSynthesis.cancel();speechSynthesis.speak(u)}catch(_){}};
