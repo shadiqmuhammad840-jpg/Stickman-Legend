@@ -160,7 +160,7 @@ canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!import
     <b>Skill:</b> tiap senjata punya skill aktif (tombol ✨ atas / Q / Z) dengan cooldown pendek, selain ULT. Skill kedua: tombol ✨ paling atas / X / C.<br>
     <b>Variasi Wave:</b> tiap wave bisa punya twist acak: Gelombang Kawanan, Serbuan Assassin, Perkumpulan Penyihir, Perburuan Elit, Hujan Meteor, Ruang Harta, Bulan Darah, Bertahan 25 Detik, Mata Air Suci (peti + pulih), atau Pedagang Keliling (toko).<br>
     <b>Ultimate:</b> senjata Epic, Legendary, dan hasil evolusi punya skill ULT dengan cutscene (tombol ULT / Spasi / E, cooldown 40-60 detik). Tongkat Archmage punya Blackhole.<br>
-    <b>Musuh khusus:</b> muncul pasti di rentang wave tertentu (bukan acak): 💣 Peledak wave 4-10, 🛡️ Prajurit Perisai 7-10, dst. Tiap map punya varian sendiri (contoh map Cyclops wave 14-20: Pelempar Batu). Musuh baru: 💰 <b>Pencuri Emas</b>, 🧲 <b>Penarik</b>, 🔇 <b>Penyegel</b>, 🎯 <b>Penembak Jitu</b> (tandai lokasimu), 👯 <b>Kembar</b> (bunuh satu, yang lain mengamuk), 😡 <b>Berserker</b> (mengamuk saat HP rendah).<br>
+    <b>Musuh khusus:</b> 12 jenis (💣 Peledak, 🛡️ Prajurit Perisai, 💚 Penyembuh, 🐸 Pelompat, 🟢 Lendir, 🔮 Pemanggil, 💰 Pencuri Emas, 🧲 Penarik, 🔇 Penyegel, 🎯 Penembak Jitu, 👯 Kembar, 😡 Berserker) muncul bersama musuh biasa di semua wave, dan skin-nya berubah tiap map (iblis di map Oni, tengkorak di makam, robot di map mekanik, dst.). Ada juga wave bergerombol seperti ⚔️ Pasukan Perang, 💣 Kamikaze, 🎯 Regu Penembak, 💚 Konvoi Penyembuh, dan lainnya.<br>
     <b>Tanpa Akhir:</b> setelah menamatkan wave 100, tekan ♾️ Lanjut untuk wave 101+ dengan musuh dan boss yang makin kuat. Riwayat tiap run ada di menu 📜 Riwayat Run.<br>
     <b>Tips:</b> pilih upgrade tiap 2 wave, belanja pasukan di toko, dan jangan diam saat boss menyiapkan serangan area (lingkaran merah).
   </div>
@@ -10221,52 +10221,39 @@ const EJ={gt:'💰',mg:'🧲',sl:'🔇',sn:'🎯',tw:'👯',bz:'😡'};
 const XNAME={gt:'💰 Pencuri Emas',mg:'🧲 Penarik',sl:'🔇 Penyegel',sn:'🎯 Penembak Jitu',tw:'👯 Musuh Kembar',bz:'😡 Berserker'};
 const XHINT={gt:'kabur terus — buru sebelum 14 detik!',mg:'menyedotmu mendekat',sl:'skill & ULT melambat di dekatnya',sn:'menandai lokasimu — segera geser!',tw:'bunuh satu, yang lain mengamuk',bz:'makin cepat saat HP rendah'};
 const emj=(ch,x,y,s,al)=>{ctx.save();ctx.globalAlpha=al==null?1:al;ctx.font=s+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(ch,x,y);ctx.restore()};
-const D=(k,nm,ic,col)=>({k,nm,ic,col});
-// [dari wave, sampai wave, tiap spawn ke-N, musuh]  — dipakai berulang per 100 wave di Tanpa Akhir
-const ROWS=[
- // --- musuh dasar bergantian (map 1 Oni dst.) ---
- [3,9,8,D('slime')],[4,10,6,D('bomber')],[6,12,9,D('leaper')],[7,10,8,D('shielder')],[9,16,10,D('healer')],[12,20,9,D('summoner')],
- // --- 6 musuh baru ---
- [8,12,14,D('gt')],[36,40,10,D('gt')],[66,70,10,D('gt')],[96,100,12,D('gt')],
- [16,24,8,D('tw')],[21,30,8,D('sn')],[25,35,8,D('bz')],[18,28,12,D('mg')],[31,40,12,D('sl')],
- // --- varian khas tiap map ---
- [11,13,6,D('shielder','Prajurit Batu','🪨','#9a8f7a')],[14,20,6,D('sn','Pelempar Batu','🪨','#a08060')],            // Cyclops
- [21,30,7,D('bomber','Labu Peledak','🎃','#ff8a1a')],[26,30,9,D('tw','Hantu Kembar','👻','#c0d0ff')],               // Headless Horseman
- [31,40,8,D('healer','Peri Bunga','🌸','#ff9ad0')],[33,40,7,D('leaper','Duri Pelompat','🌿','#6adf6a')],           // Ratu Peri
- [41,50,7,D('bz','Anak Naga','🔥','#ff6a2a')],[43,50,8,D('shielder','Perisai Sisik','🐉','#d09040')],              // Naga
- [51,60,8,D('slime','Mumi Pembelah','🧻','#d8c890')],[52,60,7,D('bomber','Skarab Peledak','🪲','#40c0a0')],       // Firaun
- [61,70,7,D('leaper','Kadal Lava','🦎','#ff5a1a')],[63,70,8,D('shielder','Golem Magma','🌋','#8a3a1a')],           // Raksasa Magma
- [71,80,8,D('summoner','Pemanggil Arwah','💀','#9a6aff')],[73,80,7,D('tw','Tengkorak Kembar','☠️','#d0d0e0')],    // Raja Lich
- [81,90,7,D('bomber','Drone Peledak','🤖','#60c0ff')],[82,90,6,D('sn','Penembak Laser','🔴','#ff4060')],[85,90,10,D('sl','Pengacau Sinyal','📡','#8a9099')], // Kolos Mekanik
- [91,100,7,D('leaper','Gangguan Glitch','👾','#ff50ff')],[92,100,8,D('tw','Kloning Error','🧬','#50ffd0')],[93,100,10,D('mg','Penghisap Void','🌀','#7a40d0')],[94,100,9,D('bz','Berserker Kacau','😈','#ff2050')] // Dewa Kekacauan
-];
-const SC={f:-1,n:0,sp:0};
+// Tanpa jadwal: musuh khusus (12 jenis) muncul bersamaan dengan musuh biasa di semua wave; tampilannya berganti sesuai map.
+const RACE=['Iblis','Goblin','Tengkorak','Bayangan','Peri Rimba','Mumi','Golem Lava','Arwah','Robot','Glitch'];   // per tema map (0..9)
+const ROLE={slime:'Lendir',bomber:'Peledak',shielder:'Prajurit Perisai',healer:'Penyembuh',leaper:'Pelompat',summoner:'Pemanggil',gt:'Pencuri',mg:'Penarik',sl:'Penyegel',sn:'Penembak Jitu',tw:'Kembar',bz:'Berserker'};
+const ROLEJ={slime:'🟢',bomber:'💣',shielder:'🛡️',healer:'💚',leaper:'🐸',summoner:'🔮'};
+const ALL=['slime','bomber','leaper','shielder','healer','summoner','gt','mg','sl','sn','tw','bz'];
+const SC={f:-1,n:0,sp:0,q:[]};
 window.__pickSpecial=function(){
-  if(SC.f!==floor){SC.f=floor;SC.n=0;SC.sp=0}
-  const f=floor>100?((floor-1)%100)+1:floor;SC.n++;
-  if(SC.sp>SC.n*(BOSSLV[floor]?.45:.5))return null;                          // batas: maksimal ~50% spawn berisi musuh khusus
-  for(let i=0;i<ROWS.length;i++){const r=ROWS[i];if(f<r[0]||f>r[1])continue;
-    if(SC.n%r[2]===i%r[2]){SC.sp++;return r[3]}}
-  return null};
-const SEENX={};
-{const _s=start;start=function(){for(const k in SEENX)delete SEENX[k];SC.f=-1;return _s.apply(this,arguments)}}
+  if(SC.f!==floor){SC.f=floor;SC.n=0;SC.sp=0;SC.q=ALL.slice().sort(()=>Math.random()-.5)}
+  SC.n++;const every=floor<=3?5:3;                       // tiap spawn ke-3 (wave 1-3: ke-5) = musuh khusus; jenis bergilir
+  if(SC.n%every!==0)return null;
+  const k=SC.q[SC.sp%SC.q.length];SC.sp++;return {k}};
+const SEENX={};let lastNote=0;
+{const _s=start;start=function(){for(const k in SEENX)delete SEENX[k];SC.f=-1;lastNote=0;return _s.apply(this,arguments)}}
 function makeXK(e,t){
   e.xk=t;
-  if(t==='gt'){e.r=10;e.hp*=1.3;e.max=e.hp;e.bspd=Math.max(150,e.spd*2.4);e.spd=0;e.dmg=0;e.col='#ffd040';e.gold=Math.round(18+floor*1.3);e.life=14}
-  else if(t==='mg'){e.r=Math.max(e.r,16);e.hp*=2.2;e.max=e.hp;e.spd*=.5;e.dmg*=.5;e.col='#9060e0';e.gold=(e.gold||2)+5}
-  else if(t==='sl'){e.hp*=1.1;e.max=e.hp;e.spd*=.8;e.col='#8a9099';e.gold=(e.gold||2)+5}
-  else if(t==='sn'){e.r=11;e.hp*=.75;e.max=e.hp;e.bspd=e.spd*.95;e.spd=0;e.dmg*=.3;e.sd=1+Math.random()*1.5;e.gold=(e.gold||2)+4;e.col='#e0a040'}
-  else if(t==='tw'){e.hp*=.85;e.max=e.hp;e.spd*=1.1;e.gold=(e.gold||2)+2;e.col='#40c0d0'}
-  else if(t==='bz'){e.r=Math.max(e.r,13);e.hp*=1.4;e.max=e.hp;e.dmg*=1.05;e.gold=(e.gold||2)+4;e.col='#d05050'}}
+  if(t==='gt'){e.r=10;e.hp*=1.3;e.max=e.hp;e.bspd=Math.max(150,e.spd*2.4);e.spd=0;e.dmg=0;e.gold=Math.round(18+floor*1.3);e.life=14}
+  else if(t==='mg'){e.r=Math.max(e.r,16);e.hp*=2.2;e.max=e.hp;e.spd*=.5;e.dmg*=.5;e.gold=(e.gold||2)+5}
+  else if(t==='sl'){e.hp*=1.1;e.max=e.hp;e.spd*=.8;e.gold=(e.gold||2)+5}
+  else if(t==='sn'){e.r=11;e.hp*=.75;e.max=e.hp;e.bspd=e.spd*.95;e.spd=0;e.dmg*=.3;e.sd=1+Math.random()*1.5;e.gold=(e.gold||2)+4}
+  else if(t==='tw'){e.hp*=.85;e.max=e.hp;e.spd*=1.1;e.gold=(e.gold||2)+2}
+  else if(t==='bz'){e.r=Math.max(e.r,13);e.hp*=1.4;e.max=e.hp;e.dmg*=1.05;e.gold=(e.gold||2)+4}}
+const SLC=['#e0452a','#7fc040','#d8d8c0','#7a50c0','#60c860','#d8b860','#ff6a1a','#80c0ff','#98a4b4','#ff50e0'];  // warna lendir per map
+function nameOf(e,k){const th=e.th!==undefined?e.th:themeOf(floor);return (k==='slime'?'Lendir ':ROLE[k]+' ')+(k==='slime'?RACE[th].replace(/^(Golem )/,''):RACE[th])}
 window.__applySpecial=function(e,d){
-  if(['slime','bomber','leaper','shielder','healer','summoner'].includes(d.k))window.__mkNK(e,d.k);
-  else{makeXK(e,d.k);
-    if(d.k==='tw'){const n0=enemies.length;spawnEnemy(e.x+22,e.y+6,null,'grunt');const o=enemies[enemies.length-1];
-      if(o&&enemies.length>n0){makeXK(o,'tw');o.hp=o.max=e.max;o.pt=e;e.pt=o;if(d.nm){o.col=d.col;o.vi=d.ic}}}}
-  if(d.nm){e.vi=d.ic;e.col=d.col;e.vname=d.nm}
-  const key=d.nm||d.k;if(!SEENX[key]){SEENX[key]=1;
-    const nm=d.nm?d.ic+' '+d.nm:(XNAME[d.k]||null);if(nm&&(d.nm||XNAME[d.k])){fx.push({x:W/2,y:230,t:2.6,txt:'Musuh baru: '+nm,col:d.col||e.col||'#fff',sz:15});
-      if(XHINT[d.k]&&!d.nm)fx.push({x:W/2,y:250,t:2.6,txt:XHINT[d.k],col:'#ddd',sz:12})}}}
+  const k=d.k,th=e.th!==undefined?e.th:themeOf(floor);
+  if(['slime','bomber','leaper','shielder','healer','summoner'].includes(k)){window.__mkNK(e,k);if(k==='slime')e.col=SLC[th]}
+  else{makeXK(e,k);
+    if(k==='tw'){const n0=enemies.length;spawnEnemy(e.x+22,e.y+6,null,'grunt');const o=enemies[enemies.length-1];
+      if(o&&enemies.length>n0){makeXK(o,'tw');o.hp=o.max=e.max;o.pt=e;e.pt=o;o.vname=nameOf(o,'tw')}}}
+  e.vname=nameOf(e,k);e.sk=th;
+  const key=th+k;if(!SEENX[key]){SEENX[key]=1;const now=performance.now();
+    if(now-lastNote>2500){lastNote=now;const ic=EJ[k]||ROLEJ[k]||'';fx.push({x:W/2,y:230,t:2.4,txt:'Musuh: '+ic+' '+e.vname,col:'#ffe0a0',sz:14});
+      if(XHINT[k])fx.push({x:W/2,y:250,t:2.4,txt:XHINT[k],col:'#ddd',sz:11})}}}
 {const _se=spawnEnemy;spawnEnemy=function(px,py,fk,force){
   const n0=enemies.length;_se.apply(this,arguments);if(enemies.length===n0)return;
   const e=enemies[enemies.length-1];if(!e||e.boss)return;
@@ -10280,7 +10267,7 @@ const overlay={t:0,max:1e9,__ov:1,draw(){
     else if(t==='gt'){ctx.globalAlpha=.5+.3*Math.sin(tt/120);ctx.strokeStyle='#ffe070';ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x,e.y,e.r+7,0,6.283);ctx.stroke()}
     else if(t==='bz'&&e.en){ctx.globalAlpha=.35+.25*Math.sin(tt/90);ctx.fillStyle='#ff2020';ctx.beginPath();ctx.arc(e.x,e.y,e.r+9,0,6.283);ctx.fill()}
     else if(t==='tw'&&e.pt&&e.pt.hp>0){ctx.globalAlpha=.35;ctx.strokeStyle='#40e0ff';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.pt.x,e.pt.y);ctx.stroke()}
-    const ic=e.vi||(t&&EJ[t]);if(ic)emj(ic,e.x,e.y-e.r-10,16)}}};
+    const ic=e.vi||(t&&EJ[t])||ROLEJ[e.nk];if(ic)emj(ic,e.x,e.y-e.r-10,16)}}};
 {const _u=update;update=function(dt){_u(dt);
   if(!vfx.some(v=>v.__ov))vfx.push(overlay);
   if(state!=='play'||!P)return;
@@ -10339,6 +10326,87 @@ const hist=()=>{try{return JSON.parse(localStorage.getItem(HK)||'[]')}catch(_){r
  $('histBack').onclick=()=>{o.classList.add('hide');$('title').classList.remove('hide')};
  const _h=hideAll;hideAll=function(){_h();o.classList.add('hide')}}
 window.__NV54={hist};
+}
+
+// ===== nv55: SKIN musuh khusus per map (iblis → goblin → tengkorak → ... → glitch) + WAVE BERGEROMBOL (formasi pasukan) =====
+{
+const SKB=['#c0392b','#7fa84a','#e8e4d0','#6a4aa0','#5aa850','#d8b860','#4a3030','#8ab8e8','#9aa4b0','#e050e0'];
+const SKE=['#ffe27a','#ff5030','#101010','#ff4a8a','#fff070','#40c0ff','#ffd040','#40ffff','#ff3030','#40ffff'];
+const A=[
+ (c,x,y,h,f)=>{c.fillStyle='#f4ecd0';for(const s of[-1,1]){c.beginPath();c.moveTo(x+s*h*.35,y-h*.75);c.lineTo(x+s*h*.8,y-h*1.8);c.lineTo(x+s*h*.02,y-h*.9);c.closePath();c.fill()}c.fillStyle='#fff';c.beginPath();c.moveTo(x+f*h*.25,y+h*.35);c.lineTo(x+f*h*.45,y+h*.9);c.lineTo(x+f*h*.65,y+h*.35);c.closePath();c.fill()},                                  // 0 Iblis: tanduk + taring
+ (c,x,y,h,f)=>{c.fillStyle='#7fa84a';for(const s of[-1,1]){c.beginPath();c.moveTo(x+s*h*.85,y-h*.3);c.lineTo(x+s*h*1.9,y-h*.9);c.lineTo(x+s*h*.85,y+h*.3);c.closePath();c.fill()}c.fillStyle='#fff';c.beginPath();c.arc(x+f*h*.15,y-h*.05,h*.52,0,6.283);c.fill();c.fillStyle='#c01818';c.beginPath();c.arc(x+f*h*.3,y-h*.05,h*.26,0,6.283);c.fill()}, // 1 Goblin bermata satu + telinga runcing
+ (c,x,y,h,f)=>{c.fillStyle='#ecebdc';c.beginPath();c.arc(x,y,h*1.05,0,6.283);c.fill();c.fillRect(x-h*.55,y+h*.7,h*1.1,h*.45);c.fillStyle='#10101a';for(const s of[-1,1]){c.beginPath();c.arc(x+f*h*.12+s*h*.4,y-h*.1,h*.3,0,6.283);c.fill()}c.beginPath();c.moveTo(x+f*h*.1,y+h*.2);c.lineTo(x+f*h*.02,y+h*.5);c.lineTo(x+f*h*.22,y+h*.5);c.fill();c.strokeStyle='#10101a';c.lineWidth=1;for(let i=-2;i<=2;i++){c.beginPath();c.moveTo(x+i*h*.2,y+h*.75);c.lineTo(x+i*h*.2,y+h*1.12);c.stroke()}},   // 2 Tengkorak
+ (c,x,y,h,f)=>{c.fillStyle='#2a1850';c.beginPath();c.arc(x,y,h*1.2,Math.PI*.95,Math.PI*2.05);c.lineTo(x+h*1.1,y+h*.7);c.lineTo(x-h*1.1,y+h*.7);c.closePath();c.fill();c.fillStyle='#ff4a8a';c.shadowColor='#ff4a8a';c.shadowBlur=8;for(const s of[-1,1]){c.beginPath();c.arc(x+f*h*.15+s*h*.35,y-h*.05,h*.16,0,6.283);c.fill()}c.shadowBlur=0}, // 3 Bayangan berkerudung
+ (c,x,y,h,f)=>{c.fillStyle='#3ea03a';for(const a of[-.7,.7]){c.save();c.translate(x,y-h*.9);c.rotate(a);c.beginPath();c.ellipse(0,-h*.55,h*.3,h*.7,0,0,6.283);c.fill();c.restore()}c.fillStyle='#ff9ad0';c.beginPath();c.arc(x,y-h*1.05,h*.32,0,6.283);c.fill();c.fillStyle='#ffe060';c.beginPath();c.arc(x,y-h*1.05,h*.13,0,6.283);c.fill()},  // 4 Peri Rimba: mahkota daun & bunga
+ (c,x,y,h,f)=>{c.fillStyle='#e0b840';c.beginPath();c.arc(x,y-h*.1,h*1.15,Math.PI,0);c.lineTo(x+h*1.25,y+h*1.3);c.lineTo(x+h*.8,y+h*.5);c.lineTo(x-h*.8,y+h*.5);c.lineTo(x-h*1.25,y+h*1.3);c.closePath();c.fill();c.strokeStyle='#2a6ad0';c.lineWidth=2;for(let i=-2;i<=2;i++){c.beginPath();c.moveTo(x+i*h*.4,y-h*1.15);c.lineTo(x+i*h*.5,y-h*.2);c.stroke()}c.fillStyle='#d8b860';c.beginPath();c.arc(x,y,h*.8,0,6.283);c.fill()},     // 5 Mumi Firaun: nemes emas
+ (c,x,y,h,f)=>{for(let i=-1;i<=1;i++){c.fillStyle=i?'#ff6a1a':'#ffd040';c.beginPath();c.moveTo(x+i*h*.55-h*.3,y-h*.8);c.lineTo(x+i*h*.55,y-h*(i?1.9:2.4));c.lineTo(x+i*h*.55+h*.3,y-h*.8);c.closePath();c.fill()}},                        // 6 Golem Lava: api di kepala
+ (c,x,y,h,f)=>{c.fillStyle='#16224a';c.beginPath();c.arc(x,y,h*1.2,Math.PI*.9,Math.PI*2.1);c.lineTo(x+h*1.1,y+h*.9);c.lineTo(x-h*1.1,y+h*.9);c.closePath();c.fill();c.fillStyle='#80ffff';c.shadowColor='#40ffff';c.shadowBlur=10;for(const s of[-1,1]){c.beginPath();c.arc(x+f*h*.15+s*h*.35,y,h*.17,0,6.283);c.fill()}c.shadowBlur=0},          // 7 Arwah Lich: tudung + mata biru
+ (c,x,y,h,f)=>{c.fillStyle='#5a6676';c.fillRect(x-h*1.0,y-h*.95,h*2,h*1.8);c.fillStyle='#ff2020';c.shadowColor='#ff2020';c.shadowBlur=8;c.fillRect(x-h*.8,y-h*.15,h*1.6,h*.3);c.shadowBlur=0;c.strokeStyle='#9aa4b0';c.lineWidth=2;c.beginPath();c.moveTo(x+h*.5,y-h*.95);c.lineTo(x+h*.7,y-h*1.8);c.stroke();c.fillStyle='#ff4040';c.beginPath();c.arc(x+h*.7,y-h*1.85,h*.15,0,6.283);c.fill()},   // 8 Robot: visor + antena
+ (c,x,y,h,f)=>{const t=performance.now()/90|0;c.globalAlpha=.55;c.fillStyle='#00ffff';c.fillRect(x-h+((t*7)%5)-2,y-h*.9,h*2,h*.5);c.fillStyle='#ff00ff';c.fillRect(x-h+((t*3)%5)-1,y-h*.1,h*2,h*.5);c.globalAlpha=1}   // 9 Glitch: pita warna bergeser
+];
+let SKN=-1;
+{const _st=stick;stick=function(x,y,r,col,o){
+  if(SKN<0)return _st.apply(this,arguments);
+  const th=SKN;o=o?Object.assign({},o):{};if(o.eye)o.eye=SKE[th];
+  _st(x,y,r,SKB[th],o);
+  if(o.nohead)return;
+  const f=o.f||1,mv=o.mv!==false,S=mv?Math.sin(o.walk||0):0,G=window.GAIT_CUR||{},lean=mv?f*r*(G.n??.1):0,TT=performance.now()/1000;
+  const bob=(mv?-Math.abs(S)*r*(G.b??.09):Math.sin(TT*2.2+x*.013)*r*.03)+(mv?(G.y||0)*r:0);
+  ctx.save();ctx.lineWidth=2;try{A[th](ctx,x+lean*1.25,y-r*.95+bob,r*.42,f)}finally{ctx.restore()}}}
+{const _de=drawEnemy;drawEnemy=function(e,f,T){
+  let s=-1;
+  if(e&&!e.boss&&!e.mini&&!e.special&&!e.reaper&&!e.dum){
+    if(e.nk&&e.nk!=='slime'&&e.nk!=='slimeling'){if(e.sk===undefined)e.sk=themeOf(floor);s=e.sk}
+    else if(e.sty==='gen'&&!e.nk){if(e.sk===undefined)e.sk=themeOf(floor);if(e.sk>=5)s=e.sk}}
+  if(s<0)return _de.call(this,e,f,T);
+  SKN=s;try{return _de.call(this,e,f,T)}finally{SKN=-1}}}
+window.__SKIN={SKB,A};
+
+// ---------- WAVE BERGEROMBOL: formasi pasukan khusus ----------
+const FORM={
+ army:{n:'⚔️ Pasukan Perang',min:5,w:3,g:6},
+ kamikaze:{n:'💣 Pasukan Kamikaze',min:4,w:2,g:5},
+ leapers:{n:'🐸 Serbuan Pelompat',min:6,w:2,g:5},
+ snipers:{n:'🎯 Regu Penembak',min:8,w:2,g:5},
+ convoy:{n:'💚 Konvoi Penyembuh',min:8,w:2,g:5},
+ thieves:{n:'💰 Pesta Pencuri',min:5,w:2,g:4},
+ twins:{n:'👯 Pesta Kembar',min:7,w:2,g:5},
+ rage:{n:'😡 Amukan Berserker',min:10,w:2,g:5},
+ ritual:{n:'🔮 Ritual Pemanggil',min:12,w:2,g:4},
+ gravity:{n:'🧲 Medan Gravitasi',min:14,w:2,g:5}};
+for(const k in FORM)TWISTS[k]={n:FORM[k].n,min:FORM[k].min,w:FORM[k].w};
+{const _pt=pickTwist;pickTwist=function(){_pt.apply(this,arguments);if(tw&&FORM[tw])spawnLeft=Math.round(FORM[tw].g*(floor>60?1.3:1))}}
+// tiap "unit": [peran, lateral, kedalaman (makin besar = makin jauh di belakang)]
+const U=(k,l,d)=>[k,l,d||0];
+const PLAN={
+ army:()=>{const a=[U('shielder',-55,0),U('shielder',0,0),U('shielder',55,0),U('grunt',-80,38),U('grunt',-27,38),U('grunt',27,38),U('grunt',80,38),U('mage',-30,80),U('mage',30,80)];if(floor>=20)a.push(U('healer',0,115));if(floor>=40)a.push(U('sn',-70,115),U('sn',70,115));return a},
+ kamikaze:()=>[-125,-75,-25,25,75,125].map((l,i)=>U('bomber',l,i%2?22:0)),
+ leapers:()=>[U('leaper',-70,0),U('leaper',-23,0),U('leaper',23,0),U('leaper',70,0),U('slime',-40,45),U('slime',40,45)],
+ snipers:()=>[U('shielder',-45,0),U('shielder',45,0),U('sn',-70,60),U('sn',0,60),U('sn',70,60)],
+ convoy:()=>[U('shielder',-95,0),U('shielder',95,0),U('tank',-50,0),U('tank',0,0),U('tank',50,0),U('healer',-28,48),U('healer',28,48)],
+ thieves:()=>[U('gt',-90,0),U('gt',-30,40),U('gt',30,10),U('gt',90,50)],
+ twins:()=>[U('tw',-80,0),U('tw',0,0),U('tw',80,0)],
+ rage:()=>[U('bz',-70,0),U('bz',0,0),U('bz',70,0),U('grunt',-100,40),U('grunt',-33,40),U('grunt',33,40),U('grunt',100,40)],
+ ritual:()=>[U('grunt',-90,0),U('grunt',-30,0),U('grunt',30,0),U('grunt',90,0),U('summoner',-35,70),U('summoner',35,70),U('sl',0,100)],
+ gravity:()=>[U('shooter',-80,0),U('shooter',0,0),U('shooter',80,0),U('mg',0,60),U('sl',-60,80),U('sl',60,80)]};
+const BASE=['slime','bomber','leaper','shielder','healer','summoner'];
+let hornT=0;
+const spawnForm=k=>{
+  // pilih sisi arena yang paling jauh dari pemain
+  let best=null,bd=-1;for(let i=0;i<7;i++){const a=Math.random()*6.283;let x=P.x+Math.cos(a)*620,y=P.y+Math.sin(a)*520;x=Math.max(50,Math.min(W-50,x));y=Math.max(50,Math.min(H-50,y));const d=Math.hypot(x-P.x,y-P.y);if(d>bd){bd=d;best={x,y}}}
+  const ux=(P.x-best.x)/bd,uy=(P.y-best.y)/bd,vx=-uy,vy=ux;      // u = arah ke pemain, v = lateral
+  const units=PLAN[k]();let n=0;
+  for(const [r,l,d] of units){
+    const x=Math.max(30,Math.min(W-30,best.x+vx*l-ux*d)),y=Math.max(30,Math.min(H-30,best.y+vy*l-uy*d));
+    const n0=enemies.length;
+    if(BASE.includes(r)){spawnEnemy(x,y,null,'grunt');const e=enemies[enemies.length-1];if(e&&enemies.length>n0){window.__applySpecial(e,{k:r});n++}}
+    else if(['gt','mg','sl','sn','tw','bz'].includes(r)){spawnEnemy(x,y,null,'grunt');const e=enemies[enemies.length-1];if(e&&enemies.length>n0){window.__applySpecial(e,{k:r});n++}}
+    else{spawnEnemy(x,y,null,r);if(enemies.length>n0)n++}}
+  ringV(best.x,best.y,10,120,'#ffd070',.5,4);
+  const now=performance.now();if(now-hornT>2500){hornT=now;if(!muted&&ac()){tone(196,.5,'sawtooth',.08,1.2);tone(294,.5,'sawtooth',.06,1.2,.12)}}
+  return n};
+{const _sw=spawnTw;spawnTw=function(){if(tw&&FORM[tw]&&P){spawnForm(tw);return}return _sw.apply(this,arguments)}}
+window.__FORM={FORM,PLAN,spawnForm};
 }
 
 TWISTS.survive.min=9999;
