@@ -10131,6 +10131,83 @@ for(const id of ['croc']){const S=SKILLS[id],f=S.fn;S.fn=function(){memeVoice('b
 for(const [o,key] of [[ULTS.mic,'siu'],[SKILLS.mic,'siu']]){if(!o)continue;const f=o.fn;o.fn=function(){memeVoice('siu',1,'big');return f.apply(this,arguments)}}
 }
 
+// ===== nv53: BGM khas per senjata Meme (Nyan / Rickroll / Skibidi) — komposisi ORISINAL bergaya meme-nya =====
+{
+// lead: [langkah,midi,panjang] per 4 bar (64 langkah); chord/bass: akar per bar
+const T={
+ nyan:{bpm:150,lead:'square',leadLp:5200,pad:'square',bass:'square',
+  root:[48,45,53,55],tri:[[0,4,7],[0,3,7],[0,4,7],[0,4,7]],
+  mel:[[0,79,1],[2,84,1],[3,83,1],[4,79,2],[6,76,2],[8,74,2],[10,76,2],[12,79,2],[14,84,2],
+       [16,83,2],[18,81,2],[20,79,2],[22,76,2],[24,74,2],[26,72,2],[28,74,2],[30,76,2],
+       [32,81,2],[34,86,1],[35,84,1],[36,81,2],[38,79,2],[40,76,2],[42,79,2],[44,81,2],[46,84,2],
+       [48,83,1],[49,84,1],[50,86,2],[52,88,2],[54,86,2],[56,84,2],[58,83,2],[60,79,3]],
+  kick:[0,4,8,12],snare:[4,12],hat:2},
+ rick:{bpm:113,lead:'triangle',leadLp:3800,pad:'sawtooth',bass:'sawtooth',
+  root:[50,43,48,45],tri:[[0,3,7,10],[0,4,7,10],[0,4,7,11],[0,3,7,10]],
+  mel:[[0,69,3],[4,72,2],[6,74,2],[8,72,3],[12,69,2],[14,67,2],
+       [16,71,3],[20,74,2],[22,76,2],[24,74,4],[30,71,2],
+       [32,72,3],[36,76,2],[38,79,2],[40,76,3],[44,72,2],[46,71,2],
+       [48,69,4],[52,72,2],[54,69,2],[56,67,4],[60,69,3]],
+  kick:[0,6,8,14],snare:[4,12],hat:2,stab:[0,6,10]},
+ toilet:{bpm:140,lead:'sawtooth',leadLp:2600,pad:'square',bass:'sawtooth',
+  root:[40,40,43,38],tri:[[0,3,7],[0,3,7],[0,4,7],[0,3,7]],
+  mel:[[0,76,1],[1,76,1],[2,76,1],[4,79,1],[6,76,1],[7,74,1],[8,76,2],[12,71,2],
+       [16,76,1],[17,76,1],[18,76,1],[20,79,1],[22,83,2],[24,81,2],[28,79,2],
+       [32,76,1],[33,76,1],[34,76,1],[36,79,1],[38,76,1],[39,74,1],[40,76,2],[44,79,2],
+       [48,83,1],[49,83,1],[50,81,1],[51,79,1],[52,76,2],[56,74,2],[58,71,1],[59,74,1],[60,76,3]],
+  kick:[0,4,8,12],snare:[4,12],hat:2,off:true}};
+const KEY={nyan:'nyan',rick:'rick',toilet:'toilet'};
+const act=()=>!!(P&&KEY[P.weapon]&&['play','cut','pause','shop','upg','modal'].includes(state));
+// opsional: kalau kamu menaruh sfx/bgm-<nama>.mp3 sendiri, file itu dipakai (diulang) menggantikan versi sintesis
+const FB={};for(const k in KEY){try{const a=new Audio('sfx/bgm-'+k+'.mp3');a.loop=true;a.preload='auto';a.addEventListener('canplaythrough',()=>{FB[k]=a});a.addEventListener('error',()=>{})}catch(_){}}
+let cur=null,st=0,nx=0,timer=null;
+function step(k,s,t,spb){const T0=T[k],b=Math.floor(s/16)%4,i=s%16,g=s%64,r=T0.root[b];
+ if(i===0){for(const d of T0.tri[b])mnote(mtof(r+24+d),t,spb*15,T0.pad,.025,1400)}
+ // bass
+ if(T0.off){if(i%4===2)mnote(mtof(r),t,spb*1.6,T0.bass,.2,500)}
+ else if(k==='rick'){if([0,3,6,8,11,14].includes(i))mnote(mtof(r+(i===6||i===14?12:0)),t,spb*1.8,T0.bass,.17,420)}
+ else if(i%2===0)mnote(mtof(r-(i%4===2?0:12)),t,spb*1.5,T0.bass,.14,2200);
+ if(T0.stab&&T0.stab.includes(i))for(const d of T0.tri[b])mnote(mtof(r+12+d),t,spb*1.4,'sawtooth',.045,2600);
+ for(const n of T0.mel)if(n[0]===g)mnote(mtof(n[1]),t,spb*n[2]*.95,T0.lead,k==='toilet'?.09:.075,T0.leadLp);
+ if(k==='toilet'&&i%2===0&&b%2===1)mnote(mtof(T0.root[b]+36),t,spb*.5,'square',.03,3000);
+ if(T0.kick.includes(i))mdrum('kick',t,.5);
+ if(T0.snare.includes(i))mdrum('snare',t,k==='rick'?.2:.24);
+ if(i%T0.hat===0)mdrum('hat',t,.05)}
+function loop(){
+ const on=act()&&!muted;const k=on?KEY[P.weapon]:null;
+ if(k!==cur){ // ganti lagu / berhenti
+  if(cur&&FB[cur]){try{FB[cur].pause()}catch(_){}}
+  cur=k;st=0;if(AC)nx=AC.currentTime+.1;
+  if(k){musOn=false;if(FB[k]){try{FB[k].currentTime=0;FB[k].play().catch(()=>{})}catch(_){}}}
+  else if(!muted&&musTheme>=0)musOn=true}
+ if(!k)return;
+ if(FB[k]){try{FB[k].volume=Math.min(1,vol.mus*(state==='play'?1.6:.5))}catch(_){}return}
+ if(!ac())return;musOn=false;
+ AC.music.gain.setTargetAtTime(state==='play'?vol.mus*1.15:vol.mus*.3,AC.currentTime,.15);
+ const spb=60/T[k].bpm/4;if(nx<AC.currentTime)nx=AC.currentTime+.05;
+ while(nx<AC.currentTime+.35){step(k,st,nx,spb);nx+=spb;st++}}
+timer=setInterval(()=>{try{loop()}catch(_){}},100);
+{const _m=musicSet;musicSet=function(t){if(act()){musTheme=t;musOn=false;return}return _m.apply(this,arguments)}}
+window.__BGM={T,act,cur:()=>cur,st:()=>st};
+
+// ---- efek ULT/skill: bukan lagi file mp3 — suara ikonik buatan sendiri, tanpa lirik ----
+const _lt={};const speak=(txt,lang,pitch,rate,name,gap)=>{try{if(muted||!window.speechSynthesis)return;const now=performance.now();if(_lt[name]&&now-_lt[name]<(gap||1800))return;_lt[name]=now;const u=new SpeechSynthesisUtterance(txt);u.lang=lang;u.pitch=pitch;u.rate=rate;u.volume=1;const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lang.slice(0,2).toLowerCase()));if(vs.length)u.voice=vs[0];speechSynthesis.cancel();speechSynthesis.speak(u)}catch(_){}};
+const _mv=window.memeVoice;
+window.memeVoice=function(n,p,kind){try{
+ if(n==='rick'){if(muted||!ac())return;
+   // fanfare kuningan + gores piringan + teriak "Rickroll!"
+   [0,.14,.28,.46].forEach((d,i)=>{const f=[392,494,587,784][i];tone(f,.3,'sawtooth',.07,1,d);tone(f/2,.3,'square',.04,1,d)});
+   noise&&noise(.18,.12,3000);speak('Rick roll!','en-US',.9,1,'rk',1800);return}
+ if(n==='nyan'){if(muted||!ac())return;
+   const sc=[784,880,988,1175,1319,1568,1760,2093];sc.forEach((f,i)=>tone(f,.12,'square',.05,1,i*.06));
+   sc.slice().reverse().forEach((f,i)=>tone(f,.12,'triangle',.04,1,.5+i*.06));speak('Nyan','ja-JP',1.5,1.4,'ny',2000);return}
+ if(n==='skibidi'){if(muted||!ac())return;
+   tone(90,.2,'sine',.2,.4);tone(70,.2,'sine',.18,.4,.18);noise&&noise(.08,.15,900,.1);
+   speak('Skibidi dop dop dop yes yes','en-US',1.6,1.2,'skb',2200);return}
+ }catch(_){}
+ return _mv.apply(this,arguments)};
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
