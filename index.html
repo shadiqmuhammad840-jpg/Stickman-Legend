@@ -9923,7 +9923,7 @@ const BODY={
   ctx.save();ctx.translate(r*2.0,-r*.02);ctx.fillStyle='#555';ctx.beginPath();ctx.arc(0,0,r*.1,0,TAU);ctx.fill();ctx.globalAlpha=.55;ctx.fillStyle='#ddd';ctx.beginPath();ctx.ellipse(0,0,r*.12,r*.75,0,0,TAU);ctx.fill();ctx.globalAlpha=.9;ctx.strokeStyle='#222';ctx.lineWidth=2;const pa=T*40;ctx.beginPath();ctx.moveTo(Math.cos(pa)*r*.1,Math.sin(pa)*r*.7);ctx.lineTo(-Math.cos(pa)*r*.1,-Math.sin(pa)*r*.7);ctx.stroke();ctx.restore();
   // bom di perut
   ctx.fillStyle='#222';ctx.beginPath();ctx.ellipse(0,r*.62,r*.28,r*.16,0,0,TAU);ctx.fill();
-  ctx.restore();const hx=x+f*r*.5,hy=y+hov+r*.7;if(o.w)drawWeapon(o.w,hx,hy,r,f,o.sw,o.oc)},
+  ctx.restore();},
  // ---- Patung Sigma: kepala moai batu bersunglasses, meluncur & bergoyang ----
  sigma:(x,y,r,col,o)=>{const f=o.f||1,T=performance.now()/1000,mv=o.mv!==false,ph=o.walk||0,b=mv?-Math.abs(Math.sin(ph))*r*.18:Math.sin(T*1.6)*r*.04,rot=mv?Math.sin(ph)*.09:Math.sin(T*1.1)*.015;
   ctx.save();ctx.translate(x,y+b+r*.2);ctx.scale(f,1);ctx.rotate(rot);ctx.lineJoin='round';
@@ -9938,9 +9938,9 @@ const BODY={
   ctx.fillStyle='#4a6a3a';ctx.globalAlpha=.7;ctx.beginPath();ctx.ellipse(-r*.5,r*.85,r*.2,r*.1,0,0,TAU);ctx.fill();ctx.globalAlpha=1;
   // aura grindset
   ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.25+.12*Math.sin(T*4);ctx.fillStyle='#c8d0ff';ctx.beginPath();ctx.ellipse(0,-r*.3,r*1.15,r*1.5,0,0,TAU);ctx.fill();ctx.restore();
-  const hx=x+f*r*.95,hy=y+b+r*.2;if(o.w)drawWeapon(o.w,hx,hy,r,f,o.sw,o.oc)}
+  }
 };
-let BID=null;
+window.__BODY=BODY;let BID=null;
 {const _st=stick;stick=function(x,y,r,col,o){if(BID){const fn=BODY[BID];BID=null;try{fn(x,y,r,col,o||{})}catch(e){}return}return _st.apply(this,arguments)}}
 {const _sp=stickP;stickP=function(x,y,r,f,o){const id=o&&o.w;BID=(id&&BODY[id]&&MW[id])?id:null;try{return _sp.apply(this,arguments)}finally{BID=null}}}
 // skin: bentuk asli tidak butuh lapisan kepala manusia
@@ -10019,6 +10019,26 @@ function tidy(d,w){
 for(const id in WEAPONS){if(MD[id]||id==='default')continue;const w=WEAPONS[id];try{w.d=tidy(w.d,w)}catch(_){}}
 const st=document.createElement('style');st.textContent='#wpnList small{white-space:pre-line;line-height:1.45;text-align:left}#wpnList button b{display:block;margin-bottom:3px}';document.head.appendChild(st);
 window.__tidy=tidy;
+}
+
+
+// ===== nv51: cutscene memakai bentuk asli meme (toilet/buaya pesawat/moai), Sigma & Bombardiro tanpa senjata =====
+{const MW=window.__MW,BODY=window.__BODY,TAU=6.2832;let CB=null;
+{const _cd=chDraw;chDraw=function(K,UL,x,y,sc,t){const id=P&&P.weapon;CB=(id&&BODY[id]&&MW[id]&&K===id)?id:null;try{return _cd.apply(this,arguments)}finally{CB=null}}}
+{const _rig=rig;rig=function(x,y,s,p,col,sk,propFn,alpha,eye){
+  if(!CB)return _rig.apply(this,arguments);
+  if(!sk&&!propFn)return _rig(x,y,s,p,col,sk,propFn,0,eye);        // bayangan/ghost stickman: sembunyikan
+  const id=CB,ox=(p[11]||0)*s,oy=(p[10]||0)*s;
+  const I=_rig(x,y,s,p,col,sk,null,0,eye);                           // hitung posisi tangan, tanpa menggambar
+  ctx.save();ctx.translate(x+ox,y-oy+6*s);ctx.rotate(p[0]*.7);ctx.scale(s*.95,s*.95*(1-Math.min(.25,Math.max(0,p[1])*.18)));
+  try{BODY[id](0,0,14,col,{f:1,mv:false})}catch(e){}
+  ctx.restore();
+  if(propFn){ctx.save();try{propFn(I)}catch(e){}ctx.restore()}
+  return I}}
+// senjata di cutscene: toilet = plunger, sigma & croc = tanpa senjata
+const noP=()=>{};
+if(CHO.sigma)CHO.sigma.prop=noP;if(CHO.croc)CHO.croc.prop=noP;
+if(CHO.toilet)CHO.toilet.prop=(I,t,ft)=>{const h=I.h1;ctx.save();ctx.strokeStyle='#8a5a2a';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(h[0],h[1]+14);ctx.lineTo(h[0]+3,h[1]-22);ctx.stroke();ctx.fillStyle='#d0282a';ctx.strokeStyle='#000';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(h[0]-9,h[1]-20);ctx.quadraticCurveTo(h[0]+3,h[1]-40,h[0]+15,h[1]-20);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()};
 }
 
 TWISTS.survive.min=9999;
