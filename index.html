@@ -10068,8 +10068,11 @@ const SYN={
  nyan:()=>{const n=[784,659,784,880,784,659,523,587,659,587,523,494];n.forEach((f,i)=>tone(f,.1,'square',.05,1,i*.09))},
  bonk:()=>{tone(220,.12,'square',.14,.4);tone(110,.25,'sine',.16,.4,.02);noise(.06,.2,1500)}};
 // pemanggil
-window.memeVoice=function(name,p){try{if(muted||!ac())return;const f={siu:'siu',bomb:'bombardiro',tung:'tung',skibidi:'skibidi',sigma:'sigma',rick:'rickroll',bonk:'bonk',nyan:'nyan'}[name];
- if(f&&FILE[f]){const a=FILE[f].cloneNode();a.volume=1;a.play().catch(()=>{});return}
+const PL={};
+window.memeVoice=function(name,p,kind){try{if(muted||!ac())return;const f={siu:'siu',bomb:'bombardiro',tung:'tung',skibidi:'skibidi',sigma:'sigma',rick:'rickroll',bonk:'bonk',nyan:'nyan'}[name];
+ const now=performance.now();if(f&&PL[f]&&now<PL[f])return;                       // rekaman masih diputar: jangan tumpuk
+ if(f&&FILE[f]){const a=FILE[f],d=a.duration||2;
+  if(d<=3||kind==='big'){const L=Math.min(d,6);PL[f]=now+L*1000;const c=a.cloneNode();c.volume=1;c.play().catch(()=>{});if(d>L){setTimeout(()=>{try{c.volume=.5}catch(_){}},(L-.5)*1000);setTimeout(()=>{try{c.pause()}catch(_){}},L*1000)}return}}
  if(name==='siu')SYN.siu(p);
  else if(name==='bomb'){SYN.bomb();speak('Bombardiro Crocodilo','it-IT',.6,.85,'bomb',2500)}
  else if(name==='tung'){speak('Tung tung tung sahur','id-ID',.5,1.1,'tung',1800);tone(110,.3,'sine',.18,.55);tone(110,.3,'sine',.14,.55,.25);tone(110,.3,'sine',.14,.55,.5)}
@@ -10108,14 +10111,14 @@ const NEWU={
   tick(14,.17,i=>{all(.7,RB[i%7],e=>{e.slow=Math.max(e.slow||0,1.2)});if(i%3===0){shake=Math.max(shake,.3);tn(660+i*40,.15,'square',.05,1.4)}});
   later(2.6,()=>{if(state!=='play')return;fin('#ff7ad9','NYAN~',3)})}],
  rick:['RICKROLL MASSAL','🕺',['Lampu disko menyala… musik mulai…','RICKROLL MASSAL!'],'#ff5a5a',()=>{
-  memeVoice('rick');const C=['#ff4a5a','#ffe84a','#4ac8ff','#d86aff'];
+  memeVoice('rick',1,'big');const C=['#ff4a5a','#ffe84a','#4ac8ff','#d86aff'];
   V(3.8,(p,t)=>{const a=Math.min(1,p*8)*Math.min(1,(1-p)*6);ovl('#16040a',.5*a);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*.28;for(let i=0;i<6;i++){const an=t*1.6+i*1.05,cx=CAM.x+VW/2,cy=CAM.y-10;ctx.fillStyle=C[i%4];ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(an)*VW*1.2-60,cy+VH*1.1);ctx.lineTo(cx+Math.cos(an)*VW*1.2+60,cy+VH*1.1);ctx.fill()}ctx.restore();bars(a);
    for(const e of enemies){if(e.hp>0)em('🕺',e.x,e.y-e.r-18-Math.abs(Math.sin(t*9+e.x))*8,22,a,Math.sin(t*9+e.x)*.25)}
    for(let i=0;i<16;i++){const q=((t*.6+i*.063)%1);em(['🎵','🎶','🎸'][i%3],CAM.x+((i*97)%VW),CAM.y+q*VH,18+(i%3)*5,a*.8,Math.sin(t*3+i)*.4)}imp('NEVER GONNA GIVE YOU UP',CAM.x+VW/2,CAM.y+VH*.14,22+Math.sin(t*10)*2,'#ffd24d',a)});
   tick(12,.2,i=>{all(.85,C[i%4],e=>stn(e,.5));if(i%2===0){shake=Math.max(shake,.25)}});
   later(2.7,()=>{if(state!=='play')return;fin('#ff5a5a','GOTCHA!',4)})}],
  tung:['SAHUR RAYA','🥁',['Fajar menyingsing… waktunya sahur…','SAHUR RAYA!'],'#d08a4a',()=>{
-  memeVoice('tung');V(3.8,(p,t)=>{const a=Math.min(1,p*8)*Math.min(1,(1-p)*6);ctx.save();const g=ctx.createLinearGradient(0,CAM.y,0,CAM.y+VH);g.addColorStop(0,'#1a0a2a');g.addColorStop(.6,'#8a3a2a');g.addColorStop(1,'#ffb050');ctx.globalAlpha=.55*a;ctx.fillStyle=g;ctx.fillRect(CAM.x-20,CAM.y-20,VW+40,VH+40);ctx.restore();bars(a);em('🌙',CAM.x+VW*.18,CAM.y+VH*.25,50,a*.8);
+  memeVoice('tung',1,'big');V(3.8,(p,t)=>{const a=Math.min(1,p*8)*Math.min(1,(1-p)*6);ctx.save();const g=ctx.createLinearGradient(0,CAM.y,0,CAM.y+VH);g.addColorStop(0,'#1a0a2a');g.addColorStop(.6,'#8a3a2a');g.addColorStop(1,'#ffb050');ctx.globalAlpha=.55*a;ctx.fillStyle=g;ctx.fillRect(CAM.x-20,CAM.y-20,VW+40,VH+40);ctx.restore();bars(a);em('🌙',CAM.x+VW*.18,CAM.y+VH*.25,50,a*.8);
    for(let k=0;k<8;k++){const q=(t-.3-k*.33)/.9;if(q<0||q>1)continue;ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(1-q)*a;ctx.strokeStyle=k%2?'#fff':'#ffd8a0';ctx.lineWidth=12*(1-q)+2;ctx.beginPath();ctx.ellipse(P.x,P.y,30+q*560,18+q*340,0,0,TAU);ctx.stroke();ctx.restore();if(q<.15)imp('TUNG',P.x+Math.sin(k*3)*120,P.y-60-k*8,34,'#ffd8a0',1-q*5,k*.2)}
    imp('SAHUR RAYA',CAM.x+VW/2,CAM.y+VH*.14,28+Math.sin(t*14)*3,'#ffd8a0',a)});
   for(let k=0;k<8;k++)later(.3+k*.33,()=>{if(state!=='play')return;for(const e of enemies){if(e.hp>0&&Math.hypot(e.x-P.x,e.y-P.y)<600){dm(e,1.6,'#ffd8a0');stn(e,.6)}}tn(110,.35,'sine',.2,.55);tn(1200,.05,'square',.07,.5);shake=.5});
@@ -10123,8 +10126,9 @@ const NEWU={
 for(const id in NEWU){if(!MW[id]||ULTS[id])continue;const [n,ic,cap,col,fn]=NEWU[id];ULTS[id]={n,ic,col:MW[id].col,cd:60,d:3.8,ft:2.0,cap,fn(){shake=1;P.inv=Math.max(P.inv,2.6);fn()}};
  WEAPONS[id].d+='\n⚡ ULT: '+n+' ('+({bonk:'palu raksasa menghantam arena 5 kali',nyan:'banjir pelangi + kucing terbang melintas',rick:'disko massal: musuh terpaku & berjoget',tung:'tabuhan sahur gelombang beruntun'})[id]+').'}
 // suara ikonik di cutscene/ULT senjata lama
-for(const id of ['sigma','croc','toilet']){const U=ULTS[id];if(!U)continue;const f=U.fn;U.fn=function(){memeVoice(VOICE[id]);return f.apply(this,arguments)}}
-for(const id of ['croc']){const S=SKILLS[id],f=S.fn;S.fn=function(){memeVoice('bomb');return f.apply(this,arguments)}}
+for(const id of ['sigma','croc','toilet']){const U=ULTS[id];if(!U)continue;const f=U.fn;U.fn=function(){memeVoice(VOICE[id],1,'big');return f.apply(this,arguments)}}
+for(const id of ['croc']){const S=SKILLS[id],f=S.fn;S.fn=function(){memeVoice('bomb',1,'big');return f.apply(this,arguments)}}
+for(const [o,key] of [[ULTS.mic,'siu'],[SKILLS.mic,'siu']]){if(!o)continue;const f=o.fn;o.fn=function(){memeVoice('siu',1,'big');return f.apply(this,arguments)}}
 }
 
 TWISTS.survive.min=9999;
