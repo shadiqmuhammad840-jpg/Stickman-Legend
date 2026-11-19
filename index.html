@@ -9563,7 +9563,7 @@ const ring=(x,y,r0,r1,col,d,w)=>ringV(x,y,r0,r1,col,d,w);
 const beam=(x1,y1,x2,y2,w,cols,al)=>{ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';for(let i=0;i<cols.length;i++){const k=1-i/cols.length;ctx.globalAlpha=al*(.35+.5*(i/cols.length));ctx.strokeStyle=cols[i];ctx.lineWidth=Math.max(1.5,w*2*k);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}ctx.restore()};
 // ---- suara meme (sintesis) ----
 const S={
- bonk:()=>{tn(260,.14,'square',.12,.35);tn(120,.2,'sine',.14,.4,.01);nz(.06,.2,1500)},
+ bonk:()=>{window.memeVoice&&memeVoice('bonk')},
  boing:()=>{tn(300,.3,'sine',.1,2.4);tn(600,.2,'triangle',.05,1.6,.04)},
  boom:()=>{tn(62,.9,'sine',.2,.4);tn(40,1.1,'sine',.18,.5,.02);nz(.5,.3,300)},        // vine boom
  horn:()=>{for(const f of[440,554,659])tn(f,.5,'sawtooth',.06,1.0);tn(220,.5,'square',.05,1)}, // airhorn
