@@ -11276,6 +11276,106 @@ if(window.__BAL)window.__BAL.opus=.9;
 window.__OPUS={S,array,flask,pillar};
 }
 
+// ===== nv63: ULTIMATE OPUS BARU — Karya Agung: Gagak → Merpati → Matahari Emas → Phoenix → Batu Filsuf =====
+{
+const TAU=6.2832,sn=Math.sin,cs=Math.cos,rr=(a,b)=>a+Math.random()*(b-a);
+const GOLD='#ffd24d',RED='#e03a3a',CRIM='#ff2a50';
+const tn=(f,d,ty,v,sl,del)=>{if(!muted&&ac())tone(f,d,ty,v,sl,del)},nz=(d,v,fc,del,ty)=>{if(!muted&&ac())noise(d,v,fc,del,ty)};
+const V=(d,f)=>addV(d,f),dm=(e,m,c)=>hit(e,P.dmg*m,c),ok=()=>state==='play'&&P;
+const inR=(x,y,r)=>enemies.filter(e=>e.hp>0&&Math.hypot(e.x-x,e.y-y)<r+e.r);
+const aoe=(x,y,r,m,c,f)=>{const L=inR(x,y,r);for(const e of L){dm(e,m,c);f&&f(e)}return L.length};
+const stn=(e,t)=>{if(e.boss||e.mini)e.slow=Math.max(e.slow||0,t*.7);else e.stun=Math.max(e.stun||0,t)};
+const tgtC=r=>bestCluster(r||160)||nearestN(1)[0]||{x:clp(P.x+(P.face>0?160:-160),40,W-40),y:P.y};
+const ring=(x,y,r0,r1,col,d,w)=>ringV(x,y,r0,r1,col,d,w),tick=(n,g,f)=>{for(let i=0;i<n;i++)later(i*g,()=>{if(ok())f(i)})};
+const glow=(x,y,R,c,a)=>{ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,Math.max(1,R));g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.globalAlpha=a;ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,R,0,TAU);ctx.fill();ctx.restore()};
+const ovl=(col,al,d)=>V(d||.4,p=>{ctx.save();ctx.globalAlpha=al*(1-p);ctx.fillStyle=col;ctx.fillRect(CAM.x-20,CAM.y-20,VW+40,VH+40);ctx.restore()});
+const vign=(col,al,dur)=>V(dur,(p)=>{const k=Math.min(1,p*6)*Math.min(1,(1-p)*5);const g=ctx.createRadialGradient(CAM.x+VW/2,CAM.y+VH/2,VH*.2,CAM.x+VW/2,CAM.y+VH/2,VW*.62);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,col);ctx.save();ctx.globalAlpha=al*k;ctx.fillStyle=g;ctx.fillRect(CAM.x-20,CAM.y-20,VW+40,VH+40);ctx.restore()});
+const OP=window.__OPUS,S=OP.S,array=OP.array,pillar=OP.pillar;
+const S2={
+ caw:()=>{tn(520,.18,'sawtooth',.05,.55);tn(380,.2,'sawtooth',.04,.6,.05);nz(.12,.1,2400,0,'bandpass')},
+ coo:()=>{tn(420,.25,'sine',.04,1.15);tn(520,.2,'sine',.03,.9,.12)},
+ screech:()=>{for(let i=0;i<14;i++){tn(900+i*90+sn(i*2)*120,.07,'sawtooth',.05,1.05,i*.035)}tn(300,.6,'sawtooth',.06,2.4);nz(.5,.12,3200,0,'highpass')},
+ whoosh:()=>{nz(.7,.22,1000,0,'bandpass');tn(130,.6,'sine',.08,2.2)},
+ coin:()=>{tn(2093,.1,'square',.025,1.01);tn(2637,.18,'square',.02,1.01,.07)},
+ sun:()=>{[262,330,392,523,659].forEach((f,i)=>tn(f,1.2,'sine',.04,1.01,i*.12))}};
+// ---------- gambar ----------
+const crow=(x,y,s,fl,a)=>{ctx.save();ctx.translate(x,y);ctx.rotate(a||0);ctx.scale(s,s);ctx.fillStyle='#14101c';ctx.shadowColor='#8a5ac0';ctx.shadowBlur=6;
+ for(const k of[-1,1]){ctx.beginPath();ctx.moveTo(-2,0);ctx.quadraticCurveTo(-8,k*(10+fl*8),-18,k*(4+fl*10));ctx.quadraticCurveTo(-8,k*3,-2,0);ctx.fill()}
+ ctx.beginPath();ctx.ellipse(0,0,8,4,0,0,TAU);ctx.fill();ctx.beginPath();ctx.arc(8,-1,3.4,0,TAU);ctx.fill();ctx.beginPath();ctx.moveTo(10,-2);ctx.lineTo(16,-.5);ctx.lineTo(10,1);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#ff4a5a';ctx.beginPath();ctx.arc(9,-2,.9,0,TAU);ctx.fill();ctx.restore()};
+const dove=(x,y,s,fl,a)=>{ctx.save();ctx.translate(x,y);ctx.rotate(a||0);ctx.scale(s,s);ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=10;
+ for(const k of[-1,1]){ctx.beginPath();ctx.moveTo(-2,0);ctx.quadraticCurveTo(-6,k*(12+fl*8),-17,k*(6+fl*8));ctx.quadraticCurveTo(-7,k*3,-2,0);ctx.fill()}
+ ctx.beginPath();ctx.ellipse(0,0,8,4,0,0,TAU);ctx.fill();ctx.beginPath();ctx.arc(8,-1.5,3,0,TAU);ctx.fill();ctx.fillStyle='#ffb84a';ctx.beginPath();ctx.moveTo(10.5,-1.5);ctx.lineTo(14,-.8);ctx.lineTo(10.5,0);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(-8,0);ctx.lineTo(-18,-2);ctx.lineTo(-18,3);ctx.closePath();ctx.fill();ctx.restore()};
+const phoenix=(x,y,s,a,T,ev)=>{ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.scale(s,s);const fl=sn(T*11),c1=ev?'#ff2a50':'#ff6a1a',c2=ev?'#ffb0b8':'#ffd24d';
+ glow(0,0,70,c1,.65);ctx.globalCompositeOperation='lighter';
+ // ekor
+ for(let i=0;i<6;i++){const k=(i-2.5)*.12;ctx.strokeStyle=i%2?c2:c1;ctx.lineWidth=5-i*.3;ctx.lineCap='round';ctx.globalAlpha=.8;ctx.beginPath();ctx.moveTo(-8,0);ctx.bezierCurveTo(-30,k*60+sn(T*6+i)*10,-60,k*90+sn(T*5+i)*18,-95-i*4,k*130+sn(T*4+i)*24);ctx.stroke()}
+ ctx.globalAlpha=1;
+ // sayap
+ for(const k of[-1,1]){const lift=fl*.35;ctx.fillStyle=c1;ctx.beginPath();ctx.moveTo(-2,0);ctx.bezierCurveTo(-10,k*(26+lift*20),-34,k*(56+lift*30),-58,k*(50+lift*40));ctx.bezierCurveTo(-46,k*(38+lift*20),-52,k*(28),-40,k*(20));ctx.bezierCurveTo(-32,k*(14),-18,k*8,-2,0);ctx.fill();
+  ctx.fillStyle=c2;for(let i=0;i<5;i++){const u=i/5;ctx.beginPath();ctx.moveTo(-14-u*34,k*(14+u*30+lift*10));ctx.lineTo(-30-u*30,k*(30+u*26+lift*26));ctx.lineTo(-22-u*30,k*(12+u*30+lift*10));ctx.fill()}}
+ // badan & kepala
+ ctx.fillStyle=c2;ctx.beginPath();ctx.ellipse(0,0,16,7,0,0,TAU);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(2,0,10,3.5,0,0,TAU);ctx.fill();
+ ctx.fillStyle=c1;ctx.beginPath();ctx.arc(17,-1,6.5,0,TAU);ctx.fill();ctx.fillStyle=c2;ctx.beginPath();ctx.moveTo(22,-2);ctx.lineTo(32,0.5);ctx.lineTo(22,3);ctx.fill();
+ for(let i=0;i<3;i++){ctx.fillStyle=i%2?c1:c2;ctx.beginPath();ctx.moveTo(14-i*3,-5);ctx.quadraticCurveTo(8-i*6,-16-i*3-fl*2,2-i*7,-12-i*2);ctx.lineTo(12-i*3,-3);ctx.fill()}
+ ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(19,-2.5,1.6,0,TAU);ctx.fill();ctx.restore()};
+// ---------- timeline bersama ----------
+const run=(ev)=>{
+ const A=ev?CRIM:RED,A2=ev?'#ffb0b8':'#ffd24d',cx=P.x,cy=P.y,dur=ev?6.0:5.2;
+ shake=1;P.inv=Math.max(P.inv,ev?4.6:4.2);healP(ev?.3:.14);S.choir();ultTint={t:.9,col:ev?'#3a0510':'#2a1608'};
+ // lingkaran besar sepanjang ULT
+ V(dur,(p,t)=>{const k=Math.min(1,p*8)*Math.min(1,(1-p)*6);array(cx,cy,170+p*150,t,ev?CRIM:GOLD,k*.9,A2);if(ev)array(cx,cy,100,-t*1.5,GOLD,k*.7,'#fff')});
+ const label=(txt,col)=>fx.push({x:cx,y:cy-90,t:.9,txt,col,sz:16});
+ // ===== I. NIGREDO — gagak & pusaran hitam =====
+ later(0,()=>{if(!ok())return;label('NIGREDO','#c8a0ff');S2.whoosh();vign('rgba(20,5,40,.85)',1,1.3);
+  V(1.3,(p,t)=>{ctx.save();ctx.globalAlpha=.55*Math.min(1,p*4)*(1-Math.max(0,p-.8)*5);ctx.fillStyle='#120818';ctx.beginPath();ctx.ellipse(cx,cy,320*(1-p*.3),200*(1-p*.3),0,0,TAU);ctx.fill();ctx.restore();for(let i=0;i<14;i++){const a=t*3+i/14*TAU,R=(1-p*.6)*(260+(i%3)*30);crow(cx+cs(a)*R,cy+sn(a)*R*.6,1.1,sn(t*14+i),a+Math.PI/2)}});
+  tick(9,.1,i=>{for(const e of inR(cx,cy,360)){if(!e.boss&&!e.mini){const d=Math.hypot(e.x-cx,e.y-cy)||1;e.x-=(e.x-cx)/d*17;e.y-=(e.y-cy)/d*17}dm(e,ev?.45:.35,'#8a6ac0')}if(i%3===0)S2.caw()})});
+ // ===== II. ALBEDO — merpati & gelombang putih =====
+ later(1.2,()=>{if(!ok())return;label('ALBEDO','#ffffff');S2.coo();S.gold();ovl('#ffffff',.7,.5);ring(cx,cy,10,420,'#fff',.6,14);ring(cx,cy,10,300,'#e8e8ff',.7,8);burst(cx,cy,'#fff',40,420,.8);
+  const D=[];for(let i=0;i<(ev?16:10);i++){const a=i/(ev?16:10)*TAU;D.push({a,sp:rr(260,380)})}
+  V(1.4,(p,t)=>{for(const d of D){const R=d.sp*p;dove(cx+cs(d.a)*R,cy+sn(d.a)*R*.7-p*40,1.2,sn(t*16+d.a),d.a)}ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle='#fff';ctx.globalAlpha=(1-p)*.5;for(let i=0;i<40;i++){const a=i*2.4,R=(60+(i*37)%320)*p;ctx.beginPath();ctx.ellipse(cx+cs(a)*R,cy+sn(a)*R*.6+p*30*(i%3),2,5,a,0,TAU);ctx.fill()}ctx.restore()});
+  aoe(cx,cy,380,ev?3:2.4,'#fff',e=>stn(e,.9));healP(.04)});
+ // ===== III. CITRINITAS — matahari emas & semua musuh jadi emas =====
+ const frozen=[];
+ later(2.5,()=>{if(!ok())return;label('CITRINITAS',GOLD);S2.sun();S.gold();vign('rgba(80,50,0,.6)',1,1.8);
+  const sx=cx,sy=cy-250;
+  V(2.2,(p,t)=>{const k=Math.min(1,p*3)*Math.min(1,(1-p)*3);ctx.save();ctx.globalAlpha=k;glow(sx,sy,260,'#ffd24d',.8);ctx.globalCompositeOperation='lighter';ctx.translate(sx,sy);ctx.rotate(t*.4);for(let i=0;i<18;i++){ctx.rotate(TAU/18);ctx.fillStyle=i%2?'#ffe27a':'#fff2b0';ctx.globalAlpha=k*.7;ctx.beginPath();ctx.moveTo(60,-9);ctx.lineTo(220+(i%3)*30,0);ctx.lineTo(60,9);ctx.fill()}ctx.restore();ctx.save();ctx.globalAlpha=k;const g=ctx.createRadialGradient(sx,sy,0,sx,sy,60);g.addColorStop(0,'#fff');g.addColorStop(.6,'#ffd24d');g.addColorStop(1,'#ff9a1a');ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,sy,60,0,TAU);ctx.fill();ctx.restore();
+   // sinar jatuh ke tiap musuh
+   for(const e of frozen){if(e.hp>0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=k*.35;ctx.strokeStyle='#ffe27a';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(sx,sy+40);ctx.lineTo(e.x,e.y);ctx.stroke();ctx.restore()}}});
+  // hujan emas
+  for(let k=0;k<(ev?36:26);k++)later(.1+k*.04,()=>{if(!ok())return;const gx=cx+rr(-340,340),gy=cy+rr(-220,220);V(.34,p=>{ctx.save();ctx.globalAlpha=1-p*.3;ctx.fillStyle=GOLD;ctx.beginPath();ctx.ellipse(gx,gy-260*(1-p),4,7,0,0,TAU);ctx.fill();ctx.restore()});later(.3,()=>{if(!ok())return;aoe(gx,gy,68,ev?2.2:1.7,GOLD);ring(gx,gy,3,68,GOLD,.3,4);burst(gx,gy,GOLD,4,150,.3);if(k%5===0)S.gold()})});
+  // membatu jadi emas
+  later(.5,()=>{if(!ok())return;for(const e of inR(cx,cy,420)){stn(e,2.6);frozen.push(e);const ex=e.x,ey=e.y,er=e.r;V(2.4,(p,t)=>{const f=1-Math.max(0,p-.85)*6;ctx.save();ctx.globalAlpha=.62*f;ctx.fillStyle='#ffc830';ctx.beginPath();ctx.arc(e.hp>0?e.x:ex,e.hp>0?e.y:ey,er+5,0,TAU);ctx.fill();ctx.globalCompositeOperation='lighter';const sh=(t*2.2)%1;ctx.globalAlpha=.5*f;ctx.fillStyle='#fff';ctx.fillRect((e.hp>0?e.x:ex)-er+sh*er*2-3,(e.hp>0?e.y:ey)-er-4,6,er*2+8);ctx.restore()})}burst(cx,cy,GOLD,24,380,.7);shake=Math.max(shake,.6)})});
+ // ===== IV. RUBEDO — Phoenix menyambar =====
+ later(4.2,()=>{if(!ok())return;label('RUBEDO',ev?'#ff8a9a':'#ff6a4a');S2.screech();vign('rgba(90,10,10,.7)',1,1.8);const c=tgtC(300),tx=c.x,ty=c.y;
+  const NP=ev?3:1;
+  for(let n=0;n<NP;n++){const sx=CAM.x-140-n*60,sy=CAM.y+VH*(.15+n*.12),mx=(sx+tx)/2,my=CAM.y-120-n*40,off=n*.18;
+   later(off,()=>{if(!ok())return;V(1.05,(p,t)=>{const q=Math.min(1,p/.8),mt=1-q,x=mt*mt*sx+2*mt*q*mx+q*q*tx,y=mt*mt*sy+2*mt*q*my+q*q*ty,dx=2*mt*(mx-sx)+2*q*(tx-mx),dy=2*mt*(my-sy)+2*q*(ty-my),a=Math.atan2(dy,dx);if(p<.85)phoenix(x,y,ev?1.15:1.35,a,t,ev);if(Math.random()<.9)burst(x,y,Math.random()<.5?'#ff6a1a':'#ffd24d',2,120,.35)});
+    for(let i=0;i<6;i++)later(i*.12,()=>{if(!ok())return;S2.whoosh()});
+    later(.86,()=>{if(!ok())return;S.boom();shake=Math.max(shake,1.5);ovl(ev?'#ff2a50':'#ff6a1a',.6,.5);const col=ev?CRIM:'#ff6a1a';ring(tx,ty,10,380,'#fff',.6,16);ring(tx,ty,10,300,col,.7,11);ring(tx,ty,10,210,'#ffd24d',.8,7);burst(tx,ty,'#fff',36,520,.8);burst(tx,ty,col,30,420,.7);aoe(tx,ty,340,ev?10:9,col,e=>stn(e,1.4));
+     // pilar api
+     for(let i=0;i<7;i++){const a=i/7*TAU,gx=tx+cs(a)*160,gy=ty+sn(a)*110;V(.9,(p,t)=>{const up=Math.min(1,p/.2),dn=1-Math.max(0,(p-.6)/.4);pillar(gx,gy+8,210,up*dn,col,dn,t)});aoe(gx,gy,66,2,col)}})})}
+  // emas pecah jadi koin
+  later(1.0+(ev?.3:0),()=>{if(!ok())return;S.gold();const coins=[];let cnt=0;for(const e of frozen){if(cnt>90)break;for(let i=0;i<5;i++){cnt++;coins.push({x:e.x,y:e.y,vx:rr(-220,220),vy:rr(-380,-120),r:rr(0,TAU)})}}
+   for(const e of frozen)if(e.hp>0)dm(e,ev?4.5:3.5,GOLD);
+   V(1.7,(p,t)=>{ctx.save();for(const c of coins){const tt=p*1.7;const x=c.x+c.vx*tt,y=c.y+c.vy*tt+520*tt*tt;const w=Math.abs(cs(c.r+tt*12))*5+1;ctx.globalAlpha=1-Math.max(0,p-.7)*3.3;ctx.fillStyle=GOLD;ctx.beginPath();ctx.ellipse(x,y,w,5,0,0,TAU);ctx.fill();ctx.strokeStyle='#8a5a10';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#fff';ctx.globalAlpha*=.8;ctx.fillRect(x-w*.4,y-3,w*.4,2)}ctx.restore()});for(let i=0;i<5;i++)later(i*.1,()=>S2.coin())});
+ });
+ // ===== V. BATU FILSUF — nova pamungkas =====
+ later(5.1+(ev?.2:0),()=>{if(!ok())return;const c=tgtC(300),x=c.x,y=c.y;
+  V(1.0,p=>{const q=Math.min(1,p/.4),Y=y-560*(1-q),sz=ev?74:64;ctx.save();ctx.globalAlpha=1-Math.max(0,p-.85)*6;glow(x,Y-20,200,A,.8);ctx.shadowColor=A;ctx.shadowBlur=28;const sg=ctx.createRadialGradient(x-10,Y-30,0,x,Y-20,sz);sg.addColorStop(0,'#fff');sg.addColorStop(.35,ev?'#ff8a9a':'#ff8a6a');sg.addColorStop(1,ev?'#a0102a':'#9a1a1a');ctx.fillStyle=sg;ctx.beginPath();ctx.moveTo(x,Y-sz);ctx.lineTo(x+sz*.8,Y-sz*.15);ctx.lineTo(x+sz*.5,Y+sz*.7);ctx.lineTo(x-sz*.5,Y+sz*.7);ctx.lineTo(x-sz*.8,Y-sz*.15);ctx.closePath();ctx.fill();ctx.restore()});
+  later(.42,()=>{if(!ok())return;S.boom();S.gold();S.choir();shake=2;ovl('#ffffff',.8,.7);ovl(ev?'#ff2a50':'#ffd24d',.5,.9);
+   for(let k=0;k<5;k++)later(k*.12,()=>{if(!ok())return;ring(x,y,10,260+k*90,k%2?GOLD:(ev?CRIM:'#fff'),.55,12-k)});burst(x,y,'#fff',60,560,.9);burst(x,y,GOLD,40,460,.8);burst(x,y,A,30,380,.7);
+   aoe(x,y,400,ev?15:13,GOLD,e=>stn(e,1.8));
+   // hujan serpihan emas
+   V(1.6,(p,t)=>{ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<50;i++){const a=i*2.399,R=(40+(i*47)%380)*Math.min(1,p*2.5);ctx.globalAlpha=(1-p)*.8;ctx.fillStyle=i%3?GOLD:'#fff';ctx.beginPath();ctx.arc(x+cs(a)*R,y+sn(a)*R*.7+p*60,2+(i%3),0,TAU);ctx.fill()}ctx.restore()});
+   if(ev&&minions.length<60){const hp=1000*P.sumPow;minions.push({x:clp(P.x+(P.face>0?90:-90),20,W-20),y:P.y,r:18,hp,max:hp,dmg:48*P.sumPow+P.dmg*1.6,spd:110,cd:0,life:32,ck:'goldgolem',ev:true,ab:'slam',abT:1,xg:1});fx.push({x:P.x,y:P.y-90,t:2.2,txt:'GOLEM EMAS BANGKIT!',col:GOLD,sz:16})}
+   fx.push({x:P.x,y:P.y-70,t:2.4,txt:ev?'PENCIPTAAN ULANG!':'MAGNUM OPUS!',col:ev?'#ff8a9a':GOLD,sz:18})})});
+};
+ULTS.opus.fn=function(){run(false)};ULTS.opusE.fn=function(){run(true)};
+ULTS.opus.cap=['Hitam… putih… kuning… merah…','Magnum Opus! Dari kegelapan lahir emas!'];
+ULTS.opusE.cap=['Batu Filsuf berdenyut… materi tunduk padaku…','Penciptaan Ulang! Phoenix, bakar dunia jadi emas!'];
+window.__OPUS2={phoenix,crow,dove};
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
