@@ -10747,6 +10747,42 @@ const ADD={default:null,bonestaff:'🐾 Summon: Anjing Tulang (cepat, gigitan be
 for(const id in ADD){if(ADD[id]&&WEAPONS[id]&&!/🐾/.test(WEAPONS[id].d))WEAPONS[id].d+='\n'+ADD[id]}
 }
 
+// ===== nv58: SIMPAN & LANJUTKAN RUN =====
+{
+const KEY='stickman_runsave_v1';
+const trn=()=>{try{return typeof isTR==='function'&&isTR()}catch(_){return false}};
+const ser=o=>{const seen=new WeakSet();return JSON.stringify(o,(k,v)=>{if(typeof v==='function')return undefined;if(v&&typeof v==='object'){if(v.nodeType)return undefined;if(seen.has(v))return undefined;seen.add(v)}return v})};
+const info=s=>{try{const c=CLASSES[s.k],w=WEAPONS[s.w];return (c?c.n:s.k)+' • '+(w?w.n:s.w)+' • Wave '+s.floor+(s.endless?' ♾️':'')}catch(_){return 'Run tersimpan'}};
+const canSave=()=>!!(P&&typeof lastK!=='undefined'&&lastK&&(state==='play'||state==='pause')&&!trn()&&!(typeof PV!=='undefined'&&PV.on));
+const saveRun=()=>{try{if(!canSave())return false;const s={v:1,k:lastK,w:lastW,diff,floor,endless:!!window.__endless,stats:stats||null,P:JSON.parse(ser(P)),t:Date.now()};localStorage.setItem(KEY,JSON.stringify(s));return true}catch(_){return false}};
+const getSave=()=>{try{const s=JSON.parse(localStorage.getItem(KEY)||'null');return s&&s.v===1&&s.P?s:null}catch(_){return null}};
+const clearSave=()=>{try{localStorage.removeItem(KEY)}catch(_){}};
+const loadRun=()=>{const s=getSave();if(!s)return false;
+  try{$('title').classList.add('hide');diff=s.diff||diff;start(s.k,s.w);
+   Object.assign(P,s.P);window.__endless=!!s.endless;if(s.stats)stats=s.stats;
+   floor=Math.max(0,(s.floor||1)-1);
+   if(s.floor>1){P.max=Math.max(1,P.max-6);P.hp=Math.max(1,P.hp-6);P.dmg/=1.015}
+   P.inv=1.5;P.dashT=0;P.cd=0;nextFloor();
+   flash('▶ Dilanjutkan dari Wave '+s.floor);return true}catch(e){console.error(e);return false}};
+// tombol di menu jeda
+{const b=document.createElement('button');b.id='pSave';b.textContent='💾 Simpan & Keluar';b.style.cssText='border-color:#7fe0a0';
+ b.onclick=()=>{if(saveRun()){try{musicStop()}catch(_){}showTitle();flash('💾 Tersimpan — lanjutkan dari menu utama')}else{flash('Mode ini tidak bisa disimpan')}};
+ const m=$('pMenu');m.parentNode.insertBefore(b,m);
+ const _t=togglePause;togglePause=function(){const r=_t.apply(this,arguments);try{b.style.display=trn()?'none':''}catch(_){}return r};
+ $('pResume').onclick=togglePause;$('pauseBtn').onclick=togglePause}
+// tombol lanjutkan di menu utama
+const cb=document.createElement('button');cb.id='btnContinue';cb.className='big';cb.style.cssText='border-color:#7fe0a0;background:#1c4a30;display:none';
+cb.onclick=()=>{if(!loadRun()){flash('Gagal memuat simpanan');clearSave();refresh()}};
+{const bp=$('btnPlay');bp.parentNode.insertBefore(cb,bp)}
+const refresh=()=>{const s=getSave();if(s){cb.style.display='';cb.innerHTML='▶ LANJUTKAN<br><small style="font-weight:400;opacity:.85">'+info(s)+'</small>'}else cb.style.display='none'};
+{const _s=showTitle;showTitle=function(){const r=_s.apply(this,arguments);refresh();return r}}
+// simpan otomatis tiap awal wave, saat aplikasi ditutup/disembunyikan
+{const _n=nextFloor;nextFloor=function(){const r=_n.apply(this,arguments);if(!trn())saveRun();return r}}
+{const _e=endGame;endGame=function(){clearSave();return _e.apply(this,arguments)}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)saveRun()});addEventListener('pagehide',saveRun);
+window.__SAVE={saveRun,loadRun,getSave,clearSave};refresh();
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
