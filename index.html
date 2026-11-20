@@ -10598,8 +10598,8 @@ const SC={
    for(let i=0;i<5;i++){const q=cs(u*1.3-i*.12);if(q<=0)continue;const x=W*(.1+i*.2),y=H*(.78-q*.55)+Math.sin(T*3+i)*6;wing(x,y,26+q*8,Math.sin(T*7+i)*.25,.9*q,'#fff');spear(x,y+4,-Math.PI/2,90,5,true,q)}
    if(act===1){ttl('GUNGNIR: BIFROST',W/2,H*.15,30+u*30,'#fff',u)}
    else{const k=Math.max(0,1-d*.65);ttl('JEMBATAN BIFROST!',W/2+Math.sin(T*60)*3,H*.2+Math.sin(T*47)*3,Math.min(90,40+d*120),'#fff',k,Math.sin(T*3)*.03);for(let i=0;i<7;i++)ttl('',0,0,1,'#fff',0)}}}};
-const PROP={gungnir:(I,t,ft)=>{const h=I.h1;ctx.save();spear(h[0],h[1]-8,-Math.PI/2-.12,150,5,false,1);ctx.globalCompositeOperation='lighter';ctx.fillStyle=ICE;ctx.globalAlpha=.4+.3*Math.sin(t*9);ctx.beginPath();ctx.arc(h[0]-14,h[1]-96,7,0,TAU);ctx.fill();ctx.restore()},
- gungnirE:(I,t,ft)=>{const h=I.h1;ctx.save();spear(h[0],h[1]-8,-Math.PI/2-.12,160,5,true,1);wing(h[0]-16,h[1]-100,18,Math.sin(t*8)*.2,.9,'#fff');ctx.restore()}};
+const PROP={gungnir:(I,t,ft)=>{const h=I.h1;ctx.save();spear(h[0],h[1]-2,-Math.PI/2-.12,36,1.6,false,1);ctx.globalCompositeOperation='lighter';ctx.fillStyle=ICE;ctx.globalAlpha=.4+.3*Math.sin(t*9);ctx.beginPath();ctx.arc(h[0]-6,h[1]-30,2.6,0,TAU);ctx.fill();ctx.restore()},
+ gungnirE:(I,t,ft)=>{const h=I.h1;ctx.save();spear(h[0],h[1]-2,-Math.PI/2-.12,40,1.8,true,1);wing(h[0]-6,h[1]-24,6,Math.sin(t*8)*.2,.9,'#fff');ctx.restore()}};
 const CF={gungnir:['ragna',GOLD,'fly',{z1:1.3,z2:1.8,r:4,fy:.62,w:30,sh:16},'MYTHIC','Gungnir, Tombak Takdir'],gungnirE:['ragna','#ffffff','float',{z1:1.3,z2:1.85,r:5,fy:.6,w:32,sh:18},'MYTHIC EVOLUSI','Gungnir: Bifrost']};
 for(const id in CF){const [base,col,mode,cam,tnm,wn]=CF[id],B=CHO[base],U=ULTS[id];if(!B||!U)continue;CINE[id]=SC[id];CAMC[id]=cam;CHO[id]=Object.assign({},B,{mode,col,dl:.05,ghost:0,prop:PROP[id]});delete CHO[id].back;delete CHO[id].front;Object.assign(U,{cine:id,tn:tnm,ft:FT,d:id==='gungnirE'?5.0:4.7,wn})}
 }
@@ -10948,13 +10948,57 @@ const SC={
   fg(t,T,act){const u=cs2((t-1.2)/(FT-1.2)),d=t-FT;
    if(act===1){ttl('THALASSA: LEVIATHAN',W/2,H*.15,28+u*28,TEAL,u)}
    else{const k=Math.max(0,1-d*.65);ttl('PASANG KIAMAT!',W/2+sn(T*60)*3,H*.2+sn(T*47)*3,Math.min(90,40+d*120),TEAL,k,sn(T*3)*.03)}}}};
-const PROP={thalassa:(I,t,ft)=>{const h=I.h1;ctx.save();bow(h[0]+16,h[1]-6,0,26,false,1);arrow(h[0]+22,h[1]-6,0,50,3,false,1);ctx.restore()},
- thalassaE:(I,t,ft)=>{const h=I.h1;ctx.save();bow(h[0]+16,h[1]-6,0,30,true,1);arrow(h[0]+24,h[1]-6,0,56,3.5,true,1);gl(h[0]+16,h[1]-6,40,'#2affc0',.35);ctx.restore()}};
+const PROP={thalassa:(I,t,ft)=>{const h=I.h1;ctx.save();bow(h[0]+5,h[1]-2,0,9,false,1);arrow(h[0]+6,h[1]-2,0,22,1.3,false,1);ctx.restore()},
+ thalassaE:(I,t,ft)=>{const h=I.h1;ctx.save();bow(h[0]+5,h[1]-2,0,10,true,1);arrow(h[0]+6,h[1]-2,0,24,1.5,true,1);gl(h[0]+5,h[1]-2,16,'#2affc0',.35);ctx.restore()}};
 const CF={thalassa:['astra',CY,'float',{z1:1.25,z2:1.7,r:4,fy:.6,w:28,sh:14},'MYTHIC','Thalassa, Busur Samudra Dalam'],thalassaE:['astra','#2affc0','float',{z1:1.3,z2:1.85,r:5,fy:.6,w:32,sh:18},'MYTHIC EVOLUSI','Thalassa: Leviathan']};
 for(const id in CF){const [base,col,mode,cam,tnm,wn]=CF[id],B=CHO[base]||CHO.ragna,U=ULTS[id];if(!B||!U)continue;CINE[id]=SC[id];CAMC[id]=cam;CHO[id]=Object.assign({},B,{mode,col,dl:.05,ghost:0,prop:PROP[id]});delete CHO[id].back;delete CHO[id].front;Object.assign(U,{cine:id,tn:tnm,ft:FT,d:id==='thalassaE'?5.0:4.7,wn})}
 }
 window.__THAL={S,bow,arrow,tentacle,whirl};
 if(window.__BAL)window.__BAL.thalassa=.9;
+}
+
+// ===== nv60: MODEL BUSUR ARCHER BARU (busur biasa, Busur Es, Astra) =====
+{
+const TAU=6.2832,sn=Math.sin,cs=Math.cos;
+const evo=()=>!!(P&&P.evoM);
+const limb=(r,sgn,w)=>{ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(r*.55,sgn*r*.35,r*.75,sgn*r*1.0,r*.38,sgn*r*1.55);ctx.bezierCurveTo(r*.28,sgn*r*1.75,r*.42,sgn*r*1.9,r*.62,sgn*r*1.86);ctx.lineWidth=w;ctx.stroke()};
+const stringL=(r,col,w)=>{ctx.strokeStyle=col;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(r*.62,-r*1.86);ctx.lineTo(-r*.28,0);ctx.lineTo(r*.62,r*1.86);ctx.stroke()};
+const star4=(x,y,s,c)=>{ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(x,y-s);ctx.quadraticCurveTo(x+s*.18,y-s*.18,x+s,y);ctx.quadraticCurveTo(x+s*.18,y+s*.18,x,y+s);ctx.quadraticCurveTo(x-s*.18,y+s*.18,x-s,y);ctx.quadraticCurveTo(x-s*.18,y-s*.18,x,y-s);ctx.fill()};
+const nock=(r,col,head)=>{ctx.save();ctx.strokeStyle='#8a6a3a';ctx.lineWidth=Math.max(1.4,r*.09);ctx.beginPath();ctx.moveTo(-r*.28,0);ctx.lineTo(r*1.9,0);ctx.stroke();
+ ctx.fillStyle=head||'#d8d8e8';ctx.beginPath();ctx.moveTo(r*2.25,0);ctx.lineTo(r*1.85,-r*.22);ctx.lineTo(r*1.9,0);ctx.lineTo(r*1.85,r*.22);ctx.closePath();ctx.fill();
+ ctx.fillStyle=col;for(const s of[-1,1]){ctx.beginPath();ctx.moveTo(-r*.28,0);ctx.lineTo(-r*.55,s*r*.28);ctx.lineTo(-r*.05,s*r*.1);ctx.closePath();ctx.fill()}ctx.restore()};
+// ---- busur kayu biasa (default) ----
+AW.bow=(r,oc,T)=>{ctx.save();ctx.translate(-r*.1,0);
+ for(const s of[-1,1]){ctx.strokeStyle='#4a2c12';limb(r,s,Math.max(4,r*.3));ctx.strokeStyle='#b07a3a';limb(r,s,Math.max(2.6,r*.19));ctx.strokeStyle='#e0b070';ctx.globalAlpha=.7;limb(r,s,Math.max(1,r*.06));ctx.globalAlpha=1}
+ ctx.fillStyle='#3a2410';ctx.fillRect(-r*.12,-r*.3,r*.28,r*.6);ctx.fillStyle='#8a1a1a';ctx.fillRect(-r*.12,-r*.12,r*.28,r*.07);ctx.fillRect(-r*.12,r*.05,r*.28,r*.07);
+ ctx.fillStyle='#caa24a';for(const s of[-1,1]){ctx.beginPath();ctx.arc(r*.62,s*r*1.86,r*.09,0,TAU);ctx.fill()}
+ stringL(r,'#f4ecd0',1.1);nock(r,'#c83030');ctx.restore()};
+// ---- Busur Es (rare) dan bentuk evolusinya ----
+const iceBow=(r,T,ev)=>{const c1=ev?'#e8fbff':'#8fdcff',c2=ev?'#5ae8ff':'#4aa8e0',gl=ev?'#7fffe8':'#8fdcff';
+ ctx.save();ctx.translate(-r*.1,0);ctx.shadowColor=gl;ctx.shadowBlur=ev?16:10;
+ for(const s of[-1,1]){ctx.strokeStyle=c2;limb(r*(ev?1.12:1),s,Math.max(4,r*.3));ctx.strokeStyle=c1;limb(r*(ev?1.12:1),s,Math.max(2,r*.14));
+  const K=ev?1.12:1;ctx.fillStyle=c1;ctx.beginPath();ctx.moveTo(r*.62*K,s*r*1.86*K);ctx.lineTo(r*.9*K,s*r*2.2*K);ctx.lineTo(r*.38*K,s*r*2.0*K);ctx.closePath();ctx.fill();
+  for(let i=0;i<3;i++){const u=.3+i*.28,x=r*(.5+u*.22)*K,y=s*r*(.4+u*1.2)*K;ctx.fillStyle=c1;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+r*.2,y+s*r*.04);ctx.lineTo(x+r*.05,y+s*r*(.28+i*.07));ctx.closePath();ctx.fill()}}
+ ctx.shadowBlur=0;ctx.fillStyle='#2a6a9a';ctx.fillRect(-r*.12,-r*.3,r*.28,r*.6);
+ ctx.save();ctx.translate(r*.02,0);ctx.rotate(T*.6);ctx.fillStyle=ev?'#fff':'#dff6ff';for(let k=0;k<6;k++){ctx.rotate(TAU/6);ctx.fillRect(-r*.04,-r*.26,r*.08,r*.26)}ctx.restore();
+ stringL(r*(ev?1.12:1),ev?'#e8fbff':'#bfeaff',1.2);nock(r*(ev?1.12:1),gl,'#e8fbff');
+ ctx.globalAlpha=.8;ctx.fillStyle='#fff';for(let i=0;i<(ev?6:3);i++){const t=(T*.8+i*.37)%1;ctx.beginPath();ctx.arc(r*(.3+sn(i*2.3)*.5),(-1+t*2)*r*1.6,r*.07,0,TAU);ctx.fill()}
+ if(ev){ctx.globalAlpha=.55;ctx.strokeStyle='#7fffe8';ctx.lineWidth=1.4;for(let k=0;k<2;k++){ctx.beginPath();ctx.arc(r*.1,0,r*(2.1+k*.35),-.9+T*.3*(k?-1:1),.9+T*.3*(k?-1:1));ctx.stroke()}}
+ ctx.restore()};
+AW.fbow=(r,oc,T)=>iceBow(r,T,false);AW.fbowL=(r,oc,T)=>iceBow(r,T,true);
+// ---- Astra: busur bintang (Mythic) ----
+AW.astra=(r,oc,T)=>{const ev=evo(),K=ev?1.12:1;ctx.save();ctx.translate(-r*.1,0);
+ ctx.shadowColor=ev?'#b08aff':'#9fd0ff';ctx.shadowBlur=ev?18:12;
+ for(const s of[-1,1]){ctx.strokeStyle=ev?'#2a1a6a':'#12206a';limb(r*K,s,Math.max(4.5,r*.32));ctx.strokeStyle=ev?'#ffd24d':'#ffe27a';limb(r*K,s,Math.max(1.6,r*.1));
+  ctx.shadowBlur=0;for(let i=0;i<4;i++){const u=.2+i*.22,x=r*(.4+sn(u*3)*.28)*K,y=s*r*(.3+u*1.5)*K;ctx.fillStyle=i%2?'#fff':(ev?'#d8b8ff':'#bfe0ff');ctx.beginPath();ctx.arc(x,y,r*(i%2?.05:.08),0,TAU);ctx.fill()}ctx.shadowBlur=ev?18:12}
+ ctx.shadowBlur=0;ctx.fillStyle='#12206a';ctx.fillRect(-r*.12,-r*.3,r*.28,r*.6);star4(r*.02,0,r*.4,ev?'#ffd24d':'#ffe27a');star4(r*.02,0,r*.18,'#fff');
+ for(const s of[-1,1])star4(r*.62*K,s*r*1.86*K,r*.26,'#fff');
+ stringL(r*K,ev?'#e8d8ff':'#dff0ff',1.1);nock(r*K,ev?'#b08aff':'#9fd0ff','#fff6c0');
+ ctx.globalAlpha=.8;for(let i=0;i<(ev?5:3);i++){const a=T*1.4+i*(TAU/(ev?5:3)),R=r*(ev?2.3:1.9);star4(r*.1+cs(a)*R*.55,sn(a)*R,r*.12,i%2?'#fff':(ev?'#ffd24d':'#bfe0ff'))}
+ if(ev){ctx.globalAlpha=.4;ctx.strokeStyle='#b08aff';ctx.lineWidth=1.2;ctx.beginPath();ctx.ellipse(r*.1,0,r*1.3,r*2.5,0,0,TAU);ctx.stroke()}
+ ctx.restore()};
+// pastikan whitelist gambar memuat bentuk evolusi busur es
+window.__NG=window.__NG||{};window.__NG.fbowL=1;
 }
 
 TWISTS.survive.min=9999;
