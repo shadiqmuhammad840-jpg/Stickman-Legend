@@ -11376,6 +11376,50 @@ ULTS.opusE.cap=['Batu Filsuf berdenyut… materi tunduk padaku…','Penciptaan U
 window.__OPUS2={phoenix,crow,dove};
 }
 
+// ===== nv64: SAYAP SKIN VARIATIF — tiap senjata bentuk sayap berbeda, sebagian sayap dihapus =====
+{
+const TAU=6.2832,sn=Math.sin,cs=Math.cos;
+const feather=(r,T,c,c2,o)=>{o=o||{};const fl=sn(T*5)*.12,n=o.n||6,len=o.len||1;ctx.fillStyle=c;ctx.strokeStyle=c2;ctx.lineWidth=.6;
+ for(let row=0;row<2;row++)for(let i=0;i<(row?n-1:n);i++){const a=(o.a0==null?-1.25:o.a0)+i*(o.da||.3)+(row?.15:0)+fl+(o.bend||0)*i*.1,L=r*(row?1.7:2.5)*len*(1-i*.04);ctx.save();ctx.rotate(a);ctx.globalAlpha=row?.8:.92;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(L*.5,-r*.3,L,0);ctx.quadraticCurveTo(L*.5,r*.3,0,0);ctx.fill();ctx.globalAlpha=.5;ctx.stroke();ctx.restore()}
+ ctx.globalAlpha=.95;ctx.fillStyle=c2;ctx.beginPath();ctx.ellipse(r*.5,-r*.55,r*.55,r*.28,-.7,0,TAU);ctx.fill();ctx.globalAlpha=1};
+const bat=(r,T,c,c2,k)=>{k=k||1;ctx.save();ctx.scale(k,k);const fl=sn(T*6)*.3,W=[r*1.5,-r*1.6+fl*r*.4],P=[[r*2.8,-r*.9+fl*r*.5],[r*2.7,r*.2+fl*r*.3],[r*1.9,r*1],[r*.9,r*.85]];
+ ctx.fillStyle=c;ctx.globalAlpha=.9;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(W[0],W[1]);let px=W[0],py=W[1];for(const p of P){ctx.quadraticCurveTo((px+p[0])/2-r*.15,(py+p[1])/2+r*.25,p[0],p[1]);px=p[0];py=p[1]}ctx.quadraticCurveTo(r*.3,r*.9,0,r*.45);ctx.closePath();ctx.fill();
+ ctx.globalAlpha=1;ctx.strokeStyle=c2;ctx.lineWidth=Math.max(1,r*.1);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(W[0],W[1]);for(const p of P){ctx.moveTo(W[0],W[1]);ctx.lineTo(p[0],p[1])}ctx.stroke();ctx.beginPath();ctx.arc(W[0],W[1],r*.12,0,TAU);ctx.fillStyle=c2;ctx.fill();ctx.restore()};
+const sun=(r,T,c,c2)=>{ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<9;i++){const a=-1.4+i*.3+sn(T*2+i)*.03,L=r*(2.3+(i%2)*.9);ctx.save();ctx.rotate(a);ctx.fillStyle=i%2?c2:c;ctx.globalAlpha=.8;ctx.beginPath();ctx.moveTo(r*.2,-r*.14);ctx.lineTo(L,0);ctx.lineTo(r*.2,r*.14);ctx.fill();ctx.restore()}
+ const g=ctx.createRadialGradient(0,0,0,0,0,r*1.2);g.addColorStop(0,c2);g.addColorStop(1,'rgba(0,0,0,0)');ctx.globalAlpha=.6;ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,r*1.2,0,TAU);ctx.fill();ctx.restore()};
+const blade=(r,T,c,c2)=>{const sw=sn(T*3)*.05;for(let i=0;i<5;i++){const a=-1.0+i*.4+sw,L=r*(3-i*.22),w=r*.34;ctx.save();ctx.rotate(a);ctx.fillStyle=c;ctx.globalAlpha=.95;ctx.beginPath();ctx.moveTo(r*.15,-w*.45);ctx.lineTo(L*.85,-w*.3);ctx.lineTo(L,0);ctx.lineTo(L*.85,w*.3);ctx.lineTo(r*.15,w*.45);ctx.closePath();ctx.fill();ctx.strokeStyle=c2;ctx.lineWidth=Math.max(1,r*.07);ctx.beginPath();ctx.moveTo(r*.3,0);ctx.lineTo(L*.95,0);ctx.stroke();ctx.restore()}ctx.globalAlpha=1};
+const fin=(r,T,c,c2)=>{const w=sn(T*3)*r*.25;ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.55;ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(0,-r*.2);ctx.bezierCurveTo(r*1.2,-r*1.9,r*2.7,-r*1.1+w,r*3.1,r*.3+w);ctx.bezierCurveTo(r*2.1,r*.1+w*.6,r*1.1,r*.9,0,r*.7);ctx.closePath();ctx.fill();ctx.globalAlpha=.7;ctx.strokeStyle=c2;ctx.lineWidth=Math.max(1,r*.06);for(let i=0;i<6;i++){const u=i/5;ctx.beginPath();ctx.moveTo(0,r*.1);ctx.quadraticCurveTo(r*(1+u*.9),-r*(1.1-u*1.2)+w*u,r*(1.5+u*1.55),-r*(1.0-u*1.2)+w*u);ctx.stroke()}ctx.restore()};
+const flame=(r,T,c,c2)=>{ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<6;i++){const a=-1.25+i*.36,L=r*(2.3+sn(T*9+i*1.7)*.4);ctx.save();ctx.rotate(a);for(let k=0;k<2;k++){ctx.fillStyle=k?c2:c;ctx.globalAlpha=k?.55:.7;const s=k?.55:1;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(L*.45*s,-r*.45*s,L*s,sn(T*7+i)*r*.2);ctx.quadraticCurveTo(L*.5*s,r*.4*s,0,0);ctx.fill()}ctx.restore()}ctx.restore()};
+const raptor=(r,T,c,c2)=>{const fl=sn(T*4)*.08;for(let i=0;i<7;i++){const a=-.3+i*.15+fl,L=r*(3.4-i*.2);ctx.save();ctx.translate(r*.2+i*r*.08,0);ctx.rotate(a);ctx.fillStyle=c;ctx.globalAlpha=.95;ctx.beginPath();ctx.moveTo(0,-r*.13);ctx.lineTo(L,0);ctx.lineTo(0,r*.17);ctx.fill();ctx.fillStyle=c2;ctx.globalAlpha=.8;ctx.fillRect(L*.55,-r*.06,L*.12,r*.1);ctx.fillRect(L*.78,-r*.03,L*.08,r*.06);ctx.restore()}
+ for(let i=0;i<4;i++){ctx.save();ctx.translate(0,-r*.1-i*r*.08);ctx.rotate(-.5+i*.1+fl);ctx.fillStyle=c2;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(r*.7,0,r*.75,r*.22,0,0,TAU);ctx.fill();ctx.restore()}ctx.globalAlpha=1};
+const storm=(r,T,c,c2)=>{ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor=c;ctx.shadowBlur=10;for(let i=0;i<3;i++){const a=-1.0+i*.65,L=r*(2.8-i*.2);ctx.save();ctx.rotate(a);for(const[w,col]of[[r*.3-i*r*.04,c],[r*.1,c2]]){ctx.strokeStyle=col;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(0,0);for(let s=1;s<=5;s++){ctx.lineTo(L*s/5,(s%2?-1:1)*r*.3+sn(T*20+i*3+s)*r*.08)}ctx.stroke()}ctx.restore()}ctx.shadowBlur=0;ctx.globalAlpha=.3;ctx.fillStyle=c2;for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(r*(.3+i*.5),-r*(.1+i*.25),r*(.5-i*.08),0,TAU);ctx.fill()}ctx.restore()};
+const STY={
+ feather:(r,T,c,c2)=>feather(r,T,c,c2),
+ bat:(r,T,c,c2)=>bat(r,T,c,c2),sun,blade,fin,flame,raptor,storm,
+ broken:(r,T,c,c2,sd)=>{if(sd>0)feather(r,T,c,c2);else{feather(r,T,c,c2,{n:3,len:.55,a0:.5,da:.28,bend:1.2});for(let i=0;i<2;i++){const q=(T*.4+i*.5)%1;ctx.save();ctx.globalAlpha=1-q;ctx.fillStyle=c;ctx.translate(r*(.8+i*.6),r*(.6+q*2.2));ctx.rotate(q*3+i);ctx.beginPath();ctx.ellipse(0,0,r*.5,r*.14,0,0,TAU);ctx.fill();ctx.restore()}}},
+ stub:(r,T,c,c2,sd)=>{ctx.save();ctx.rotate(sn(T*9+(sd>0?0:2))*.18);bat(r,T*1.6,c,c2,sd>0?.5:.34);ctx.restore()}
+};
+const wingK=(style,c,c2)=>{const g=(x,y,r,f,T)=>{ctx.save();ctx.translate(x,y-r*.35);for(const sd of[-1,1]){ctx.save();ctx.scale(sd,1);try{STY[style](r,T,c,c2,sd)}catch(e){}ctx.restore()}ctx.restore()};g.nw=1;return g};
+const isW=g=>!g.nw&&/sd\*r\*2\.6/.test(g.toString());
+const MAP={ // key: [gaya, warna, warna2] — null = hapus sayap
+ harpL:['feather','#fffbe0','#ffe27a'],
+ babelbow:['sun','#ffd24d','#fff2b0'],
+ gungnirE:['blade','#dfe8f4','#7fe8ff'],
+ thalassaE:['fin','#2affc0','#e0fff8'],
+ abyss:null,abyssE:null,opusE:null,
+ gabriel:['feather','#ffffff','#ffd24d'],
+ 'Iblis Agung':['bat','#3a1060','#ff4a2a'],
+ 'Burung Surya':['raptor','#ffb020','#fff2a0'],
+ 'Elang Badai':['storm','#8a6aff','#ffffff'],
+ 'Valkyrie Jatuh':['broken','#9aa8c8','#e0e8ff'],
+ 'Kraken Palung':null,
+ 'Homunculus Gagal':['stub','#7a2a2a','#d08a8a']};
+const fix=(tab,extra)=>{for(const k in tab){const o=tab[k];if(!o||!o.pre||!o.pre.some(isW))continue;const m=MAP[k]!==undefined?MAP[k]:['feather','#ffffff','#ffe27a'];
+ o.pre=o.pre.map(g=>isW(g)?(m?wingK(m[0],m[1],m[2]):null):g).filter(Boolean);if(!m&&extra&&extra[k])o.pre.splice(1,0,extra[k])}};
+fix(SKIN,{abyssE:K.aura('#ff3a2a')});fix(COS);
+window.__WINGS={STY,wingK};
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
