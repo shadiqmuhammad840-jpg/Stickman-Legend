@@ -11751,6 +11751,9 @@ window.__RIFTE={hole,frame,cut};
 const KEY='stickman_evodesc';
 const gv=()=>{try{return localStorage.getItem(KEY)==='1'}catch(e){return false}},sv=v=>{try{localStorage.setItem(KEY,v?'1':'0')}catch(e){}};
 const EVS={ // baris statistik evolusi (yang dibuat tangan)
+ prismstaff:'✨ Damage ×2.1, jangkauan +45, kritis +14%, serangan 18% lebih cepat, HP maks +30%. Tiap serangan dibiaskan ke 4 musuh; tiap 7 detik Nova Spektrum otomatis meledak.',
+ kingbanner:'✨ Damage ×2, kapasitas pasukan +8, kekuatan summon ×1.7, HP maks +30%. Pengawal kerajaan datang tiap 2 serangan; tiap 9 detik Panggilan Kaisar memanggil kavaleri.',
+ moirai:'✨ Damage +45%, kritis +10%. Benang takdir menyambar tiap serangan; Mesin Tenun Semesta memberi jaring bintang & pemotongan kosmik.',
  gungnir:'✨ Damage +40%, jangkauan +20, curi nyawa +4%, serangan 8% lebih cepat. Tombak berubah jadi tombak pelangi.',
  thalassa:'✨ Damage +40%, jangkauan +40, kritis +5%, serangan 8% lebih cepat. Busur berubah jadi Leviathan.',
  opus:'✨ Damage +40%, serangan 8% lebih cepat, kritis +5%. Tongkat berubah jadi Rubedo (Batu Filsuf merah).',
@@ -12185,13 +12188,13 @@ COS['Penjaga Spektrum']=CP('#e8e0ff',[K.aura('#ffffff'),K.cape('#2a1a6a',1.6)],[
 SKIN.prismstaffE={col:'#ffffff',pre:[K.aura('#ffffff'),K.cape('#34208a',1.9)],post:[K.hat('#4a30b0'),K.halo('#ffffff'),K.eyes('#ffffff')]};
 TIER.prismstaffE=4;
 {const _e=evolveTo;evolveTo=function(w){if(w!=='prismstaff'||!P||P.cls!=='mage')return _e.apply(this,arguments);
-  P.evoM=true;P.dmg*=1.4;P.ultCd=0;P.skCd=0;P.sk2Cd=0;P.range+=30;P.crit+=.08;P.rate=Math.max(.2,P.rate*.9);
+  P.evoM=true;P.dmg*=2.1;P.ultCd=0;P.skCd=0;P.sk2Cd=0;P.range+=45;P.crit+=.14;P.rate=Math.max(.18,P.rate*.82);P.max*=1.3;P.hp=P.max;
   sfx('evolve');flash('✦ PRISMA BEREVOLUSI ✦');evoShow('#ffffff');S.chime();S.hum();
   for(let k=0;k<7;k++)fx.push({x:P.x,y:P.y,ring:80+k*30,t:.7+k*.06,col:RB[k]});
   fx.push({x:P.x,y:P.y-70,t:2.6,txt:'✦ KATEDRAL PRISMA: CAHAYA PERTAMA ✦',col:'#ffffff',sz:16})}}
 // serangan evolusi: cahaya dibiaskan ke 2 musuh lain
-{const _a=atkExtra;atkExtra=function(t){_a(t);if(!evoP()||!t)return;const L=nearestN(5).filter(e=>e!==t).slice(0,2);
-  L.forEach((e,i)=>{const x0=t.x,y0=t.y,x1=e.x,y1=e.y;V(.3,p=>{bm(x0,y0,x1,y1,5*(1-p)+1,[RB[(i*3)%7],RB[(i*3+2)%7],WH],1-p)});dm(e,.55,RB[(i*3)%7]);burst(x1,y1,RB[(i*3)%7],3,110,.25)});
+{const _a=atkExtra;atkExtra=function(t){_a(t);if(!evoP()||!t)return;const L=nearestN(7).filter(e=>e!==t).slice(0,4);
+  L.forEach((e,i)=>{const x0=t.x,y0=t.y,x1=e.x,y1=e.y;V(.3,p=>{bm(x0,y0,x1,y1,5*(1-p)+1,[RB[(i*3)%7],RB[(i*3+2)%7],WH],1-p)});dm(e,.9,RB[(i*3)%7]);burst(x1,y1,RB[(i*3)%7],3,110,.25)});
   if(L.length)S.refr()}}
 // ---------- SKILL 1: Lensa Pembias ----------
 SKILLS.prismstaffE={n:'Lensa Pembias',ic:'🔭',col:'#ffffff',cd:10,fn(){const c=tgtC(200),cx=c.x,cy=c.y,st=performance.now()/1000,R=130;S.chime();S.hum();P.inv=Math.max(P.inv,.6);
@@ -12259,7 +12262,7 @@ const S={
  march:()=>{for(let i=0;i<6;i++){tn(90,.12,'square',.08,.5,i*.16);nz(.08,.1,500,i*.16)}},
  clang:()=>{nz(.12,.2,3000,0,'highpass');tn(1400,.15,'square',.05,.5)},
  boom:()=>{tn(45,1,'sine',.3,.4);nz(.8,.3,350);tn(130,.8,'sawtooth',.1,.5,.05)}};
-const mk=(ck,hp0,d0,life,x,y,extra)=>{if(minions.length>=60)return null;const hp=hp0*P.sumPow,m=Object.assign({x:clp(x,20,W-20),y:clp(y,20,H-20),r:12,hp,max:hp,dmg:d0*P.sumPow+P.dmg*.7,spd:130,cd:0,life,ck,ev:true},extra||{});minions.push(m);fx.push({x:m.x,y:m.y,ring:m.r+16,t:.35,col:GD});return m};
+const mk=window.__MKK=(ck,hp0,d0,life,x,y,extra)=>{if(minions.length>=60)return null;const hp=hp0*P.sumPow,m=Object.assign({x:clp(x,20,W-20),y:clp(y,20,H-20),r:12,hp,max:hp,dmg:d0*P.sumPow+P.dmg*.7,spd:130,cd:0,life,ck,ev:true},extra||{});minions.push(m);fx.push({x:m.x,y:m.y,ring:m.r+16,t:.35,col:GD});return m};
 // ---------- model senjata evolusi ----------
 {const _o=AW.kingbanner;AW.kingbanner=(r,oc,T)=>{if(!evoK()){_o(r,oc,T);return}
  ctx.save();ctx.lineCap='round';
@@ -12277,14 +12280,14 @@ COS['Kaisar Tanpa Mahkota']=CP('#ffe6bc',[K.aura(GD),K.cape('#8a1410',1.8)],[K.c
 SKIN.kingbannerE={col:'#fff3d0',pre:[K.aura(GD),K.cape('#a01a14',2.0)],post:[K.crown('#fff2b0'),K.pauldron('#ffd24d'),K.eyes('#ff4a3a')]};
 TIER.kingbannerE=4;
 {const _e=evolveTo;evolveTo=function(w){if(w!=='kingbanner'||!P||P.cls!=='summoner')return _e.apply(this,arguments);
-  P.evoM=true;P.dmg*=1.4;P.ultCd=0;P.skCd=0;P.sk2Cd=0;P.sumCap+=4;P.sumPow*=1.25;
+  P.evoM=true;P.dmg*=2.0;P.ultCd=0;P.skCd=0;P.sk2Cd=0;P.sumCap+=8;P.sumPow*=1.7;P.max*=1.3;P.hp=P.max;
   sfx('evolve');flash('✦ PANJI BEREVOLUSI ✦');evoShow('#ffd24d');S.horn();
   for(let k=0;k<6;k++)fx.push({x:P.x,y:P.y,ring:90+k*40,t:.7+k*.06,col:k%2?CR:GD});
   for(let i=0;i<4;i++)later(.1+i*.08,()=>{if(ok())mk('ironknight',150,14,24,P.x+rr(-60,60),P.y+rr(-50,50))});
   fx.push({x:P.x,y:P.y-70,t:2.6,txt:'✦ PANJI KAISAR SEMESTA ✦',col:GL,sz:16})}}
 // serangan evolusi: tiap 3 serangan, pengawal kerajaan tiba
 {const _a=atkExtra;atkExtra=function(t){_a(t);if(!evoK()||!t)return;P.kx=(P.kx||0)+1;
-  if(P.kx%3===0){const a=Math.atan2(t.y-P.y,t.x-P.x);mk(P.kx%6===0?'cav':'ironknight',P.kx%6===0?170:140,13,18,P.x+cs(a)*70+rr(-30,30),P.y+sn(a)*70+rr(-30,30));S.clang()}
+  if(P.kx%2===0){const a=Math.atan2(t.y-P.y,t.x-P.x);mk(P.kx%6===0?'cav':'ironknight',P.kx%6===0?170:140,13,18,P.x+cs(a)*70+rr(-30,30),P.y+sn(a)*70+rr(-30,30));S.clang()}
   burst(t.x,t.y,GD,4,130,.3)}}
 // ---------- SKILL 1: Dekrit Kerajaan ----------
 SKILLS.kingbannerE={n:'Dekrit Kerajaan',ic:'📜',col:GD,cd:10,fn(){S.horn();P.inv=Math.max(P.inv,.9);let n=0;
@@ -12461,7 +12464,7 @@ if(T){
   hg.strokeStyle='#f4eeff';hg.lineWidth=7;hg.lineCap='round';L(0,-150,0,-70);L(0,-70,-18,-8);L(0,-70,18,-8);L(0,-135,-32,-95);L(0,-135,44,-110);
   hg.fillStyle='#f4eeff';hg.beginPath();hg.arc(0,-172,19,0,TAUh);hg.fill();ch.acc(s);hg.fillStyle='#222';hg.fillRect(5,-176,5,5);hg.fillRect(-9,-176,5,5);
   ch.wp(s,44,-110);hg.restore();hg.restore()};
- const draw=t=>{requestAnimationFrame(draw);if(T.classList.contains('hide'))return;if(t-last<33)return;last=t;const s=t/1000,W=600,H=380;if(!t0)t0=s;
+ const draw=t=>{requestAnimationFrame(draw);if(T.classList.contains('hide')||window.__MAPLOBBY)return;if(t-last<33)return;last=t;const s=t/1000,W=600,H=380;if(!t0)t0=s;
   const k=(s-t0)/SH,i=Math.floor(k)%CH.length,ph=k-Math.floor(k);idx=i;const ch=CH[i];
   const al=Math.min(1,ph*6)*Math.min(1,(1-ph)*6),slide=(1-Math.min(1,ph*6))*40-(1-Math.min(1,(1-ph)*6))*40;
   hg.clearRect(0,0,W,H);hg.save();hg.translate(W/2+slide,H*.9);body(s,ch,al);hg.restore();
@@ -12508,6 +12511,58 @@ const TT=['Pemula','Petualang','Prajurit','Veteran','Pahlawan','Penakluk','Legen
 const rank=()=>{const w=RK.get().w,lv=Math.floor(Math.sqrt(w/6))+1;return{lv,t:TT[Math.min(TT.length-1,Math.floor((lv-1)/3))],w}};
 {const vb=document.getElementById('verBadge');if(vb){const r=document.createElement('div');r.id='rankBadge';r.style.cssText='font-size:12px;font-weight:700;color:#cfe;letter-spacing:.5px;margin:2px 0';vb.after(r);const f=()=>{const k=rank();r.textContent='🏅 '+k.t+' · Lv '+k.lv+' · '+k.w+' gelombang dilewati'};f();setInterval(f,3000)}}
 window.__MUT=MUT;window.__ALT=altar;
+}
+
+// ===== nv79: Evolusi Godly lebih kuat (pasif + ULT bonus) & LOBI BERTEMA MAP =====
+{
+const TAU=6.2832,sn=Math.sin,cs=Math.cos;
+const RB=['#ff4a5a','#ffa83a','#ffe84a','#5aff7a','#4ac8ff','#7a6aff','#d86aff'];
+const ok=()=>state==='play'&&P&&!P.dead;
+const aoe=(x,y,r,m,f)=>{let n=0;for(const e of enemies)if(e.hp>0&&Math.hypot(e.x-x,e.y-y)<r+e.r){hit(e,P.dmg*m,'#fff');f&&f(e);n++}return n};
+// ----- pasif evolusi -----
+let tPr=0,tKg=0;
+{const _u=update;update=function(dt){_u(dt);try{if(!ok()||!P.evoM||!enemies.length)return;
+ if(P.weapon==='prismstaff'){tPr+=dt;if(tPr>=7){tPr=0;const x=P.x,y=P.y;for(let k=0;k<7;k++)later(k*.06,()=>{if(ok())ringV(x,y,10,200+k*55,RB[k],.55,9-k)});addV(.5,p=>{ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(1-p)*.5;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,40+300*p,0,TAU);ctx.fill();ctx.restore()});shake=Math.max(shake,.9);aoe(x,y,320,4.5,e=>{if(e.boss||e.mini)e.slow=Math.max(e.slow||0,.8);else e.stun=Math.max(e.stun||0,.9)});healP&&healP(.03);fx.push({x,y:y-60,t:1.4,txt:'✦ NOVA SPEKTRUM',col:'#fff',sz:13})}}
+ else if(P.weapon==='kingbanner'){tKg+=dt;if(tKg>=9){tKg=0;const x=P.x,y=P.y;if(window.__MKK)for(let i=0;i<3;i++)__MKK('cav',200,16,22,x+cs(i*2.1)*80,y+sn(i*2.1)*80);for(const m of minions)if(m.hp>0)m.hp=Math.min(m.max,m.hp+m.max*.3);ringV(x,y,10,320,'#ffd24d',.6,10);ringV(x,y,10,220,'#c0281e',.6,7);shake=Math.max(shake,.7);aoe(x,y,280,3.5,e=>{if(!(e.boss||e.mini))e.stun=Math.max(e.stun||0,.8)});fx.push({x,y:y-60,t:1.4,txt:'👑 PANGGILAN KAISAR',col:'#ffe27a',sz:13})}}
+ }catch(x){}}}
+// ----- ULT bonus: denyut damage ke seluruh musuh selama ULT -----
+const pulse=(id,n,gap,mul,col)=>{const U=ULTS[id];if(!U||U._b)return;U._b=1;const f=U.fn;U.fn=function(){const r=f.apply(this,arguments);for(let i=0;i<n;i++)later(.9+i*gap,()=>{if(!ok())return;for(const e of enemies)if(e.hp>0)hit(e,P.dmg*mul,col)});return r}};
+pulse('prismstaffE',14,.5,1.2,'#ffffff');pulse('kingbannerE',14,.5,2.6,'#ffd24d');
+// ----- LOBI: tampilkan MAP bergantian -----
+const T=document.getElementById('title'),hero=document.getElementById('hero');
+if(T&&hero){window.__MAPLOBBY=1;
+ const css=document.createElement('style');css.textContent='#title>#lobbyBg{position:absolute!important;left:0!important;top:0!important;transform:none!important;width:100%!important;height:100%!important;z-index:-1;box-shadow:none!important;background:none!important;pointer-events:none}';document.head.appendChild(css);
+ const bgc=document.createElement('canvas');bgc.id='lobbyBg';bgc.width=480;bgc.height=270;T.insertBefore(bgc,T.firstChild);
+ const bg=bgc.getContext('2d'),hg=hero.getContext('2d');
+ const ORDER=[0,1,2,4,3,5,6,7,8,9],DESC={0:'Lorong batu dingin: karpet merah, rantai, obor, dan tulang berserakan.',1:'Gua gelap berhias kristal biru dan jamur yang bercahaya.',2:'Nisan tua, pagar besi, kabut, dan lilin-lilin kecil.',3:'Runa ungu, retakan energi, dan serpihan melayang di jurang.',4:'Taman bunga bercahaya, lingkaran jamur, dan berkas cahaya.',5:'Pasir tak berujung, hieroglif, pilar runtuh, dan kaktus.',6:'Sungai lava, batu obsidian, dan bara yang beterbangan.',7:'Lantai es retak, kristal beku, dan salju tebal.',8:'Pelat besi, garis bahaya, pipa, dan mesin raksasa.',9:'Dimensi pecah: kubus melayang dan pita glitch.'};
+ const AC={0:'#ffb070',1:'#7ad8ff',2:'#c8c8ff',3:'#c88aff',4:'#b8ffa0',5:'#ffe0a0',6:'#ff8a40',7:'#e8f8ff',8:'#ffd070',9:'#ff60c8'};
+ // buat latar semua map pelan-pelan (hindari patah saat membuka game)
+ ORDER.forEach((t,i)=>setTimeout(()=>{try{bgImg(t)}catch(e){}},900+i*350));
+ const SHOW=4.2;let last=0,t0=0;
+ const cover=(g,img,cw,ch,z,px,py,al)=>{const s=Math.max(cw/img.width,ch/img.height)*z,w=img.width*s,h=img.height*s;g.globalAlpha=al;g.drawImage(img,(cw-w)*px,(ch-h)*py,w,h)};
+ const wrap=(g,txt,x,y,mw,lh)=>{const ws=txt.split(' ');let l='';for(const w of ws){if(g.measureText(l+w).width>mw&&l){g.fillText(l,x,y);y+=lh;l=''}l+=w+' '}g.fillText(l,x,y)};
+ const draw=t=>{requestAnimationFrame(draw);if(T.classList.contains('hide'))return;if(t-last<40)return;last=t;const s=t/1000;if(!t0)t0=s;
+  const av=ORDER.filter(k=>{try{return bgCache[k]}catch(e){return false}});if(!av.length)return;
+  const k=(s-t0)/SHOW,n=Math.floor(k),ph=k-n,i=n%av.length,tm=av[i],pm=av[(i+av.length-1)%av.length],fade=Math.min(1,ph*3.5);
+  const im=bgImg(tm),pim=bgImg(pm),pan=(sn(s*.15)+1)/2;
+  // latar penuh
+  bg.clearRect(0,0,480,270);bg.globalCompositeOperation='source-over';
+  if(fade<1)cover(bg,pim,480,270,1.5,(sn((s-1)*.15)+1)/2,.85,1);cover(bg,im,480,270,1.5+ph*.1,pan,.85,fade);bg.globalAlpha=1;
+  const q=bg.createLinearGradient(0,0,480,0);q.addColorStop(0,'rgba(4,4,16,.35)');q.addColorStop(.45,'rgba(4,4,16,.72)');q.addColorStop(1,'rgba(4,4,16,.82)');bg.fillStyle=q;bg.fillRect(0,0,480,270);
+  bg.fillStyle=AC[tm];for(let j=0;j<26;j++){const x=((j*53+s*(6+j%5*3))%480),y=270-((j*41+s*(10+j%4*5))%270);bg.globalAlpha=.25+.3*Math.abs(sn(s+j));bg.beginPath();bg.arc(x,y,1+j%3*.6,0,TAU);bg.fill()}bg.globalAlpha=1;
+  // kartu map (kiri)
+  const W=600,H=380;hg.clearRect(0,0,W,H);hg.save();
+  const sl=(1-fade)*30,fx0=26-sl,fy0=14,fw=W-52,fh=224;
+  hg.shadowColor=AC[tm];hg.shadowBlur=26;hg.fillStyle='#000';hg.beginPath();hg.roundRect(fx0,fy0,fw,fh,18);hg.fill();hg.shadowBlur=0;
+  hg.save();hg.beginPath();hg.roundRect(fx0,fy0,fw,fh,18);hg.clip();hg.globalAlpha=fade;const sc=Math.max(fw/im.width,fh/im.height)*1.9,iw=im.width*sc,ih=im.height*sc;hg.drawImage(im,fx0-(iw-fw)*pan,fy0-(ih-fh)*.88,iw,ih);
+  const gg=hg.createLinearGradient(0,fy0+fh*.55,0,fy0+fh);gg.addColorStop(0,'rgba(0,0,0,0)');gg.addColorStop(1,'rgba(0,0,0,.7)');hg.globalAlpha=1;hg.fillStyle=gg;hg.fillRect(fx0,fy0,fw,fh);hg.restore();
+  hg.strokeStyle=AC[tm];hg.lineWidth=3;hg.beginPath();hg.roundRect(fx0,fy0,fw,fh,18);hg.stroke();
+  const idx=ORDER.indexOf(tm);hg.globalAlpha=fade;hg.textAlign='left';hg.font='900 14px system-ui,sans-serif';hg.fillStyle=AC[tm];hg.fillText('MAP '+(idx+1)+' · WAVE '+(idx*10+1)+'–'+(idx*10+10),fx0+16,fy0+fh-14);
+  hg.textAlign='center';hg.font='900 30px Impact,"Arial Black",sans-serif';hg.lineJoin='round';hg.lineWidth=6;hg.strokeStyle='#000';const nm=THEMES[tm].toUpperCase();hg.strokeText(nm,W/2,fy0+fh+40);hg.fillStyle=AC[tm];hg.fillText(nm,W/2,fy0+fh+40);
+  hg.font='600 14px system-ui,sans-serif';hg.fillStyle='#e8e8f4';wrap(hg,DESC[tm],W/2,fy0+fh+66,fw-30,18);hg.globalAlpha=1;
+  for(let j=0;j<ORDER.length;j++){const on=ORDER[j]===tm;hg.fillStyle=on?AC[tm]:'rgba(255,255,255,.28)';hg.beginPath();hg.arc(W/2+(j-4.5)*16,H-12,on?4.5:3,0,TAU);hg.fill()}
+  hg.restore()};
+ requestAnimationFrame(draw)}
 }
 
 TWISTS.survive.min=9999;
