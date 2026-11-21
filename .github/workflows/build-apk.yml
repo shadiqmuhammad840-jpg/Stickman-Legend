@@ -29,8 +29,17 @@ jobs:
           npm init -y >/dev/null
           npm i @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
           npx cap add android
-          # paksa landscape
-          sed -i 's/<activity /<activity android:screenOrientation="sensorLandscape" /' android/app/src/main/AndroidManifest.xml
+          # paksa landscape (aktivitas utama dikunci sensorLandscape sejak peluncuran)
+          python3 - <<'PY'
+          import re
+          p='android/app/src/main/AndroidManifest.xml'
+          s=open(p).read()
+          s=re.sub(r'android:screenOrientation="[^"]*"','',s)
+          s=re.sub(r'<activity\b','<activity android:screenOrientation="sensorLandscape"',s,count=1)
+          open(p,'w').write(s)
+          assert 'sensorLandscape' in s, 'gagal mengunci landscape'
+          PY
+          grep -n "screenOrientation" android/app/src/main/AndroidManifest.xml
           # layar penuh (sembunyikan bar status & navigasi)
           cat > android/app/src/main/java/com/stickman/legend/MainActivity.java <<'JAVA'
           package com.stickman.legend;
@@ -42,6 +51,7 @@ jobs:
 
           public class MainActivity extends BridgeActivity {
             @Override public void onCreate(Bundle b) {
+              setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
               super.onCreate(b);
               getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
               hide();
