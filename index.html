@@ -11797,10 +11797,22 @@ const helix=(x0,y0,a,L,w,T,al,len)=>{ctx.save();ctx.translate(x0,y0);ctx.rotate(
  ctx.globalAlpha=al;ctx.strokeStyle='#fff';ctx.lineWidth=w*.2;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(len,0);ctx.stroke();ctx.restore()};
 const segD=(px,py,x0,y0,x1,y1)=>{const dx=x1-x0,dy=y1-y0,l2=dx*dx+dy*dy||1;let t=((px-x0)*dx+(py-y0)*dy)/l2;t=t<0?0:t>1?1:t;return Math.hypot(px-(x0+dx*t),py-(y0+dy*t))};
 // ---------- model senjata evolusi ----------
-{const _o=AW.babelbow;AW.babelbow=(r,oc,T)=>{_o(r,oc,T);if(!evoB())return;ctx.save();ctx.translate(-r*1.1,-r*.1);glow(0,0,r*2.4,RD,.35);ctx.globalCompositeOperation='lighter';
- for(let i=0;i<3;i++){const a=T*(2.4+i*.8)+i*2.09;ctx.save();ctx.rotate(a);ctx.globalAlpha=.9;const g=ctx.createLinearGradient(-r*.7,0,r*.7,0);g.addColorStop(0,'#a0201a');g.addColorStop(.5,i===1?GD:RD);g.addColorStop(1,'#a0201a');ctx.fillStyle=g;ctx.fillRect(-r*.7,-r*.12,r*1.4,r*.24);ctx.restore()}
- ctx.strokeStyle='#fff';ctx.lineWidth=1.2;ctx.globalAlpha=.8;for(let i=0;i<3;i++){const a=T*3+i*2.1;ctx.beginPath();ctx.arc(0,0,r*(.9+i*.2),a,a+1.1);ctx.stroke()}ctx.restore();
- ctx.save();ctx.fillStyle=RD;ctx.shadowColor=RD;ctx.shadowBlur=10;for(const s of[-1,1]){ctx.beginPath();ctx.moveTo(-r*.2+Math.cos(s*1.2)*r*1.5,Math.sin(s*1.2)*r*1.5);ctx.lineTo(-r*.2+Math.cos(s*1.2)*r*1.5+r*.5,Math.sin(s*1.2)*r*1.5+s*r*.35);ctx.lineTo(-r*.2+Math.cos(s*1.2)*r*1.5+r*.05,Math.sin(s*1.2)*r*1.5-s*r*.1);ctx.fill()}ctx.restore()}}
+{const _o=AW.babelbow;AW.babelbow=(r,oc,T)=>{if(!evoB()){_o(r,oc,T);return}
+ ctx.save();ctx.lineCap='round';const R=r*1.95;
+ // kaki busur: lengkung ganda merah-emas bergerigi
+ for(const[w,col]of[[r*.5,'#7a0e0a'],[r*.3,RD],[r*.12,GD]]){ctx.strokeStyle=col;ctx.lineWidth=w;ctx.shadowColor=RD;ctx.shadowBlur=w>r*.4?0:10;ctx.beginPath();ctx.arc(-r*.5,0,R,-1.18,1.18);ctx.stroke()}
+ ctx.shadowBlur=0;ctx.fillStyle=GD;for(let k=-5;k<=5;k++){if(!k)continue;const a=k*.21,px=-r*.5+cs(a)*R,py=sn(a)*R;ctx.save();ctx.translate(px,py);ctx.rotate(a);ctx.beginPath();ctx.moveTo(0,-r*.22);ctx.lineTo(r*.42,0);ctx.lineTo(0,r*.22);ctx.fill();ctx.restore()}
+ // sayap-tombak di ujung busur
+ for(const s of[-1,1]){const tx=-r*.5+cs(1.18)*R,ty=s*sn(1.18)*R;ctx.save();ctx.translate(tx,ty);ctx.rotate(s*-.55);ctx.fillStyle=GD;ctx.shadowColor=GD;ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-r*.3,s*r*.55);ctx.lineTo(r*.05,s*r*1.35);ctx.lineTo(r*.38,s*r*.5);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(-r*.02,s*r*.1,r*.05,s*r*.9);ctx.restore()}
+ // tali energi
+ const tx=-r*.5+cs(1.18)*R,ty=sn(1.18)*R;ctx.globalCompositeOperation='lighter';ctx.strokeStyle='#ff6a4a';ctx.lineWidth=r*.1;ctx.shadowColor='#ff3a2a';ctx.shadowBlur=14;ctx.beginPath();ctx.moveTo(tx,-ty);ctx.quadraticCurveTo(-r*.5-r*.5-sn(T*14)*r*.1,0,tx,ty);ctx.stroke();ctx.strokeStyle='#fff';ctx.lineWidth=r*.03;ctx.stroke();
+ // inti pusaran: tiga silinder berputar
+ ctx.shadowBlur=0;glow(r*.55,0,r*2,RD,.5);
+ for(let i=0;i<3;i++){const a=T*(2.8+i*.9)+i*2.09;ctx.save();ctx.translate(r*.55,0);ctx.rotate(a);ctx.globalAlpha=.95;const g=ctx.createLinearGradient(-r*.8,0,r*.8,0);g.addColorStop(0,'#7a0e0a');g.addColorStop(.5,i===1?GD:'#ff5a3a');g.addColorStop(1,'#7a0e0a');ctx.fillStyle=g;ctx.fillRect(-r*.85,-r*.14,r*1.7,r*.28);ctx.restore()}
+ ctx.save();ctx.translate(r*.55,0);ctx.strokeStyle='#fff';ctx.lineWidth=r*.07;ctx.globalAlpha=.85;for(let i=0;i<3;i++){const a=T*3+i*2.1;ctx.beginPath();ctx.arc(0,0,r*(.95+i*.22),a,a+1.1);ctx.stroke()}ctx.restore();
+ // gerbang mini & senjata mengorbit
+ for(let i=0;i<4;i++){const a=-T*1.3+i*1.5708,d=r*(2.5+.15*sn(T*2+i));ctx.save();ctx.translate(r*.55+cs(a)*d,sn(a)*d*.8);ctx.globalAlpha=.9;ctx.strokeStyle=GD;ctx.lineWidth=r*.07;ctx.beginPath();ctx.ellipse(0,0,r*.34,r*.22,0,0,TAU);ctx.stroke();ctx.fillStyle='#ffe27a';ctx.beginPath();ctx.arc(0,0,r*.1,0,TAU);ctx.fill();ctx.restore()}
+ ctx.restore()}}
 // ---------- registrasi ----------
 SPECIALS.babelbow={n:'Penjaga Gerbang Emas',col:GD,myth:1};EVN.babelbow='Busur Pusaran Penciptaan';
 COS['Penjaga Gerbang Emas']=CP('#c8a030',[K.aura(GD),K.cape('#6a1410',1.6)],[K.helm('#d8a830'),K.eyes('#ff3a2a'),K.pauldron('#e8c050')],'babelbow',{eye:'#ff3a2a',nm:'PENJAGA GERBANG EMAS',nc:'#ffe27a',sc:1.65});
@@ -11830,29 +11842,39 @@ SKILLS2.babelbowE={n:'Kunci Surgawi',ic:'⛓️',col:RD,cd:14,fn(){const cx=P.x,
   later(.5,()=>{if(!ok())return;aoe(cx,cy,520,1.4,RD)});
   const t0=pts[0];later(.75,()=>{if(!ok())return;const x=t0.hp>0?t0.x:cx,y=t0.hp>0?t0.y:cy;V(.5,p=>{wpn(x,y-560*(1-p*p),1.5708,260,0,'#ffe27a',1);glow(x,y-560*(1-p*p),140,GD,.7)});later(.48,()=>{if(!ok())return;S.boom();shake=Math.max(shake,1.4);ovl('#fff3c0',.5,.4);ring(x,y,10,320,'#fff',.5,12);ring(x,y,10,230,GD,.6,8);burst(x,y,'#fff',26,440,.7);burst(x,y,GD,26,380,.7);aoe(x,y,260,6.5,GD,e=>stn(e,1.2))})})}};
 // ---------- ULT: Pusaran Penciptaan ----------
-ULTS.babelbowE={n:'Pusaran Penciptaan: Cakrawala Terbelah',ic:'🌀',col:RD,cd:55,d:6.8,ft:2.9,cine:'babelbowE',evo:true,wn:'Busur Pusaran Penciptaan',cap:['Gudang harta langit terbuka sepenuhnya…','Pusaran Penciptaan! Cakrawala pun terbelah!'],fn(){
- const cx=P.x,cy=P.y;shake=1;P.inv=Math.max(P.inv,6.8);healP(.2);S.gate();S.spin();ultTint={t:.9,col:'#2a0804'};vign('rgba(70,10,5,.75)',1,1.4);
+ULTS.babelbowE={n:'Pusaran Penciptaan: Cakrawala Terbelah',ic:'🌀',col:RD,cd:55,d:8.2,ft:2.9,cine:'babelbowE',evo:true,wn:'Busur Pusaran Penciptaan',cap:['Gudang harta langit terbuka sepenuhnya…','Pusaran Penciptaan! Cakrawala pun terbelah!'],fn(){
+ const cx=P.x,cy=P.y,eas=x=>x<0?0:x>1?1:x*x*(3-2*x);shake=1.2;P.inv=Math.max(P.inv,8.2);healP(.25);S.gate();S.spin();ultTint={t:.9,col:'#2a0804'};vign('rgba(70,10,5,.8)',1,1.4);
  const label=(txt,col)=>fx.push({x:cx,y:cy-90,t:.9,txt,col,sz:16});
- // I. gudang harta: tembok gerbang & hujan senjata
+ // I. gudang harta: tembok gerbang + hujan senjata (termasuk tombak raksasa)
  const rows=[];for(let r=0;r<3;r++)for(let i=0;i<14;i++)rows.push({x:CAM.x+VW*((i+.5)/14)+(r%2)*20,y:CAM.y+34+r*46,d:r*.12+i*.025});
- later(0,()=>{if(!ok())return;label('GUDANG HARTA',GD);V(2.2,(p,t)=>{const k=1-Math.max(0,p-.85)*6.7;for(const g of rows){const q=Math.max(0,Math.min(1,(t-g.d)/.35));if(q>0)portal(g.x,g.y,18+q*6,i1(g),t,q*k)}});
-  const i1=g=>GD;const L=enemies.filter(e=>e.hp>0);
-  later(.6,()=>{if(!ok())return;for(let k=0;k<54;k++)later(k*.028,()=>{if(!ok())return;const g=rows[Math.floor(Math.random()*rows.length)],t=L.length&&k%4?L[Math.floor(Math.random()*L.length)]:null,gx=t?t.x:cx+rr(-340,340),gy=t?t.y:cy+rr(-220,220),ty=k%3,col=k%2?'#ffe27a':'#ffb0a0';
-   V(.3,p=>{const x=g.x+(gx-g.x)*p,y=g.y+(gy-g.y)*p,a=Math.atan2(gy-g.y,gx-g.x);ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle=col;ctx.globalAlpha=.45;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(g.x+(x-g.x)*.3,g.y+(y-g.y)*.3);ctx.lineTo(x,y);ctx.stroke();ctx.restore();wpn(x,y,a,64,ty,col,1)});
-   later(.28,()=>{if(!ok())return;aoe(gx,gy,60,1.1,GD);ring(gx,gy,3,60,GD,.26,4);burst(gx,gy,GD,3,150,.3);if(k%6===0){S.hit();shake=Math.max(shake,.45)}})})})});
- // II. gerbang raksasa terbuka & mesin pusaran bersiap
- const c=tgtC(420),ba=Math.atan2(c.y-cy,c.x-cx),bx=cx,by=cy-90;
- later(2.2,()=>{if(!ok())return;label('GERBANG PENCIPTAAN','#ff8a7a');S.spin();ovl('#ffd24d',.3,.4);
-  V(1.6,(p,t)=>{const k=Math.min(1,p*4)*(1-Math.max(0,p-.9)*10);portal(bx,by-150,230*Math.min(1,p*2.5),RD,t,k*.6);drill(bx,by,60*Math.min(1,p*2),t,k);for(let i=0;i<26;i++){const a=t*4+i*.24,d=(1-((t*.7+i*.13)%1))*320;ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=k*.7;ctx.fillStyle=i%2?GD:RD;ctx.beginPath();ctx.arc(bx+cs(a)*d,by+sn(a)*d*.6,2.2,0,TAU);ctx.fill();ctx.restore()}});
-  tick(10,.14,()=>{for(const e of inR(bx,by,380)){const d=Math.hypot(e.x-bx,e.y-by)||1;if(!e.boss&&!e.mini&&d>40){e.x+=(bx-e.x)/d*14;e.y+=(by-e.y)/d*14}}})});
- // III. PUSARAN: beam heliks
- later(3.8,()=>{if(!ok())return;label('PUSARAN PENCIPTAAN','#ffffff');S.beam();shake=2;const Lb=1100,w=120,ex=bx+cs(ba)*Lb,ey=by+sn(ba)*Lb;
-  V(1.5,(p,t)=>{const f=Math.min(1,p*6)*(1-Math.max(0,p-.85)*6.7);drill(bx,by,60,t*1.6,f);helix(bx,by,ba,Lb,w*f,t,f,Lb*Math.min(1,p*5));glow(bx+cs(ba)*60,by+sn(ba)*60,160,'#fff',.6*f);
-   ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.4*f;ctx.strokeStyle='#ffd0a0';ctx.lineWidth=3;for(let i=0;i<8;i++){const u=((t*1.8+i*.125)%1)*Lb*.9;ctx.beginPath();ctx.ellipse(bx+cs(ba)*u,by+sn(ba)*u,w*.3,w*1.05,ba,0,TAU);ctx.stroke()}ctx.restore()});
-  for(let k=0;k<9;k++)later(k*.14,()=>{if(!ok())return;shake=Math.max(shake,1.2);for(const e of enemies){if(e.hp<=0)continue;if(segD(e.x,e.y,bx,by,ex,ey)<w+e.r){dm(e,2.3,k%2?GD:RD);stn(e,.5)}}if(k%2===0){const u=Math.random()*Lb,px=bx+cs(ba)*u,py=by+sn(ba)*u;ring(px,py,6,90,RD,.3,6);burst(px,py,GD,6,200,.4)}});
-  later(1.3,()=>{if(!ok())return;S.boom();ovl('#ffffff',.8,.7);ovl(RD,.5,1);ring(ex,ey,10,420,'#fff',.6,14);ring(ex,ey,10,300,RD,.7,9);burst(ex,ey,'#fff',40,500,.8);burst(ex,ey,GD,30,420,.7);aoe(ex,ey,300,5,GD,e=>stn(e,1));
-   for(const e of enemies){if(e.hp>0&&segD(e.x,e.y,bx,by,ex,ey)<w+e.r+40)dm(e,5,'#fff')}
-   fx.push({x:P.x,y:P.y-70,t:2.4,txt:'PUSARAN PENCIPTAAN!',col:'#ffe27a',sz:18})})});
+ later(0,()=>{if(!ok())return;label('GUDANG HARTA',GD);
+  V(2.6,(p,t)=>{const k=1-Math.max(0,p-.88)*8;for(const g of rows){const q=Math.max(0,Math.min(1,(t-g.d)/.35));if(q>0)portal(g.x,g.y,18+q*6,GD,t,q*k)}portal(cx,CAM.y+10,110*Math.min(1,t*1.5),RD,t,.5*k)});
+  const L=enemies.filter(e=>e.hp>0);
+  later(.6,()=>{if(!ok())return;for(let k=0;k<60;k++)later(k*.028,()=>{if(!ok())return;const big=k%10===9,g=big?{x:cx,y:CAM.y+10}:rows[Math.floor(Math.random()*rows.length)],t=L.length&&k%4?L[Math.floor(Math.random()*L.length)]:null,gx=t?t.x:cx+rr(-340,340),gy=t?t.y:cy+rr(-220,220),ty=k%3,col=big?'#ffffff':k%2?'#ffe27a':'#ffb0a0',len=big?200:64;
+   V(big?.42:.3,p=>{const x=g.x+(gx-g.x)*p,y=g.y+(gy-g.y)*p,a=Math.atan2(gy-g.y,gx-g.x);ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle=col;ctx.globalAlpha=.5;ctx.lineWidth=big?7:2;ctx.beginPath();ctx.moveTo(g.x+(x-g.x)*.3,g.y+(y-g.y)*.3);ctx.lineTo(x,y);ctx.stroke();ctx.restore();wpn(x,y,a,len,big?0:ty,col,1)});
+   later(big?.4:.28,()=>{if(!ok())return;aoe(gx,gy,big?120:60,big?3:1.1,GD);ring(gx,gy,3,big?130:60,big?'#fff':GD,big?.4:.26,big?10:4);burst(gx,gy,GD,big?14:3,big?260:150,.4);if(big){S.boom();shake=Math.max(shake,1)}else if(k%6===0){S.hit();shake=Math.max(shake,.45)}})})})});
+ // II. gerbang raksasa terbuka, mesin pusaran bangkit
+ const c=tgtC(420),ba=Math.atan2(c.y-cy,c.x-cx),bx=cx,by=cy-60;
+ later(2.5,()=>{if(!ok())return;label('GERBANG PENCIPTAAN','#ff8a7a');S.spin();ovl('#ffd24d',.35,.4);
+  V(2.0,(p,t)=>{const k=Math.min(1,p*4)*(1-Math.max(0,p-.92)*12);ctx.save();ctx.globalAlpha=.5*k;ctx.fillStyle='#120200';ctx.fillRect(CAM.x-20,CAM.y-20,VW+40,VH+40);ctx.restore();
+   portal(bx,by-210,330*Math.min(1,p*2.2),RD,t,.7*k);portal(bx,by-210,210*Math.min(1,p*2.2),GD,-t,.6*k);drill(bx,by,Math.min(1,p*1.8)*(34+p*14),t,k);
+   for(let i=0;i<34;i++){const a=t*4.5+i*.185,d=(1-((t*.8+i*.09)%1))*380;ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=k*.8;ctx.fillStyle=i%2?GD:RD;ctx.beginPath();ctx.arc(bx+cs(a)*d,by+sn(a)*d*.6,2.6,0,TAU);ctx.fill();ctx.restore()}
+   ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle='#fff';ctx.globalAlpha=k*.7;ctx.lineWidth=2;for(let i=0;i<6;i++){ctx.beginPath();let x=bx,y=by;ctx.moveTo(x,y);const a=t*7+i*1.05;for(let s=0;s<6;s++){x+=cs(a+sn(t*30+s+i))*28;y+=sn(a+cs(t*25+s))*20;ctx.lineTo(x,y)}ctx.stroke()}ctx.restore();
+   const rr2=(1-p)*340+40;ctx.save();ctx.globalAlpha=k*.8;ctx.strokeStyle=GD;ctx.lineWidth=4;ctx.setLineDash([14,10]);ctx.beginPath();ctx.ellipse(bx,by+60,rr2,rr2*.4,0,0,TAU);ctx.stroke();ctx.restore()});
+  tick(14,.14,()=>{for(const e of inR(bx,by,420)){const d=Math.hypot(e.x-bx,e.y-by)||1;if(!e.boss&&!e.mini&&d>40){e.x+=(bx-e.x)/d*16;e.y+=(by-e.y)/d*16}dm(e,.25,RD)}})});
+ // III. PUSARAN: beam heliks menyapu seluruh arena
+ later(4.5,()=>{if(!ok())return;label('PUSARAN PENCIPTAAN','#ffffff');S.beam();shake=2.2;const Lb=1250,w=170,A0=ba-.8,A1=ba+.8,ang=p=>A0+(A1-A0)*eas(p);
+  V(1.9,(p,t)=>{const f=Math.min(1,p*6)*(1-Math.max(0,p-.88)*8.3);drill(bx,by,48,t*1.8,f);for(let g=4;g>=0;g--){const pp=Math.max(0,p-g*.035),a=ang(pp);helix(bx,by,a,Lb,w*f*(g?.8:1),t,f*(g?.18/g+.05:1),Lb*Math.min(1,p*6))}
+   const a=ang(p);glow(bx+cs(a)*80,by+sn(a)*80,220,'#fff',.7*f);ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<10;i++){const u=((t*1.8+i*.1)%1)*Lb*.95;ctx.globalAlpha=.45*f;ctx.strokeStyle='#ffd0a0';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(bx+cs(a)*u,by+sn(a)*u,w*.3,w*1.1,a,0,TAU);ctx.stroke()}
+   for(let i=0;i<18;i++){const u=((t*2.3+i*.057)%1)*Lb,sp=(i%2?1:-1)*(40+((i*37)%90));ctx.globalAlpha=.8*f;ctx.fillStyle=i%2?GD:'#ff8a6a';ctx.fillRect(bx+cs(a)*u-cs(a+1.57)*sp-3,by+sn(a)*u-sn(a+1.57)*sp-3,6,6)}ctx.restore();
+   ctx.save();ctx.globalAlpha=.7*f;ctx.strokeStyle='#ffe0b0';ctx.lineWidth=3;ctx.shadowColor=RD;ctx.shadowBlur=10;for(let s=-1;s<=1;s+=2){ctx.beginPath();ctx.moveTo(bx,by+8);let x=bx,y=by+8;const n=Math.floor(14*Math.min(1,p*6));for(let i=0;i<n;i++){x+=cs(a+s*.25)*80+sn(i*3.1)*8;y+=sn(a+s*.25)*80+cs(i*2.3)*8;ctx.lineTo(x,y)}ctx.stroke()}ctx.restore()});
+  for(let k=0;k<14;k++)later(k*.13,()=>{if(!ok())return;shake=Math.max(shake,1.3);const a=ang(k*.13/1.9),ex=bx+cs(a)*Lb,ey=by+sn(a)*Lb;for(const e of enemies){if(e.hp<=0)continue;if(segD(e.x,e.y,bx,by,ex,ey)<w+e.r){dm(e,2.1,k%2?GD:RD);stn(e,.5);if(k%3===0)burst(e.x,e.y,GD,3,160,.3)}}if(k%2===0){const u=rr(200,Lb),px=bx+cs(a)*u,py=by+sn(a)*u;ring(px,py,6,100,RD,.3,6);burst(px,py,GD,6,220,.4)}if(k%4===0)S.hit()})});
+ // IV. gerbang tertutup: 10 senjata raksasa membentuk lingkaran
+ later(6.6,()=>{if(!ok())return;label('GERBANG TERTUTUP','#ffe27a');S.gate();const c2=tgtC(300),x=c2.x,y=c2.y,N=10;
+  V(1.3,(p,t)=>{const q=Math.min(1,p/.5),k=1-Math.max(0,p-.9)*10;ctx.save();ctx.globalAlpha=Math.min(1,p*3)*.55*k;ctx.strokeStyle=RD;ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(x,y+8,230,92,0,0,TAU);ctx.stroke();ctx.lineWidth=2;ctx.strokeStyle=GD;ctx.beginPath();ctx.ellipse(x,y+8,170,68,0,0,TAU);ctx.stroke();ctx.restore();for(let i=0;i<N;i++){const a=i/N*TAU,px=x+cs(a)*200,py=y+sn(a)*80,yy=py-640*(1-q*q);if(p<.55){portal(px,py-640,34,i%2?GD:RD,t,.8);wpn(px,yy,1.5708,260,i%3,'#ffffff',1);glow(px,yy,70,GD,.5)}}});
+  later(.62,()=>{if(!ok())return;S.boom();S.gate();shake=3;ovl('#ffffff',.9,.8);ovl(RD,.5,1.1);for(let k=0;k<5;k++)later(k*.1,()=>{if(!ok())return;ring(x,y,10,300+k*90,k%2?GD:'#fff',.55,12-k)});burst(x,y,'#fff',60,560,.9);burst(x,y,GD,40,480,.8);burst(x,y,RD,30,420,.7);
+   aoe(x,y,420,9,GD,e=>stn(e,1.6));for(const e of enemies){if(e.hp>0)dm(e,3,'#fff')}
+   fx.push({x:P.x,y:P.y-70,t:2.6,txt:'PUSARAN PENCIPTAAN!',col:'#ffe27a',sz:18})})})
 }};
 // ---------- CUTSCENE ----------
 {const FT=2.9,cs2=x=>{x=x<0?0:x>1?1:x;return x*x*(3-2*x)},sr=i=>((i*9301+49297)%233280)/233280;
@@ -11864,7 +11886,7 @@ const SC={bg(t,T){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1
   if(post>0){const f=Math.min(1,post*4)*Math.max(0,1-post*.6);ctx.save();ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();helix(W*.5,H*.42,.12,W*1.2,150*f,T,f,W*1.2);ctx.restore();ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.max(0,.6-post*.5);ctx.fillStyle='#ffe0b0';ctx.fillRect(0,0,W,H);ctx.restore()}},
  fg(t,T,act){const u=cs2((t-1.2)/(FT-1.2)),d=t-FT;const put=(txt,x,y,s,col,al,rot)=>{ctx.save();ctx.translate(x,y);if(rot)ctx.rotate(rot);ctx.globalAlpha=al;ctx.font='900 '+s+'px Impact,"Arial Black",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=Math.max(3,s*.18);ctx.strokeStyle='#000';ctx.strokeText(txt,0,0);ctx.fillStyle=col;ctx.fillText(txt,0,0);ctx.restore()};
   if(act===1)put('BUSUR PUSARAN PENCIPTAAN',W/2,H*.15,26+u*24,'#ffe27a',u,-.02);else put('PUSARAN PENCIPTAAN!',W/2+sn(T*60)*3,H*.2+sn(T*47)*3,Math.min(86,40+d*120),'#fff',Math.max(0,1-d*.65),sn(T*3)*.03)}};
-CINE.babelbowE=SC;CAMC.babelbowE={z1:1.25,z2:1.7,r:4,fy:.5,w:22,sh:14};Object.assign(ULTS.babelbowE,{cine:'babelbowE',tn:'GODLY EVOLUSI',ft:FT,d:6.8,wn:'Busur Pusaran Penciptaan'})}
+CINE.babelbowE=SC;CAMC.babelbowE={z1:1.25,z2:1.7,r:4,fy:.5,w:22,sh:14};Object.assign(ULTS.babelbowE,{cine:'babelbowE',tn:'GODLY EVOLUSI',ft:FT,d:8.2,wn:'Busur Pusaran Penciptaan'})}
 window.__BABE={portal,drill,helix,wpn};
 }
 
