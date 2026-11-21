@@ -11890,6 +11890,46 @@ CINE.babelbowE=SC;CAMC.babelbowE={z1:1.25,z2:1.7,r:4,fy:.5,w:22,sh:14};Object.as
 window.__BABE={portal,drill,helix,wpn};
 }
 
+// ===== nv73: PENGATURAN GRAFIS (Otomatis / Tinggi / Sedang / Rendah) + penghitung FPS =====
+{
+const KEY='stickman_gfx',KF='stickman_fps';
+let mode='auto',showFps=false;
+try{mode=localStorage.getItem(KEY)||'auto';showFps=localStorage.getItem(KF)==='1'}catch(_){}
+if(!['auto','high','mid','low'].includes(mode))mode='auto';
+let GQ=mode==='low'?0:mode==='mid'?1:2; // 0 rendah,1 sedang,2 tinggi
+const SBK=[0,.4,1],BK=[.3,.6,1],PC=[110,250,450];
+let skipF=0;
+// 1) blur bayangan (glow) — paling mahal di canvas 2D
+try{const d=Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype,'shadowBlur');
+ Object.defineProperty(ctx,'shadowBlur',{configurable:true,get(){return d.get.call(ctx)},set(v){d.set.call(ctx,v*SBK[GQ])}})}catch(_){}
+// 2) jumlah partikel
+{const _b=burst;burst=(x,y,col,n,sp,life)=>{if(parts.length>PC[GQ])parts.splice(0,Math.max(20,parts.length-PC[GQ]));return _b(x,y,col,Math.max(1,Math.round(n*BK[GQ])),sp,life)}}
+// 3) mode rendah: gambar tiap 2 frame (logika game tetap penuh)
+{const _d=draw;draw=function(){if(GQ===0&&state==='play'&&((skipF^=1)===1))return;return _d.apply(this,arguments)}}
+// UI
+const set=document.querySelector('#settings .set');
+const lab=document.createElement('label');lab.innerHTML='🎨 Kualitas grafis <select id="oGfx" style="background:#1d1a30;color:#fff;border:1px solid #6a5acd;border-radius:8px;padding:4px 8px;font-size:14px"><option value="auto">Otomatis</option><option value="high">Tinggi</option><option value="mid">Sedang</option><option value="low">Rendah (hemat)</option></select>';
+const lab2=document.createElement('label');lab2.innerHTML='📈 Tampilkan FPS <input id="oFps" type="checkbox">';
+set.appendChild(lab);set.appendChild(lab2);
+const sel=lab.querySelector('select'),cb=lab2.querySelector('input');sel.value=mode;cb.checked=showFps;
+const hud=document.createElement('div');hud.style.cssText='position:fixed;left:6px;top:6px;z-index:99999;font:bold 12px monospace;color:#9fff9f;background:rgba(0,0,0,.55);padding:2px 6px;border-radius:6px;pointer-events:none;display:none';document.body.appendChild(hud);
+const toast=t=>{try{fx.push({x:P?P.x:200,y:P?P.y-80:200,t:2.2,txt:t,col:'#9fe8ff',sz:14})}catch(_){}};
+const apply=m=>{mode=m;if(m==='auto'){if(GQ<2&&!autoLocked)GQ=GQ}else GQ=m==='low'?0:m==='mid'?1:2;if(m==='auto'){GQ=2;autoLocked=false}try{localStorage.setItem(KEY,m)}catch(_){}};
+let autoLocked=false;
+if(mode==='auto')GQ=2;
+sel.onchange=()=>apply(sel.value);
+cb.onchange=()=>{showFps=cb.checked;hud.style.display=showFps?'block':'none';try{localStorage.setItem(KF,showFps?'1':'0')}catch(_){}};
+if(showFps)hud.style.display='block';
+// pemantau FPS (+ penurunan otomatis)
+let f0=performance.now(),fr=0,low=0;const NAME=['Rendah','Sedang','Tinggi'];
+const mon=t=>{fr++;if(t-f0>=2000){const fps=fr*1000/(t-f0);fr=0;f0=t;
+  if(showFps)hud.textContent=Math.round(fps)+' FPS • '+NAME[GQ]+(mode==='auto'?' (auto)':'');
+  if(mode==='auto'&&(state==='play'||state==='cut')){if(fps<38){if(++low>=2&&GQ>0){GQ--;low=0;toast('⚙️ Grafis otomatis: '+NAME[GQ]);}}else low=0}}
+ requestAnimationFrame(mon)};
+requestAnimationFrame(mon);
+window.__GFX={get:()=>({mode,GQ}),set:m=>{sel.value=m;apply(m)}};
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
