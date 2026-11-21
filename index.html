@@ -3246,7 +3246,7 @@ function draw0(){
   rarAura2();
   const pw=P.weapon==='excal'&&P.holy>0?'excalL':P.weapon==='excal'&&P.evoX?'excalS':['scythe','reaper','necro','necroL','harp','harpL','wand','wandL','excal','hammer','hammerL','fbow','fbowL','grim','grimL','lantern','lanternL','ragna','astra','chrono','abyss','kata','chain','ki','soul','ironsword','emberblade','huntbow','sunbow','crystal','storm','astral','bonestaff','bladefist'].includes(P.weapon)||(window.__GW&&__GW[P.weapon])||(window.__MW&&__MW[P.weapon])||(window.__NG&&__NG[P.weapon])?P.weapon:({warrior:'sword',archer:'bow',mage:'staff',summoner:'staff',anime:'fist'})[P.cls];
   if(P.holy>0){ctx.strokeStyle='rgba(255,226,122,'+(.5+.3*Math.sin(T*6))+')';ctx.shadowColor='#ffe27a';ctx.shadowBlur=16;ctx.lineWidth=3;ctx.beginPath();ctx.arc(P.x,P.y,P.r+12+Math.sin(T*5)*2,0,7);ctx.stroke();ctx.shadowBlur=0}
-  if(P.evoM){const ac={ragna:'#ff3d71',astra:'#9fd0ff',chrono:'#6ad0ff',abyss:'#ff4a2a',kata:'#4da6ff',chain:'#ff6a1a',ki:'#ffd24d',soul:'#ff2a50',gungnir:'#ffd24d',thalassa:'#2affc0',opus:'#ff2a50',jadeseal:'#3affb0'}[P.weapon]||'#fff';ctx.save();ctx.translate(P.x,P.y);ctx.shadowColor=ac;ctx.shadowBlur=16;ctx.strokeStyle=ac;ctx.globalAlpha=.55+.25*Math.sin(T*5);ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,P.r*1.2,P.r*2.2,P.r*.8,0,0,7);ctx.stroke();ctx.globalAlpha=.9;ctx.fillStyle=ac;for(let i=0;i<8;i++){const a=T*1.8+i/8*6.283,x=Math.cos(a)*(P.r+16),y=Math.sin(a)*(P.r+16)*.5-4;ctx.beginPath();ctx.moveTo(x,y-5);ctx.lineTo(x+3,y);ctx.lineTo(x,y+5);ctx.lineTo(x-3,y);ctx.closePath();ctx.fill()}ctx.restore()}
+  if(P.evoM){const ac={ragna:'#ff3d71',astra:'#9fd0ff',chrono:'#6ad0ff',abyss:'#ff4a2a',kata:'#4da6ff',chain:'#ff6a1a',ki:'#ffd24d',soul:'#ff2a50',gungnir:'#ffd24d',thalassa:'#2affc0',opus:'#ff2a50',jadeseal:'#3affb0',riftblade:'#a05aff'}[P.weapon]||'#fff';ctx.save();ctx.translate(P.x,P.y);ctx.shadowColor=ac;ctx.shadowBlur=16;ctx.strokeStyle=ac;ctx.globalAlpha=.55+.25*Math.sin(T*5);ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,P.r*1.2,P.r*2.2,P.r*.8,0,0,7);ctx.stroke();ctx.globalAlpha=.9;ctx.fillStyle=ac;for(let i=0;i<8;i++){const a=T*1.8+i/8*6.283,x=Math.cos(a)*(P.r+16),y=Math.sin(a)*(P.r+16)*.5-4;ctx.beginPath();ctx.moveTo(x,y-5);ctx.lineTo(x+3,y);ctx.lineTo(x,y+5);ctx.lineTo(x-3,y);ctx.closePath();ctx.fill()}ctx.restore()}
   shadowAt(P.x,P.y+P.r*1.25,P.r);
   ctx.save();{const _s=pscale(P.y);ctx.translate(P.x,P.y);ctx.scale(_s,_s);ctx.translate(-P.x,-P.y)}
   stickP(P.x,P.y,P.r,P.face,{f:P.face,walk:P.walk,mv:P.mv,w:pw,sw:P.sw,oc:P.col});
@@ -11620,6 +11620,109 @@ for(const id in CHO){if(KEEP.has(id)||/^lf\d/.test(id))continue;const c=CHO[id];
  // hanya senjata yang punya model di game (AW atau gambar bawaan senjata)
  c.prop=mk(id);done.push(id)}
 window.__CPROP=done;
+}
+
+// ===== nv67: EVOLUSI GODLY WARRIOR — 🗡️ Pedang Pembelah Dimensi → ⚫ Pedang Singularitas: Zenith Hampa =====
+{
+const TAU=6.2832,sn=Math.sin,cs=Math.cos,rr=(a,b)=>a+Math.random()*(b-a);
+const CY='#7fe8ff',VI='#a05aff',MG='#ff5acd',evoR=()=>!!(P&&P.evoM&&P.weapon==='riftblade');
+const tn=(f,d,ty,v,sl,del)=>{if(!muted&&ac())tone(f,d,ty,v,sl,del)},nz=(d,v,fc,del,ty)=>{if(!muted&&ac())noise(d,v,fc,del,ty)};
+const V=(d,f)=>addV(d,f),dm=(e,m,c)=>hit(e,P.dmg*m,c),ok=()=>state==='play'&&P;
+const inR=(x,y,r)=>enemies.filter(e=>e.hp>0&&Math.hypot(e.x-x,e.y-y)<r+e.r);
+const aoe=(x,y,r,m,c,f)=>{const L=inR(x,y,r);for(const e of L){dm(e,m,c);f&&f(e)}return L.length};
+const stn=(e,t)=>{if(e.boss||e.mini)e.slow=Math.max(e.slow||0,t*.7);else e.stun=Math.max(e.stun||0,t)};
+const tgtC=r=>bestCluster(r||160)||nearestN(1)[0]||{x:clp(P.x+(P.face>0?160:-160),40,W-40),y:P.y};
+const ring=(x,y,r0,r1,col,d,w)=>ringV(x,y,r0,r1,col,d,w),tick=(n,g,f)=>{for(let i=0;i<n;i++)later(i*g,()=>{if(ok())f(i)})};
+const glow=(x,y,R,c,a)=>{ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,Math.max(1,R));g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.globalAlpha=a;ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,R,0,TAU);ctx.fill();ctx.restore()};
+const ovl=(col,al,d)=>V(d||.4,p=>{ctx.save();ctx.globalAlpha=al*(1-p);ctx.fillStyle=col;ctx.fillRect(CAM.x-20,CAM.y-20,VW+40,VH+40);ctx.restore()});
+const vign=(col,al,dur)=>V(dur,p=>{const k=Math.min(1,p*6)*Math.min(1,(1-p)*5),g=ctx.createRadialGradient(CAM.x+VW/2,CAM.y+VH/2,VH*.2,CAM.x+VW/2,CAM.y+VH/2,VW*.62);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,col);ctx.save();ctx.globalAlpha=al*k;ctx.fillStyle=g;ctx.fillRect(CAM.x-20,CAM.y-20,VW+40,VH+40);ctx.restore()});
+const S={
+ slash:()=>{nz(.12,.2,4500,0,'highpass');tn(1500,.09,'sine',.06,.5)},
+ rift:()=>{tn(90,1.2,'sawtooth',.12,.4);tn(140,1,'sine',.1,.5,.05);nz(.6,.12,600,0,'lowpass')},
+ void:()=>{tn(55,2,'sine',.2,.5);tn(82,2,'triangle',.08,.5,.1);nz(1.2,.12,300)},
+ snap:()=>{nz(.4,.3,5000,0,'highpass');tn(2400,.3,'sine',.08,.3);tn(60,.6,'sine',.25,.3)},
+ boom:()=>{tn(45,1,'sine',.3,.4);nz(.7,.3,350)},
+ sword:()=>{tn(1800+Math.random()*600,.12,'triangle',.04,.5)}};
+// ---------- gambar bantu ----------
+const cut=(x0,y0,x1,y1,w,col,al,seed)=>{const dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L,N=Math.max(4,Math.floor(L/26));ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';ctx.lineJoin='round';ctx.globalAlpha=al;ctx.shadowColor=col;ctx.shadowBlur=14;
+ for(const[lw,c]of[[w*2.4,col],[w*.8,'#fff']]){ctx.strokeStyle=c;ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(x0,y0);for(let i=1;i<N;i++){const u=i/N,j=sn(seed*7+i*5.1)*w*.9;ctx.lineTo(x0+dx*u+nx*j,y0+dy*u+ny*j)}ctx.lineTo(x1,y1);ctx.stroke()}ctx.restore()};
+const segD=(px,py,x0,y0,x1,y1)=>{const dx=x1-x0,dy=y1-y0,l2=dx*dx+dy*dy||1;let t=((px-x0)*dx+(py-y0)*dy)/l2;t=t<0?0:t>1?1:t;return Math.hypot(px-(x0+dx*t),py-(y0+dy*t))};
+const lineHit=(x0,y0,x1,y1,w,m,c,f)=>{for(const e of enemies){if(e.hp<=0)continue;if(segD(e.x,e.y,x0,y0,x1,y1)<w+e.r){dm(e,m,c);f&&f(e)}}};
+const frame=(x,y,s,rot,col,al)=>{ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.globalAlpha=al;ctx.strokeStyle=col;ctx.lineWidth=2.4;ctx.shadowColor=col;ctx.shadowBlur=10;ctx.strokeRect(-s,-s*.62,s*2,s*1.24);ctx.lineWidth=1;ctx.strokeRect(-s*.8,-s*.5,s*1.6,s);for(const[a,b]of[[-1,-1],[1,-1],[1,1],[-1,1]]){ctx.beginPath();ctx.moveTo(a*s,b*s*.62);ctx.lineTo(a*s*.8,b*s*.5);ctx.stroke()}ctx.restore()};
+const sword=(x,y,a,L,col,al)=>{ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.globalAlpha=al;ctx.shadowColor=col;ctx.shadowBlur=10;ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(0,-L*.5);ctx.lineTo(L*.07,L*.35);ctx.lineTo(0,L*.5);ctx.lineTo(-L*.07,L*.35);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(-L*.012,-L*.45,L*.024,L*.8);ctx.restore()};
+const hole=(x,y,R,T,al)=>{ctx.save();glow(x,y,R*2.6,VI,.55*al);ctx.translate(x,y);
+ ctx.save();ctx.scale(1,.34);ctx.rotate(T*1.4);ctx.globalCompositeOperation='lighter';for(let i=0;i<3;i++){ctx.globalAlpha=al*(.7-i*.15);ctx.strokeStyle=i===0?'#fff':i===1?CY:MG;ctx.lineWidth=R*(.2-i*.05);ctx.beginPath();ctx.arc(0,0,R*(1.35+i*.28),0,TAU*.8);ctx.stroke()}ctx.restore();
+ const g=ctx.createRadialGradient(0,0,0,0,0,R);g.addColorStop(0,'#000');g.addColorStop(.8,'#05010c');g.addColorStop(1,'rgba(40,10,80,0)');ctx.globalAlpha=al;ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.fill();ctx.strokeStyle='#fff';ctx.globalAlpha=al*.7;ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(0,0,R*.98,0,TAU);ctx.stroke();
+ ctx.globalCompositeOperation='lighter';for(let i=0;i<22;i++){const a=T*(1+i%3*.3)+i*.9,d=R*(1.1+((i*37)%100)/80)*(1-((T*.3+i*.13)%1)*.4);ctx.globalAlpha=al*.8;ctx.fillStyle=i%2?CY:'#fff';ctx.beginPath();ctx.arc(cs(a)*d,sn(a)*d*.4,1.6,0,TAU);ctx.fill()}ctx.restore()};
+// ---------- model senjata evolusi ----------
+{const _o=AW.riftblade;AW.riftblade=(r,oc,T)=>{if(!evoR()){_o(r,oc,T);return}
+ ctx.save();ctx.strokeStyle='#0a0614';ctx.lineWidth=Math.max(3,r*.26);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,r*.6);ctx.lineTo(0,-r*.1);ctx.stroke();ctx.fillStyle=VI;ctx.fillRect(-r*.5,-r*.16,r*1,r*.13);ctx.fillStyle='#fff';ctx.fillRect(-r*.14,-r*.17,r*.28,r*.15);
+ ctx.globalCompositeOperation='lighter';glowB(0,-r*1.4,r*2.8,VI,.5);ctx.shadowColor=VI;ctx.shadowBlur=18;
+ const g=ctx.createLinearGradient(0,-r*.1,0,-r*3.1);g.addColorStop(0,'#2a0a5a');g.addColorStop(.5,'#6a2aff');g.addColorStop(1,'#ffffff');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(-r*.14,-r*.14);ctx.lineTo(-r*.08,-r*2.9);ctx.lineTo(0,-r*3.25);ctx.lineTo(r*.1,-r*2.8);ctx.lineTo(r*.14,-r*.14);ctx.fill();
+ ctx.strokeStyle='#fff';ctx.lineWidth=1.4;ctx.globalAlpha=.8+.2*sn(T*7);ctx.beginPath();ctx.moveTo(0,-r*.3);for(let i=1;i<9;i++)ctx.lineTo((i%2?r*.09:-r*.09),-r*.3-i*r*.33);ctx.stroke();
+ for(let i=0;i<6;i++){const a=T*1.6+i/6*TAU,d=r*(.7+.1*sn(T*3+i));ctx.save();ctx.translate(cs(a)*d,-r*1.5+sn(a)*r*1.5);ctx.rotate(a);ctx.fillStyle=i%2?CY:MG;ctx.globalAlpha=.85;ctx.beginPath();ctx.moveTo(0,-r*.3);ctx.lineTo(r*.07,r*.2);ctx.lineTo(-r*.07,r*.2);ctx.fill();ctx.restore()}ctx.restore()}}
+const glowB=(x,y,R,c,a)=>{const g=ctx.createRadialGradient(x,y,0,x,y,R);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.save();ctx.globalAlpha=a;ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,R,0,TAU);ctx.fill();ctx.restore()};
+// ---------- registrasi ----------
+SPECIALS.riftblade={n:'Penjaga Celah Dimensi',col:CY,myth:1};EVN.riftblade='Pedang Singularitas: Zenith Hampa';
+COS['Penjaga Celah Dimensi']=CP('#1a2a44',[K.aura(CY),K.cape('#06101e',1.6)],[K.helm('#2a4a6a'),K.eyes(CY),K.pauldron('#3a6a9a')],'riftblade',{eye:CY,nm:'PENJAGA CELAH DIMENSI',nc:CY,sc:1.6});
+SKIN.riftbladeE={col:'#e8e0ff',pre:[K.aura(VI),K.cape('#0e0620',1.9)],post:[K.halo('#b07aff'),K.pauldron('#4a2a8a'),K.eyes('#ffffff')]};
+TIER.riftbladeE=4;
+{const _e=evolveTo;evolveTo=function(w){if(w!=='riftblade'||!P||P.cls!=='warrior')return _e.apply(this,arguments);
+  P.evoM=true;P.dmg*=1.4;P.ultCd=0;P.skCd=0;P.sk2Cd=0;P.range+=22;P.crit+=.08;P.rate=Math.max(.3,P.rate*.92);
+  sfx('evolve');flash('✦ PEDANG BEREVOLUSI ✦');evoShow('#a05aff');S.rift();S.void();
+  for(let k=0;k<6;k++)fx.push({x:P.x,y:P.y,ring:90+k*40,t:.7+k*.06,col:k%2?VI:CY});
+  fx.push({x:P.x,y:P.y-70,t:2.6,txt:'✦ PEDANG SINGULARITAS ✦',col:'#c8a0ff',sz:16})}}
+// serangan evolusi: tebasan ganda cermin + kipas retakan
+{const _a=atkExtra;atkExtra=function(t){_a(t);if(!evoR()||!t)return;P.rx=(P.rx||0)+1;const a=Math.atan2(t.y-P.y,t.x-P.x),x=t.x,y=t.y,s=Math.random()*9;
+  aoe(x,y,62,.55,MG);V(.3,p=>{cut(x-cs(a-.9)*60,y-sn(a-.9)*60,x+cs(a-.9)*60,y+sn(a-.9)*60,3*(1-p)+.6,MG,1-p,s)});S.slash();
+  if(P.rx%3===0){S.snap();for(let k=-1;k<=1;k++){const aa=a+k*.28,x1=P.x+cs(aa)*430,y1=P.y+sn(aa)*430;lineHit(P.x,P.y,x1,y1,22,1.2,VI);V(.45,p=>{cut(P.x,P.y,x1,y1,5*(1-p)+.8,k?VI:'#fff',1-p*p,s+k)})}}}}
+// ---------- SKILL 1: Penghakiman Akhir ----------
+SKILLS.riftbladeE={n:'Penghakiman Akhir',ic:'⬛',col:VI,cd:10,fn(){const L=enemies.filter(e=>e.hp>0).sort((a,b)=>Math.hypot(a.x-P.x,a.y-P.y)-Math.hypot(b.x-P.x,b.y-P.y)).slice(0,12);if(!L.length){const a=aimA();L.push({x:P.x+cs(a)*110,y:P.y+sn(a)*110,r:10,hp:1})}
+  P.inv=Math.max(P.inv,1.2);S.rift();const pts=L.map(e=>({x:e.x,y:e.y}));
+  V(1.0,(p,t)=>{for(const q of pts){frame(q.x,q.y,70*(1-p*.65)+14,t*3+q.x,VI,.9*Math.min(1,p*5));frame(q.x,q.y,40*(1-p*.5)+10,-t*4,CY,.8*Math.min(1,p*5))}});
+  later(1.0,()=>{if(!ok())return;S.snap();shake=Math.max(shake,1);ovl('#e8d8ff',.45,.35);for(const q of pts){aoe(q.x,q.y,66,6,'#e8d8ff',e=>stn(e,1));const s=Math.random()*9;V(.55,p=>{for(let k=0;k<6;k++){const an=k*.52+s;cut(q.x-cs(an)*80,q.y-sn(an)*80,q.x+cs(an)*80,q.y+sn(an)*80,3*(1-p)+.5,k%2?VI:CY,(1-p)*(1-k*.08),s+k)}});burst(q.x,q.y,VI,8,220,.4)}})}};
+// ---------- SKILL 2: Singularitas ----------
+SKILLS2.riftbladeE={n:'Singularitas',ic:'🕳️',col:'#c8a0ff',cd:14,fn(){const c=tgtC(200),x=c.x,y=c.y;S.void();P.inv=Math.max(P.inv,.8);
+  V(2.2,(p,t)=>{const k=Math.min(1,p*4)*(1-Math.max(0,p-.9)*10),R=(18+Math.min(1,p*3)*40)*(1+sn(t*8)*.04);hole(x,y,R,t,k);for(let i=0;i<5;i++){const a=t*3+i*1.26,d=140*(1-p*.6);sword(x+cs(a)*d,y+sn(a)*d*.5,a+1.57,36,i%2?CY:MG,k*.9)}});
+  tick(16,.12,k=>{for(const e of inR(x,y,320)){const d=Math.hypot(e.x-x,e.y-y)||1;if(!e.boss&&!e.mini){e.x+=(x-e.x)/d*(d>30?16:0);e.y+=(y-e.y)/d*(d>30?16:0)}else e.slow=Math.max(e.slow||0,.3);dm(e,.35,VI)}});
+  later(2.0,()=>{if(!ok())return;S.boom();S.snap();shake=Math.max(shake,1.6);ovl('#ffffff',.65,.5);ring(x,y,10,340,'#fff',.55,14);ring(x,y,10,250,VI,.65,9);burst(x,y,'#fff',36,480,.7);burst(x,y,VI,30,420,.7);aoe(x,y,260,6,VI,e=>stn(e,1.3))})}};
+// ---------- ULT: Pembelah Semesta ----------
+ULTS.riftbladeE={n:'Pembelah Semesta: Zenith Hampa',ic:'⬛',col:'#c8a0ff',cd:55,d:5.4,ft:2.9,cine:'riftbladeE',evo:true,wn:'Pedang Singularitas: Zenith Hampa',cap:['Ruang bergetar… celah menganga di balik dunia…','Pembelah Semesta! Hancurlah dalam Hampa!'],fn(){
+ const cx=P.x,cy=P.y;shake=1;P.inv=Math.max(P.inv,5);healP(.22);S.rift();ultTint={t:.9,col:'#0a0420'};vign('rgba(30,8,70,.8)',1,1.4);
+ const label=(txt,col)=>fx.push({x:cx,y:cy-90,t:.9,txt,col,sz:16});
+ V(5.4,(p,t)=>{const k=Math.min(1,p*8)*Math.min(1,(1-p)*6);frame(cx,cy,200+p*60,t*.6,VI,.7*k);frame(cx,cy,280,-t*.4,CY,.5*k)});
+ // I. hujan pedang zenit
+ later(0,()=>{if(!ok())return;label('ZENITH',CY);const L=enemies.filter(e=>e.hp>0);for(let i=0;i<44;i++)later(i*.035,()=>{if(!ok())return;const t=L.length&&i%3?L[Math.floor(Math.random()*L.length)]:null,gx=t?t.x:cx+rr(-340,340),gy=t?t.y:cy+rr(-220,220),col=i%3?CY:VI;V(.35,p=>{sword(gx+30*(1-p),gy-380*(1-p),1.57+.15,90,col,Math.min(1,p*3))});later(.3,()=>{if(!ok())return;aoe(gx,gy,60,1.1,col);ring(gx,gy,3,60,col,.25,3);burst(gx,gy,col,3,140,.25);if(i%6===0)S.sword()})})});
+ // II. celah dimensi menutup
+ later(1.7,()=>{if(!ok())return;label('CELAH DIMENSI','#e8d8ff');S.snap();const c=tgtC(300),x=c.x,y=c.y;
+  V(1.1,(p,t)=>{for(let i=0;i<4;i++)frame(x,y,(380-i*60)*(1-p*.8)+20,t*(i%2?-2:2)+i,i%2?CY:VI,.85*Math.min(1,p*5))});
+  later(1.05,()=>{if(!ok())return;S.boom();shake=Math.max(shake,1.2);ovl('#e8d8ff',.5,.4);ring(x,y,10,330,'#fff',.5,12);aoe(x,y,340,5.5,'#e8d8ff',e=>stn(e,1.2));const s=Math.random()*9;V(.6,p=>{for(let k=0;k<8;k++){const an=k*.39+s;cut(x-cs(an)*260,y-sn(an)*260,x+cs(an)*260,y+sn(an)*260,3*(1-p)+.5,k%2?VI:CY,(1-p),s+k)}})})});
+ // III. singularitas
+ later(3.1,()=>{if(!ok())return;label('SINGULARITAS','#c8a0ff');S.void();const c=tgtC(300),x=c.x,y=c.y;
+  V(1.6,(p,t)=>{const k=Math.min(1,p*5)*(1-Math.max(0,p-.88)*8);hole(x,y,20+Math.min(1,p*3)*50,t,k)});
+  tick(12,.12,()=>{for(const e of inR(x,y,360)){const d=Math.hypot(e.x-x,e.y-y)||1;if(!e.boss&&!e.mini&&d>28){e.x+=(x-e.x)/d*20;e.y+=(y-e.y)/d*20}dm(e,.45,VI)}})});
+ // IV. pembelah semesta
+ later(4.5,()=>{if(!ok())return;label('PEMBELAH SEMESTA','#ffffff');S.snap();S.rift();const mx=CAM.x+VW/2,my=CAM.y+VH/2,ang=-.5,dx=cs(ang),dy=sn(ang),Ln=Math.max(VW,VH)*1.1;
+  V(1.5,(p,t)=>{const g=Math.max(0,Math.min(1,(p-.18)/.8)),w=sn(g*3.1416)*110,gr=Math.min(1,p/.18);ctx.save();const x0=mx-dx*Ln*gr,y0=my-dy*Ln*gr,x1=mx+dx*Ln*gr,y1=my+dy*Ln*gr,nx=-dy,ny=dx;
+   if(w>2){ctx.beginPath();ctx.moveTo(x0+nx*w*.06,y0+ny*w*.06);ctx.lineTo(x1+nx*w*.06,y1+ny*w*.06);ctx.lineTo(x1-nx*w,y1-ny*w);ctx.lineTo(x0-nx*w,y0-ny*w);ctx.closePath();ctx.clip();const gg=ctx.createLinearGradient(mx+nx*w,my+ny*w,mx-nx*w,my-ny*w);gg.addColorStop(0,'#0a0420');gg.addColorStop(.5,'#000');gg.addColorStop(1,'#1a0a40');ctx.fillStyle=gg;ctx.fillRect(CAM.x-50,CAM.y-50,VW+100,VH+100);ctx.fillStyle='#fff';for(let i=0;i<40;i++){ctx.globalAlpha=.5+.5*sn(t*3+i);ctx.fillRect(mx+(((i*97)%100)/100-.5)*VW,my+(((i*53)%100)/100-.5)*VH,2,2)}ctx.globalAlpha=.45;ctx.fillStyle=VI;ctx.beginPath();ctx.arc(mx,my,w*2.2,0,TAU);ctx.fill()}
+   ctx.restore();cut(x0,y0,x1,y1,2+w*.04,'#fff',Math.min(1,gr*2)*(1-Math.max(0,p-.9)*10),3);cut(x0+dy*w,y0-dx*w,x1+dy*w,y1-dx*w,1.5,CY,.8*g*(1-Math.max(0,p-.9)*10),5);cut(x0-dy*w,y0+dx*w,x1-dy*w,y1+dx*w,1.5,MG,.8*g*(1-Math.max(0,p-.9)*10),8)});
+  later(.45,()=>{if(!ok())return;S.boom();shake=2.2;ovl('#ffffff',.85,.7);ovl(VI,.5,1);const L=enemies.filter(e=>e.hp>0);for(const e of L){dm(e,14,'#fff');stn(e,1.8);burst(e.x,e.y,VI,5,200,.4)}ring(cx,cy,10,520,'#fff',.7,16);ring(cx,cy,10,380,VI,.8,10);burst(mx,my,'#fff',50,560,.9);
+   fx.push({x:P.x,y:P.y-70,t:2.4,txt:'ZENITH HAMPA!',col:'#c8a0ff',sz:18})})})}};
+// ---------- CUTSCENE ----------
+{const FT=2.9,cs2=x=>{x=x<0?0:x>1?1:x;return x*x*(3-2*x)},sr=i=>((i*9301+49297)%233280)/233280;
+const SC={bg(t,T){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#030010');g.addColorStop(.6,'#120838');g.addColorStop(1,'#2a1066');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  for(let i=0;i<70;i++){ctx.fillStyle='rgba(255,255,255,'+(.3+.5*sn(T*2+i))+')';ctx.fillRect(W*sr(i),H*sr(i+9),1.5,1.5)}
+  const u=cs2((t-.3)/(FT-.3)),post=Math.max(0,t-FT);
+  for(let i=0;i<4;i++)frame(W*.5,H*.42,(120+i*80)*u,T*(i%2?-.5:.5)+i,i%2?CY:VI,.7*u);
+  glow(W*.5,H*.42,260*u+20,VI,.4*u);
+  // retakan raksasa membuka
+  const c=cs2((t-1.0)/(FT-1.2));if(c>0){ctx.save();ctx.translate(W*.5,H*.42);ctx.rotate(-.5);const w=c*(post>0?160:70);ctx.fillStyle='#000';ctx.beginPath();ctx.moveTo(-W,0);ctx.lineTo(-W*.1,-w);ctx.lineTo(W*.1,-w);ctx.lineTo(W,0);ctx.lineTo(W*.1,w);ctx.lineTo(-W*.1,w);ctx.closePath();ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.shadowColor='#fff';ctx.shadowBlur=18;ctx.beginPath();ctx.moveTo(-W,0);ctx.lineTo(-W*.1,-w);ctx.lineTo(W*.1,-w);ctx.lineTo(W,0);ctx.stroke();ctx.beginPath();ctx.moveTo(-W,0);ctx.lineTo(-W*.1,w);ctx.lineTo(W*.1,w);ctx.lineTo(W,0);ctx.stroke();ctx.restore()}
+  for(let i=0;i<14;i++){const q=cs2((t-.4-i*.08)/.5);if(q>0){const a=T*.8+i*.9;sword(W*.5+cs(a)*W*.32,H*.42+sn(a)*H*.26,a+1.57,50+q*20,i%2?CY:MG,q*.8)}}
+  if(post>0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.max(0,.7-post*.55);ctx.fillStyle='#e8d8ff';ctx.fillRect(0,0,W,H);ctx.restore()}},
+ fg(t,T,act){const u=cs2((t-1.2)/(FT-1.2)),d=t-FT;const put=(txt,x,y,s,col,al,rot)=>{ctx.save();ctx.translate(x,y);if(rot)ctx.rotate(rot);ctx.globalAlpha=al;ctx.font='900 '+s+'px Impact,"Arial Black",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=Math.max(3,s*.18);ctx.strokeStyle='#000';ctx.strokeText(txt,0,0);ctx.fillStyle=col;ctx.fillText(txt,0,0);ctx.restore()};
+  if(act===1)put('PEDANG SINGULARITAS',W/2,H*.15,28+u*26,'#c8a0ff',u,-.02);else put('ZENITH HAMPA!',W/2+sn(T*60)*3,H*.2+sn(T*47)*3,Math.min(90,40+d*120),'#fff',Math.max(0,1-d*.65),sn(T*3)*.03)}};
+CINE.riftbladeE=SC;CAMC.riftbladeE={z1:1.3,z2:1.85,r:5,fy:.6,w:32,sh:18};Object.assign(ULTS.riftbladeE,{cine:'riftbladeE',tn:'GODLY EVOLUSI',ft:FT,d:5.4,wn:'Pedang Singularitas: Zenith Hampa'})}
+window.__RIFTE={hole,frame,cut};
 }
 
 TWISTS.survive.min=9999;
