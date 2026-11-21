@@ -9252,7 +9252,7 @@ const minionAdd=(n,hp0,dmg0,life,spread,ox,oy)=>{for(let i=0;i<n;i++){if(minions
 const GW={
 // ---------- 1. PEDANG PEMBELAH DIMENSI (warrior) ----------
 riftblade:{n:'🗡️ Pedang Pembelah Dimensi',cls:'warrior',col:'#7fe8ff',
- d:'Khusus Warrior (GODLY). Katana dimensi: tebasan sangat cepat +35% damage, kritis +12%. Tiap 4 serangan melepas Retakan Dimensi (garis tebasan jauh). Skill: Penghakiman Dimensi (menandai 6 musuh lalu menebas serentak), Pedang Zenit (6 pedang melayang melesat). ULT: Pembelah Dunia (dunia terbelah ratusan tebasan).',
+ d:'Khusus Warrior (GODLY). Katana dimensi: tebasan sangat cepat, damage +35%, kritis +12%.\n✨ Pasif: tiap 4 serangan melepas Retakan Dimensi (garis tebasan jauh).\n🎯 Skill: Penghakiman Dimensi (tandai 6 musuh lalu tebas serentak) • Pedang Zenit (6 pedang melayang melesat).\n⚡ ULT: Pembelah Dunia (dunia terbelah ratusan tebasan).\n🔮 Bisa berevolusi dengan mengalahkan Penjaga Celah Dimensi (ritual ULT di tengah arena): Pedang Singularitas: Zenith Hampa.',
  init(){P.type='melee';P.range=80;P.dmg*=1.35;P.rate=Math.max(.3,P.rate*.88);P.crit+=.12},
  av(t){const a=t?Math.atan2(t.y-P.y,t.x-P.x):A(),x=t?t.x:P.x+Math.cos(a)*70,y=t?t.y:P.y+Math.sin(a)*70,s=Math.random()*9;V(.22,p=>{crack(x-Math.cos(a+.7)*50*(1-p*.3),y-Math.sin(a+.7)*50*(1-p*.3),x+Math.cos(a+.7)*50,y+Math.sin(a+.7)*50,'#7fe8ff',2.2*(1-p)+.6,1-p,s)});nz(.08,.2,4500,0,'highpass');tn(1400,.08,'sine',.06,.5)},
  pas:[4,t=>{const a=t?Math.atan2(t.y-P.y,t.x-P.x):A(),x1=P.x+Math.cos(a)*440,y1=P.y+Math.sin(a)*440,x0=P.x,y0=P.y;line(x0,y0,x1,y1,26,2.6,'#7fe8ff');V(.5,p=>{crack(x0,y0,x1,y1,'#7fe8ff',5*(1-p)+.8,1-p*p,a*9)});sfx('swing');tn(220,.3,'sawtooth',.08,2.5);nz(.15,.2,3000,0,'highpass')}],
@@ -11687,22 +11687,30 @@ SKILLS2.riftbladeE={n:'Singularitas',ic:'🕳️',col:'#c8a0ff',cd:14,fn(){const
   tick(16,.12,k=>{for(const e of inR(x,y,320)){const d=Math.hypot(e.x-x,e.y-y)||1;if(!e.boss&&!e.mini){e.x+=(x-e.x)/d*(d>30?16:0);e.y+=(y-e.y)/d*(d>30?16:0)}else e.slow=Math.max(e.slow||0,.3);dm(e,.35,VI)}});
   later(2.0,()=>{if(!ok())return;S.boom();S.snap();shake=Math.max(shake,1.6);ovl('#ffffff',.65,.5);ring(x,y,10,340,'#fff',.55,14);ring(x,y,10,250,VI,.65,9);burst(x,y,'#fff',36,480,.7);burst(x,y,VI,30,420,.7);aoe(x,y,260,6,VI,e=>stn(e,1.3))})}};
 // ---------- ULT: Pembelah Semesta ----------
-ULTS.riftbladeE={n:'Pembelah Semesta: Zenith Hampa',ic:'⬛',col:'#c8a0ff',cd:55,d:5.4,ft:2.9,cine:'riftbladeE',evo:true,wn:'Pedang Singularitas: Zenith Hampa',cap:['Ruang bergetar… celah menganga di balik dunia…','Pembelah Semesta! Hancurlah dalam Hampa!'],fn(){
- const cx=P.x,cy=P.y;shake=1;P.inv=Math.max(P.inv,5);healP(.22);S.rift();ultTint={t:.9,col:'#0a0420'};vign('rgba(30,8,70,.8)',1,1.4);
+ULTS.riftbladeE={n:'Pembelah Semesta: Zenith Hampa',ic:'⬛',col:'#c8a0ff',cd:55,d:6.8,ft:2.9,cine:'riftbladeE',evo:true,wn:'Pedang Singularitas: Zenith Hampa',cap:['Ruang bergetar… celah menganga di balik dunia…','Pembelah Semesta! Hancurlah dalam Hampa!'],fn(){
+ const cx=P.x,cy=P.y;shake=1;P.inv=Math.max(P.inv,6.8);healP(.22);S.rift();ultTint={t:.9,col:'#0a0420'};vign('rgba(30,8,70,.8)',1,1.4);
  const label=(txt,col)=>fx.push({x:cx,y:cy-90,t:.9,txt,col,sz:16});
- V(5.4,(p,t)=>{const k=Math.min(1,p*8)*Math.min(1,(1-p)*6);frame(cx,cy,200+p*60,t*.6,VI,.7*k);frame(cx,cy,280,-t*.4,CY,.5*k)});
- // I. hujan pedang zenit
- later(0,()=>{if(!ok())return;label('ZENITH',CY);const L=enemies.filter(e=>e.hp>0);for(let i=0;i<44;i++)later(i*.035,()=>{if(!ok())return;const t=L.length&&i%3?L[Math.floor(Math.random()*L.length)]:null,gx=t?t.x:cx+rr(-340,340),gy=t?t.y:cy+rr(-220,220),col=i%3?CY:VI;V(.35,p=>{sword(gx+30*(1-p),gy-380*(1-p),1.57+.15,90,col,Math.min(1,p*3))});later(.3,()=>{if(!ok())return;aoe(gx,gy,60,1.1,col);ring(gx,gy,3,60,col,.25,3);burst(gx,gy,col,3,140,.25);if(i%6===0)S.sword()})})});
+ V(6.8,(p,t)=>{const k=Math.min(1,p*8)*Math.min(1,(1-p)*6);frame(cx,cy,200+p*60,t*.6,VI,.7*k);frame(cx,cy,280,-t*.4,CY,.5*k)});
+ // I. ZENITH — pedang raksasa turun, halo seratus pedang, hujan tembakan
+ later(0,()=>{if(!ok())return;label('ZENITH',CY);S.rift();S.void();
+  V(1.5,(p,t)=>{const k=Math.min(1,p*4)*(1-Math.max(0,p-.88)*8);ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createLinearGradient(0,CAM.y,0,cy);g.addColorStop(0,'rgba(160,90,255,0)');g.addColorStop(1,'rgba(210,180,255,.95)');ctx.globalAlpha=k*.65;ctx.fillStyle=g;ctx.fillRect(cx-46*k,CAM.y,92*k,cy-CAM.y);ctx.restore();glow(cx,cy-230,260,VI,.55*k);sword(cx,cy-230-sn(t*4)*6,0,260+Math.min(1,p*2)*280,'#d8c0ff',k);for(let i=0;i<10;i++){const a=t*2+i*.63;glow(cx+cs(a)*70,cy-230+sn(a)*150,26,i%2?CY:MG,.5*k)}});
+  ring(cx,cy,10,320,CY,.7,10);ring(cx,cy,10,220,VI,.8,8);burst(cx,cy,VI,26,300,.7);
+  const N=32,H0=[];for(let i=0;i<N;i++){const a=-3.1416+.22+i/(N-1)*(3.1416-.44);H0.push({x:cx+cs(a)*250,y:cy-40+sn(a)*190,a})}
+  later(.6,()=>{if(!ok())return;S.snap();ovl('#e8d8ff',.4,.3);V(1.4,(p,t)=>{const q=Math.min(1,p*3.5),rot=Math.min(1,Math.max(0,(p-.3)/.5)),f=1-Math.max(0,p-.9)*10;for(const h of H0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.35*q*f;ctx.fillStyle=CY;ctx.beginPath();ctx.arc(h.x,h.y,16,0,TAU);ctx.fill();ctx.restore();sword(h.x,h.y,h.a+1.5708+(3.1416-(h.a+1.5708))*rot,70*q+10,CY,q*f)}})});
+  later(1.3,()=>{if(!ok())return;S.snap();const L=enemies.filter(e=>e.hp>0);for(let i=0;i<40;i++)later(i*.03,()=>{if(!ok())return;const h=H0[i%N],t=L.length&&i%4?L[Math.floor(Math.random()*L.length)]:null,gx=t?t.x:cx+rr(-340,340),gy=t?t.y:cy+rr(-220,220),col=i%3?CY:i%2?VI:MG,s=i;
+   V(.3,p=>{const x=h.x+(gx-h.x)*p,y=h.y+(gy-h.y)*p,a=Math.atan2(gy-h.y,gx-h.x)+1.5708;cut(h.x+(x-h.x)*.2,h.y+(y-h.y)*.2,x,y,2.4,col,.7*(1-p*.4),s);sword(x,y,a,84,col,1)});
+   later(.28,()=>{if(!ok())return;aoe(gx,gy,62,1.2,col);ring(gx,gy,3,64,col,.28,4);burst(gx,gy,col,4,150,.3);const sd=s*3;V(.22,p=>{cut(gx-44,gy-44,gx+44,gy+44,2.5*(1-p)+.5,'#fff',1-p,sd);cut(gx+44,gy-44,gx-44,gy+44,2.5*(1-p)+.5,col,1-p,sd+1)});if(i%5===0){S.sword();shake=Math.max(shake,.45)}})})});
+  later(2.35,()=>{if(!ok())return;const c=tgtC(300),x=c.x,y=c.y;V(.4,p=>{sword(x,y-520*(1-p*p),0,300,'#e8d8ff',1);glow(x,y-520*(1-p*p),180,VI,.7)});later(.38,()=>{if(!ok())return;S.boom();shake=Math.max(shake,1.6);ovl('#ffffff',.55,.35);ring(x,y,10,360,'#fff',.5,14);ring(x,y,10,260,VI,.6,9);burst(x,y,'#fff',30,480,.7);aoe(x,y,300,3.5,'#e8d8ff',e=>stn(e,.8))})})});
  // II. celah dimensi menutup
- later(1.7,()=>{if(!ok())return;label('CELAH DIMENSI','#e8d8ff');S.snap();const c=tgtC(300),x=c.x,y=c.y;
+ later(3.0,()=>{if(!ok())return;label('CELAH DIMENSI','#e8d8ff');S.snap();const c=tgtC(300),x=c.x,y=c.y;
   V(1.1,(p,t)=>{for(let i=0;i<4;i++)frame(x,y,(380-i*60)*(1-p*.8)+20,t*(i%2?-2:2)+i,i%2?CY:VI,.85*Math.min(1,p*5))});
   later(1.05,()=>{if(!ok())return;S.boom();shake=Math.max(shake,1.2);ovl('#e8d8ff',.5,.4);ring(x,y,10,330,'#fff',.5,12);aoe(x,y,340,5.5,'#e8d8ff',e=>stn(e,1.2));const s=Math.random()*9;V(.6,p=>{for(let k=0;k<8;k++){const an=k*.39+s;cut(x-cs(an)*260,y-sn(an)*260,x+cs(an)*260,y+sn(an)*260,3*(1-p)+.5,k%2?VI:CY,(1-p),s+k)}})})});
  // III. singularitas
- later(3.1,()=>{if(!ok())return;label('SINGULARITAS','#c8a0ff');S.void();const c=tgtC(300),x=c.x,y=c.y;
+ later(4.4,()=>{if(!ok())return;label('SINGULARITAS','#c8a0ff');S.void();const c=tgtC(300),x=c.x,y=c.y;
   V(1.6,(p,t)=>{const k=Math.min(1,p*5)*(1-Math.max(0,p-.88)*8);hole(x,y,20+Math.min(1,p*3)*50,t,k)});
   tick(12,.12,()=>{for(const e of inR(x,y,360)){const d=Math.hypot(e.x-x,e.y-y)||1;if(!e.boss&&!e.mini&&d>28){e.x+=(x-e.x)/d*20;e.y+=(y-e.y)/d*20}dm(e,.45,VI)}})});
  // IV. pembelah semesta
- later(4.5,()=>{if(!ok())return;label('PEMBELAH SEMESTA','#ffffff');S.snap();S.rift();const mx=CAM.x+VW/2,my=CAM.y+VH/2,ang=-.5,dx=cs(ang),dy=sn(ang),Ln=Math.max(VW,VH)*1.1;
+ later(5.8,()=>{if(!ok())return;label('PEMBELAH SEMESTA','#ffffff');S.snap();S.rift();const mx=CAM.x+VW/2,my=CAM.y+VH/2,ang=-.5,dx=cs(ang),dy=sn(ang),Ln=Math.max(VW,VH)*1.1;
   V(1.5,(p,t)=>{const g=Math.max(0,Math.min(1,(p-.18)/.8)),w=sn(g*3.1416)*110,gr=Math.min(1,p/.18);ctx.save();const x0=mx-dx*Ln*gr,y0=my-dy*Ln*gr,x1=mx+dx*Ln*gr,y1=my+dy*Ln*gr,nx=-dy,ny=dx;
    if(w>2){ctx.beginPath();ctx.moveTo(x0+nx*w*.06,y0+ny*w*.06);ctx.lineTo(x1+nx*w*.06,y1+ny*w*.06);ctx.lineTo(x1-nx*w,y1-ny*w);ctx.lineTo(x0-nx*w,y0-ny*w);ctx.closePath();ctx.clip();const gg=ctx.createLinearGradient(mx+nx*w,my+ny*w,mx-nx*w,my-ny*w);gg.addColorStop(0,'#0a0420');gg.addColorStop(.5,'#000');gg.addColorStop(1,'#1a0a40');ctx.fillStyle=gg;ctx.fillRect(CAM.x-50,CAM.y-50,VW+100,VH+100);ctx.fillStyle='#fff';for(let i=0;i<40;i++){ctx.globalAlpha=.5+.5*sn(t*3+i);ctx.fillRect(mx+(((i*97)%100)/100-.5)*VW,my+(((i*53)%100)/100-.5)*VH,2,2)}ctx.globalAlpha=.45;ctx.fillStyle=VI;ctx.beginPath();ctx.arc(mx,my,w*2.2,0,TAU);ctx.fill()}
    ctx.restore();cut(x0,y0,x1,y1,2+w*.04,'#fff',Math.min(1,gr*2)*(1-Math.max(0,p-.9)*10),3);cut(x0+dy*w,y0-dx*w,x1+dy*w,y1-dx*w,1.5,CY,.8*g*(1-Math.max(0,p-.9)*10),5);cut(x0-dy*w,y0+dx*w,x1-dy*w,y1+dx*w,1.5,MG,.8*g*(1-Math.max(0,p-.9)*10),8)});
@@ -11721,7 +11729,7 @@ const SC={bg(t,T){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0
   if(post>0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.max(0,.7-post*.55);ctx.fillStyle='#e8d8ff';ctx.fillRect(0,0,W,H);ctx.restore()}},
  fg(t,T,act){const u=cs2((t-1.2)/(FT-1.2)),d=t-FT;const put=(txt,x,y,s,col,al,rot)=>{ctx.save();ctx.translate(x,y);if(rot)ctx.rotate(rot);ctx.globalAlpha=al;ctx.font='900 '+s+'px Impact,"Arial Black",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=Math.max(3,s*.18);ctx.strokeStyle='#000';ctx.strokeText(txt,0,0);ctx.fillStyle=col;ctx.fillText(txt,0,0);ctx.restore()};
   if(act===1)put('PEDANG SINGULARITAS',W/2,H*.15,28+u*26,'#c8a0ff',u,-.02);else put('ZENITH HAMPA!',W/2+sn(T*60)*3,H*.2+sn(T*47)*3,Math.min(90,40+d*120),'#fff',Math.max(0,1-d*.65),sn(T*3)*.03)}};
-CINE.riftbladeE=SC;CAMC.riftbladeE={z1:1.3,z2:1.85,r:5,fy:.6,w:32,sh:18};Object.assign(ULTS.riftbladeE,{cine:'riftbladeE',tn:'GODLY EVOLUSI',ft:FT,d:5.4,wn:'Pedang Singularitas: Zenith Hampa'})}
+CINE.riftbladeE=SC;CAMC.riftbladeE={z1:1.3,z2:1.85,r:5,fy:.6,w:32,sh:18};Object.assign(ULTS.riftbladeE,{cine:'riftbladeE',tn:'GODLY EVOLUSI',ft:FT,d:6.8,wn:'Pedang Singularitas: Zenith Hampa'})}
 window.__RIFTE={hole,frame,cut};
 }
 
