@@ -12641,7 +12641,7 @@ const wrapGen=t=>{const o=WGEN[t];if(!o||o._w)return;WGEN[t]=function(g,R,W,H,L)
   // detail lantai tambahan
   if(t===0&&window.__RIVDRAW)window.__RIVDRAW(g,W,H,L);
   // landmark
-  const f=window.__LM&&window.__LM[t];if(f){const P=[];for(let cx=0;cx<W/CELL;cx++)for(let cy=0;cy<H/CELL;cy++){const q=hs(t,cx,cy);if(q%100>=58)continue;const x=cx*CELL+40+(q>>7)%(CELL-80),y=cy*CELL+80+(q>>13)%(CELL-120);if(Math.hypot(x-W/2,y-H/2)<260)continue;if(t===0&&window.__RIV&&Math.abs(y-window.__RIV(x,H,W))<130)continue;P.push([x,y,(q>>5)%4,.9+((q>>17)%30)/100])}
+  const f=window.__LM&&window.__LM[t];if(f){const P=[];for(let cx=0;cx<W/CELL;cx++)for(let cy=0;cy<H/CELL;cy++){const q=hs(t,cx,cy);if(q%100>=46)continue;const x=cx*CELL+40+(q>>7)%(CELL-80),y=cy*CELL+80+(q>>13)%(CELL-120);if(Math.hypot(x-W/2,y-H/2)<260)continue;if(t===0&&window.__RIV&&Math.abs(y-window.__RIV(x,H,W))<130)continue;P.push([x,y,(q>>5)%4,.9+((q>>17)%30)/100])}
    P.sort((a,b)=>a[1]-b[1]);for(const[x,y,v,s]of P){f(g,x,y,s,0,v);const lt=LIGHT(t,v,x,y);if(lt)L.push({x,y:y-18*s,r:lt[0],c:lt[1],a:lt[2],st:v!==1&&t!==0?0:0})}}
  }catch(e){window.__WERR=String(e)}};WGEN[t]._w=1};
 for(let t=0;t<10;t++)wrapGen(t);
@@ -12727,7 +12727,7 @@ window.__RIVDRAW=(g,W,H,L)=>{const pts=[];for(let x=-40;x<=W+40;x+=24)pts.push([
  // jembatan batu
  for(const bx of[W*.28,W*.7]){const y=RIV(bx,H,W),sl=Math.atan2(RIV(bx+10,H,W)-RIV(bx-10,H,W),20);g.save();g.translate(bx,y);g.rotate(sl+1.5708);g.fillStyle='rgba(0,0,0,.45)';g.fillRect(-34,-100,76,200);g.fillStyle='#4a3a44';g.fillRect(-36,-106,72,212);g.fillStyle='#5c4a56';for(let k=-100;k<100;k+=20)g.fillRect(-32,k,64,16);g.fillStyle='#2a1c24';g.fillRect(-40,-106,8,212);g.fillRect(32,-106,8,212);g.restore()}
  g.restore();
- if(window.__GARG)for(const bx of[W*.28,W*.7]){const y=RIV(bx,H,W);window.__GARG(g,bx-58,y-122,1.15,0,'#ff4a2a');window.__GARG(g,bx+58,y+150,1.15,0,'#ff4a2a');L.push({x:bx-58,y:y-170,r:50,c:'255,74,42',a:.35,st:0},{x:bx+58,y:y+100,r:50,c:'255,74,42',a:.35,st:0})}
+ if(window.__GARG){const bx=W*.28,y=RIV(bx,H,W);window.__GARG(g,bx-58,y-122,1.2,0,'#ff4a2a');L.push({x:bx-58,y:y-170,r:50,c:'255,74,42',a:.35,st:0})}
  for(let x=0;x<=W;x+=130)L.push({x,y:RIV(x,H,W),r:120,c:'255,90,30',a:.5,st:0})};
 // ---------- patung gargoyle ----------
 const garg=(g,x,y,s,T,col)=>{g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(x,y,32*s,10*s,0,0,TAU);g.fill();
@@ -12740,7 +12740,7 @@ const garg=(g,x,y,s,T,col)=>{g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellips
  g.fillStyle=col;g.shadowColor=col;g.shadowBlur=10*s;for(const d of[-1,1]){g.beginPath();g.arc(x+d*5*s,y-74*s,2.4*s,0,TAU);g.fill()}g.shadowBlur=0;
  g.fillStyle='#2a242e';g.fillRect(x-4*s,y-66*s,8*s,5*s);g.fillStyle='#e8e0d0';g.fillRect(x-3*s,y-66*s,2*s,3*s);g.fillRect(x+1*s,y-66*s,2*s,3*s)};
 const LM=window.__LM;
-for(const[t,col]of[[0,'#ff4a2a'],[2,'#8aff8a'],[3,'#c07aff']]){const o=LM[t];LM[t]=(g,x,y,s,T,v)=>v===3?garg(g,x,y,s,T,col):o(g,x,y,s,T,v)}
+
 window.__GARG=garg;
 }
 
