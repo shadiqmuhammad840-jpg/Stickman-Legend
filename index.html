@@ -12685,6 +12685,26 @@ if(Tt&&hero){window.__ML3=1;const lb=document.getElementById('lobbyBg');if(lb)lb
  requestAnimationFrame(draw)}
 }
 
+// ===== nv82: MODE LATIHAN — menu ganti MAP =====
+{
+const ORDER=[0,1,2,4,3,5,6,7,8,9];
+const setMap=t=>{TR.map=t;if(t==null){const th=themeOf(floor);if(th!==curTheme){prevTheme=curTheme;curTheme=th;bgFade=1}}else if(t!==curTheme){prevTheme=curTheme;curTheme=t;bgFade=1}try{musicSet(MUSI[curTheme])}catch(e){}};
+{const _r=trRender;trRender=function(){_r();if(!TR.open)return;const tabs=document.getElementById('trTabs'),body=document.getElementById('trBody');if(!tabs||!body)return;
+  const b=document.createElement('button');b.textContent='🗺️ Map';if(TR.tab===5)b.className='on';b.onclick=()=>{TR.tab=5;trRender()};tabs.appendChild(b);
+  if(TR.tab!==5)return;tabs.querySelectorAll('button').forEach(x=>{if(x!==b)x.classList.remove('on')});
+  body.innerHTML='';const sec=t=>{const d=document.createElement('div');d.className='sec';d.textContent=t;body.appendChild(d)};
+  const add=(t,f,cls)=>{const x=document.createElement('button');x.textContent=t;if(cls)x.className=cls;x.onclick=()=>{f();sfx('buy');trRender()};body.appendChild(x);return x};
+  sec('Pilih map latihan (musik & latar ikut berubah)');
+  add('🔄 Otomatis (ikut level musuh: '+THEMES[themeOf(floor)]+')',()=>setMap(null),'wide'+(TR.map==null?' on':''));
+  ORDER.forEach((t,i)=>add('Map '+(i+1)+' · '+THEMES[t]+' (w'+(i*10+1)+'–'+(i*10+10)+')',()=>setMap(t),'wide'+(TR.map===t?' on':'')));
+  add('⏭️ Map berikutnya',()=>{const i=ORDER.indexOf(curTheme);setMap(ORDER[(i+1)%10])},'wide')}}
+// tetap pada map pilihan walau wave berganti; terapkan saat latihan dimulai
+{const _u=update;update=function(dt){if(TR.on&&TR.map!=null&&curTheme!==TR.map&&!(bgFade>0)){prevTheme=curTheme;curTheme=TR.map;bgFade=1}return _u(dt)}}
+{const _s=start;start=function(k,w){const r=_s.apply(this,arguments);if(TR.on&&TR.map!=null){curTheme=TR.map;prevTheme=null;bgFade=0;try{musicSet(MUSI[curTheme])}catch(e){}}return r}}
+// keluar dari latihan: kembalikan ke otomatis
+{const _t=showTitle;showTitle=function(){TR.map=null;return _t.apply(this,arguments)}}
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
