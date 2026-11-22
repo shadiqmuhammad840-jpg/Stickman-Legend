@@ -12635,13 +12635,13 @@ if(Tt&&hero&&bgc){window.__ML2=1;bgc.width=640;bgc.height=360;const bg=bgc.getCo
 {
 const TAU=6.2832,sn=Math.sin,cs=Math.cos;
 // ---------- bake landmark & detail ke kanvas dunia (koordinat dunia, sekali saat map dibuat) ----------
-const hs=(t,a,b)=>((a*73856093)^(b*19349663)^(t*83492791))>>>0,CELL=230;
+const hs=(t,a,b)=>((a*73856093)^(b*19349663)^(t*83492791))>>>0,CELL=400;
 const LIGHT=(t,v,x,y)=>{switch(t){case 0:return v===1?[80,'255,140,40',.5]:null;case 1:return v<2?[90,v?'200,120,255':'90,200,255',.4]:null;case 2:return v===2?[70,'255,200,110',.5]:null;case 3:return[90,'160,80,255',.35];case 4:return v===3?[70,'255,240,160',.55]:v===0?[60,'255,190,240',.22]:null;case 6:return v<2?[120,'255,90,30',.55]:[55,'255,100,30',.35];case 7:return[75,'150,220,255',.22];case 8:return v===0?[65,'80,200,255',.22]:null;case 9:return[85,['255,58,160','58,216,255','255,224,58','154,90,255'][(x|0)%4],.3];default:return null}};
 const wrapGen=t=>{const o=WGEN[t];if(!o||o._w)return;WGEN[t]=function(g,R,W,H,L){o.apply(this,arguments);try{
   // detail lantai tambahan
-  window.__DETW=true;const R2=rng(9100+t*37);for(let cx=0;cx<2;cx++)for(let cy=0;cy<3;cy++){g.save();g.translate(cx*W/2,cy*H/3);g.beginPath();g.rect(0,0,W/2,H/3);g.clip();window.__DET&&window.__DET[t]&&window.__DET[t](g,W/2,H/3,R2);g.restore()}window.__DETW=false;
+  if(t===0&&window.__RIVDRAW)window.__RIVDRAW(g,W,H,L);
   // landmark
-  const f=window.__LM&&window.__LM[t];if(f){const P=[];for(let cx=0;cx<W/CELL;cx++)for(let cy=0;cy<H/CELL;cy++){const q=hs(t,cx,cy);if(q%100>=70)continue;const x=cx*CELL+25+(q>>7)%(CELL-50),y=cy*CELL+60+(q>>13)%(CELL-70);if(Math.hypot(x-W/2,y-H/2)<230)continue;P.push([x,y,(q>>5)%4,.9+((q>>17)%30)/100])}
+  const f=window.__LM&&window.__LM[t];if(f){const P=[];for(let cx=0;cx<W/CELL;cx++)for(let cy=0;cy<H/CELL;cy++){const q=hs(t,cx,cy);if(q%100>=58)continue;const x=cx*CELL+40+(q>>7)%(CELL-80),y=cy*CELL+80+(q>>13)%(CELL-120);if(Math.hypot(x-W/2,y-H/2)<260)continue;if(t===0&&window.__RIV&&Math.abs(y-window.__RIV(x,H,W))<130)continue;P.push([x,y,(q>>5)%4,.9+((q>>17)%30)/100])}
    P.sort((a,b)=>a[1]-b[1]);for(const[x,y,v,s]of P){f(g,x,y,s,0,v);const lt=LIGHT(t,v,x,y);if(lt)L.push({x,y:y-18*s,r:lt[0],c:lt[1],a:lt[2],st:v!==1&&t!==0?0:0})}}
  }catch(e){window.__WERR=String(e)}};WGEN[t]._w=1};
 for(let t=0;t<10;t++)wrapGen(t);
@@ -12703,6 +12703,45 @@ const setMap=t=>{TR.map=t;if(t==null){const th=themeOf(floor);if(th!==curTheme){
 {const _s=start;start=function(k,w){const r=_s.apply(this,arguments);if(TR.on&&TR.map!=null){curTheme=TR.map;prevTheme=null;bgFade=0;try{musicSet(MUSI[curTheme])}catch(e){}}return r}}
 // keluar dari latihan: kembalikan ke otomatis
 {const _t=showTitle;showTitle=function(){TR.map=null;return _t.apply(this,arguments)}}
+}
+
+// ===== nv83: MAP LEBIH LEGA — sungai lava (Map 1), patung gargoyle, objek dikurangi =====
+{
+const TAU=6.2832,sn=Math.sin,cs=Math.cos;
+const RIV=(x,H,W)=>H*.27+sn(x/230)*80+(x/(W||1440))*70;
+window.__RIV=RIV;
+window.__RIVDRAW=(g,W,H,L)=>{const pts=[];for(let x=-40;x<=W+40;x+=24)pts.push([x,RIV(x,H,W)]);
+ const path=()=>{g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]))};g.save();g.lineCap='round';g.lineJoin='round';
+ g.strokeStyle='rgba(0,0,0,.5)';g.lineWidth=150;path();g.stroke();
+ g.strokeStyle='#1c0c10';g.lineWidth=128;path();g.stroke();
+ g.strokeStyle='#3a1a1c';g.lineWidth=112;path();g.stroke();
+ g.shadowColor='#ff5a1a';g.shadowBlur=30;g.strokeStyle='#b2280c';g.lineWidth=92;path();g.stroke();g.shadowBlur=0;
+ g.strokeStyle='#ff6a1a';g.lineWidth=66;path();g.stroke();
+ g.strokeStyle='#ffa83a';g.lineWidth=36;path();g.stroke();
+ g.strokeStyle='#ffe27a';g.lineWidth=12;path();g.stroke();
+ // gelembung & retakan kerak
+ for(let i=0;i<26;i++){const x=40+i*55+(i*37%30),y=RIV(x,H,W)+((i*53)%50-25);g.fillStyle='rgba(255,240,160,.7)';g.beginPath();g.arc(x,y,3+i%4,0,TAU);g.fill()}
+ g.strokeStyle='rgba(40,10,6,.65)';g.lineWidth=3;for(let i=0;i<16;i++){const x=30+i*90,y=RIV(x,H,W)+((i*41)%40-20);g.beginPath();g.moveTo(x,y);g.lineTo(x+22,y+8);g.lineTo(x+40,y-4);g.stroke()}
+ // tepi batu
+ for(let i=0;i<90;i++){const x=(i*31)%W,s=(i%2?1:-1),y=RIV(x,H,W)+s*(74+(i*13)%16);g.fillStyle=['#2a1a20','#3a2630','#1c1016'][i%3];g.beginPath();g.ellipse(x,y,9+i%7,6+i%4,(i%5)*.4,0,TAU);g.fill()}
+ // jembatan batu
+ for(const bx of[W*.28,W*.7]){const y=RIV(bx,H,W),sl=Math.atan2(RIV(bx+10,H,W)-RIV(bx-10,H,W),20);g.save();g.translate(bx,y);g.rotate(sl+1.5708);g.fillStyle='rgba(0,0,0,.45)';g.fillRect(-34,-100,76,200);g.fillStyle='#4a3a44';g.fillRect(-36,-106,72,212);g.fillStyle='#5c4a56';for(let k=-100;k<100;k+=20)g.fillRect(-32,k,64,16);g.fillStyle='#2a1c24';g.fillRect(-40,-106,8,212);g.fillRect(32,-106,8,212);g.restore()}
+ g.restore();
+ if(window.__GARG)for(const bx of[W*.28,W*.7]){const y=RIV(bx,H,W);window.__GARG(g,bx-58,y-122,1.15,0,'#ff4a2a');window.__GARG(g,bx+58,y+150,1.15,0,'#ff4a2a');L.push({x:bx-58,y:y-170,r:50,c:'255,74,42',a:.35,st:0},{x:bx+58,y:y+100,r:50,c:'255,74,42',a:.35,st:0})}
+ for(let x=0;x<=W;x+=130)L.push({x,y:RIV(x,H,W),r:120,c:'255,90,30',a:.5,st:0})};
+// ---------- patung gargoyle ----------
+const garg=(g,x,y,s,T,col)=>{g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(x,y,32*s,10*s,0,0,TAU);g.fill();
+ g.fillStyle='#3a323c';g.fillRect(x-22*s,y-16*s,44*s,16*s);g.fillStyle='#4a424e';g.fillRect(x-26*s,y-22*s,52*s,8*s);
+ g.fillStyle='#524a58';g.beginPath();g.moveTo(x-14*s,y-22*s);g.lineTo(x-16*s,y-52*s);g.lineTo(x-8*s,y-66*s);g.lineTo(x+8*s,y-66*s);g.lineTo(x+16*s,y-52*s);g.lineTo(x+14*s,y-22*s);g.closePath();g.fill();
+ // sayap
+ g.fillStyle='#423a48';for(const d of[-1,1]){g.beginPath();g.moveTo(x+d*12*s,y-52*s);g.lineTo(x+d*48*s,y-78*s);g.lineTo(x+d*40*s,y-56*s);g.lineTo(x+d*46*s,y-40*s);g.lineTo(x+d*30*s,y-44*s);g.lineTo(x+d*14*s,y-30*s);g.closePath();g.fill();g.strokeStyle='#2a242e';g.lineWidth=1.5;g.beginPath();g.moveTo(x+d*14*s,y-52*s);g.lineTo(x+d*44*s,y-74*s);g.moveTo(x+d*14*s,y-48*s);g.lineTo(x+d*42*s,y-50*s);g.stroke()}
+ // kepala bertanduk
+ g.fillStyle='#5c5462';g.beginPath();g.arc(x,y-72*s,12*s,0,TAU);g.fill();g.fillStyle='#3a323c';for(const d of[-1,1]){g.beginPath();g.moveTo(x+d*6*s,y-80*s);g.lineTo(x+d*15*s,y-96*s);g.lineTo(x+d*11*s,y-78*s);g.closePath();g.fill()}
+ g.fillStyle=col;g.shadowColor=col;g.shadowBlur=10*s;for(const d of[-1,1]){g.beginPath();g.arc(x+d*5*s,y-74*s,2.4*s,0,TAU);g.fill()}g.shadowBlur=0;
+ g.fillStyle='#2a242e';g.fillRect(x-4*s,y-66*s,8*s,5*s);g.fillStyle='#e8e0d0';g.fillRect(x-3*s,y-66*s,2*s,3*s);g.fillRect(x+1*s,y-66*s,2*s,3*s)};
+const LM=window.__LM;
+for(const[t,col]of[[0,'#ff4a2a'],[2,'#8aff8a'],[3,'#c07aff']]){const o=LM[t];LM[t]=(g,x,y,s,T,v)=>v===3?garg(g,x,y,s,T,col):o(g,x,y,s,T,v)}
+window.__GARG=garg;
 }
 
 TWISTS.survive.min=9999;
