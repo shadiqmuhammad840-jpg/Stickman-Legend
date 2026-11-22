@@ -156,7 +156,7 @@ canvas{left:50%!important;transform:translateX(-50%);width:var(--sw,100%)!import
     <b>Dash:</b> tombol 💨 / Shift / K. Kebal sesaat, cooldown 1,8 detik. Orb hijau = heal, orb merah = amarah.<br>
     <b>Mini boss</b> di wave 5, 15, 25, 35, 45. Kalahkan untuk merekrutnya selama 5 wave.<br>
     <b>Class:</b> Warrior, Archer, Mage, Summoner. Tiap class punya senjata khusus (Excalibur, Harpa, Staff, Sabit, Tongkat Pemanggil Jiwa).<br>
-    <b>Evolusi:</b> berdiri di <b>lingkaran ritual di tengah map (ada tanda di minimap)</b> lalu pakai <b>ULT</b> untuk memanggil musuh evolusi (Gabriel, Archmage, Grim Reaper, Roh Petir, Yeti, Penjaga Arkana, Raja Hantu, Ksatria Gelap, Penguasa Kegelapan), lalu kalahkan dia untuk mengevolusikan senjata. Senjata baru: Palu Petir, Busur Es, Grimoire, Lentera Roh.<br>
+    <b>Evolusi:</b> berdiri di <b>Altar Evolusi (tempat khusus tiap map, ada tanda kuning di minimap)</b> lalu pakai <b>ULT</b> untuk memanggil musuh evolusi (Gabriel, Archmage, Grim Reaper, Roh Petir, Yeti, Penjaga Arkana, Raja Hantu, Ksatria Gelap, Penguasa Kegelapan), lalu kalahkan dia untuk mengevolusikan senjata. Senjata baru: Palu Petir, Busur Es, Grimoire, Lentera Roh.<br>
     <b>Skill:</b> tiap senjata punya skill aktif (tombol ✨ atas / Q / Z) dengan cooldown pendek, selain ULT. Skill kedua: tombol ✨ paling atas / X / C.<br>
     <b>Variasi Wave:</b> tiap wave bisa punya twist acak: Gelombang Kawanan, Serbuan Assassin, Perkumpulan Penyihir, Perburuan Elit, Hujan Meteor, Ruang Harta, Bulan Darah, Bertahan 25 Detik, Mata Air Suci (peti + pulih), atau Pedagang Keliling (toko).<br>
     <b>Ultimate:</b> senjata Epic, Legendary, dan hasil evolusi punya skill ULT dengan cutscene (tombol ULT / Spasi / E, cooldown 40-60 detik). Tongkat Archmage punya Blackhole.<br>
@@ -361,10 +361,10 @@ const WEAPONS={
  fbow:{n:'❄️ Busur Es',r:'Rare',col:'#8fdcff',only:'archer',d:'Khusus Archer. Panah es memperlambat musuh. Berevolusi jadi Busur Badai Salju (3 panah + blizzard) dengan mengalahkan Yeti'},
  grim:{n:'📖 Grimoire',r:'Rare',col:'#c9a0ff',only:'mage',d:'Khusus Mage. 3 bola sihir berputar melindungimu & melukai musuh, memblokir peluru. Berevolusi jadi Grimoire Kiamat (6 bola api/es + meteor) dengan mengalahkan Penjaga Arkana'},
  lantern:{n:'🏮 Lentera Roh',r:'Epic',col:'#7fffd0',only:'summoner',d:'Khusus Summoner. Melepas roh api yang mengejar & meledak di musuh. Berevolusi jadi Lentera Raja Hantu (3 roh, heal) dengan mengalahkan Raja Hantu'},
- ragna:{n:'🗡️ Ragnarok, Pedang Penghancur Dunia',r:'Mythic',col:'#ff3d71',only:'warrior',d:'Khusus Warrior. Tebasan 360°, damage +80%, curi 10% HP. Tiap kill menambah Amukan (maks 20 tumpuk, +3% damage per tumpuk); penuh = Gelombang Ragnarok yang menghantam semua musuh. Skill: Rantai Darah & Eksekusi Gerhana. EVOLUSI: pakai ULT di tengah arena → kalahkan Algojo Kiamat.'},
- astra:{n:'🏹 Astra, Busur Bintang Jatuh',r:'Mythic',col:'#9fd0ff',only:'archer',d:'Khusus Archer. Panah mengejar musuh & menembus. Tiap tembakan ke-5 memanggil bintang jatuh di target (ledakan area + bakar). Kritis +25%. Skill: Segel Rasi & Komet Naga. EVOLUSI: ULT di tengah arena → kalahkan Penjaga Rasi.'},
- chrono:{n:'🔮 Chronos, Tongkat Pecahan Waktu',r:'Mythic',col:'#6ad0ff',only:'mage',d:'Khusus Mage. Tiap serangan bergema 0,5 detik kemudian (damage ganda). Tiap kill mempercepat cooldown skill & ULT 0,4 detik. Skill: Gelembung Waktu (musuh melambat, +40% damage) & Putar Balik Waktu (mundur 3 detik). EVOLUSI: ULT di tengah arena → kalahkan Penjaga Waktu.'},
- abyss:{n:'🐉 Abyss, Tongkat Naga Neraka',r:'Mythic',col:'#ff4a2a',only:'summoner',d:'Khusus Summoner. Membangkitkan Naga Abyss permanen yang menyemburkan api & ikut bertarung (bangkit lagi 15 detik setelah mati, pulih penuh tiap wave). Peluru api membakar. Skill: Terkaman Naga & Rantai Jiwa. EVOLUSI: ULT di tengah arena → kalahkan Iblis Agung.'},
+ ragna:{n:'🗡️ Ragnarok, Pedang Penghancur Dunia',r:'Mythic',col:'#ff3d71',only:'warrior',d:'Khusus Warrior. Tebasan 360°, damage +80%, curi 10% HP. Tiap kill menambah Amukan (maks 20 tumpuk, +3% damage per tumpuk); penuh = Gelombang Ragnarok yang menghantam semua musuh. Skill: Rantai Darah & Eksekusi Gerhana. EVOLUSI: pakai ULT di Altar Evolusi → kalahkan Algojo Kiamat.'},
+ astra:{n:'🏹 Astra, Busur Bintang Jatuh',r:'Mythic',col:'#9fd0ff',only:'archer',d:'Khusus Archer. Panah mengejar musuh & menembus. Tiap tembakan ke-5 memanggil bintang jatuh di target (ledakan area + bakar). Kritis +25%. Skill: Segel Rasi & Komet Naga. EVOLUSI: ULT di Altar Evolusi → kalahkan Penjaga Rasi.'},
+ chrono:{n:'🔮 Chronos, Tongkat Pecahan Waktu',r:'Mythic',col:'#6ad0ff',only:'mage',d:'Khusus Mage. Tiap serangan bergema 0,5 detik kemudian (damage ganda). Tiap kill mempercepat cooldown skill & ULT 0,4 detik. Skill: Gelembung Waktu (musuh melambat, +40% damage) & Putar Balik Waktu (mundur 3 detik). EVOLUSI: ULT di Altar Evolusi → kalahkan Penjaga Waktu.'},
+ abyss:{n:'🐉 Abyss, Tongkat Naga Neraka',r:'Mythic',col:'#ff4a2a',only:'summoner',d:'Khusus Summoner. Membangkitkan Naga Abyss permanen yang menyemburkan api & ikut bertarung (bangkit lagi 15 detik setelah mati, pulih penuh tiap wave). Peluru api membakar. Skill: Terkaman Naga & Rantai Jiwa. EVOLUSI: ULT di Altar Evolusi → kalahkan Iblis Agung.'},
  necro:{n:'💀 Tongkat Pemanggil Jiwa',r:'Legendary',col:'#ffb020',only:'summoner',d:'Membangkitkan prajurit musuh yang sudah mati jadi pasukanmu dengan 50% HP aslinya. Pakai ULT untuk memancing Penguasa Kegelapan; kalahkan dia untuk berevolusi jadi Summoner King of Shadow'}
 };
 const RCOL={Common:'#9a9a9a',Uncommon:'#4cd964',Rare:'#4da6ff',Epic:'#b060ff',Legendary:'#ffd21f',Mythic:'#ff4de0'};
@@ -372,7 +372,7 @@ function pickWeapon(k){
   $('menu').classList.add('hide');const l=$('wpnList');l.innerHTML='';
   const _ro=['Common','Uncommon','Rare','Epic','Legendary','Mythic','Godly'];for(const id of Object.keys(WEAPONS).sort((x,y)=>_ro.indexOf(WEAPONS[x].r)-_ro.indexOf(WEAPONS[y].r))){const w=WEAPONS[id];if(w.only&&w.only!==k)continue;
     const b=document.createElement('button');b.className='cls'+(w.r==='Godly'?' godly':w.r==='Mythic'?' mythic':'');if(w.r!=='Godly'){b.style.borderColor=RCOL[w.r];b.style.boxShadow='0 0 10px '+RCOL[w.r]+'66'}
-    b.innerHTML=`<b style="color:${RCOL[w.r]}">${w.n} [${w.r}]</b><small>${w.d}</small>${ULTS[id]?'<small style="display:block;margin-top:4px;color:'+RCOL[w.r]+'">⚡ ULT: '+ULTS[id].n+'</small>':''}${/berevolusi|Evolusi|evolusi/.test(w.d)?'<small style="display:block;margin-top:2px;color:#ffe27a">🔮 Evolusi: pakai ULT di tengah arena untuk memanggil musuh evolusi</small>':''}`;
+    b.innerHTML=`<b style="color:${RCOL[w.r]}">${w.n} [${w.r}]</b><small>${w.d}</small>${ULTS[id]?'<small style="display:block;margin-top:4px;color:'+RCOL[w.r]+'">⚡ ULT: '+ULTS[id].n+'</small>':''}${/berevolusi|Evolusi|evolusi/.test(w.d)?'<small style="display:block;margin-top:2px;color:#ffe27a">🔮 Evolusi: pakai ULT di Altar Evolusi untuk memanggil musuh evolusi</small>':''}`;
     b.onclick=()=>{$('wpn').classList.add('hide');start(k,id)};l.appendChild(b)}
   const back=document.createElement('button');back.textContent='⬅ Kembali';
   back.onclick=()=>{$('wpn').classList.add('hide');$('menu').classList.remove('hide')};l.appendChild(back);
@@ -1372,6 +1372,7 @@ function useUlt(){
   const cdv=UL.cd*(isEvo()&&!UL.custom?.85:1);P.ultCd=cdv;P.ultMax=cdv;state='cut';cutT=0;cutD=UL.d;if(UL.custom){prepKing();cutD=1.0+P.kingBosses.length*1.4+1.4}sfx('ult');
 }
 const RITUAL_R=95;
+const evoPos=()=>(window.__EVP&&window.__EVP[curTheme])||[W/2,H/2];
 const evoAlive=()=>enemies.some(e=>e.reaper||e.gabriel||e.archmage||e.special||e.lord);
 function evoInfo(){
   if(!P||isEvo())return null;const w=P.weapon;
@@ -1384,12 +1385,12 @@ function evoInfo(){
 }
 function ritual(){
   const EI=evoInfo();if(!EI||evoAlive())return;
-  if(Math.hypot(P.x-W/2,P.y-H/2)>RITUAL_R)return;
+  const EP=evoPos();if(Math.hypot(P.x-EP[0],P.y-EP[1])>RITUAL_R)return;
   const before=enemies.length;EI.sp();
-  const ne=enemies[enemies.length-1];if(enemies.length>before&&ne){ne.x=W/2;ne.y=H/2-140}
+  const ne=enemies[enemies.length-1];if(enemies.length>before&&ne){ne.x=EP[0];ne.y=EP[1]-140}
   flash('🔮 RITUAL: '+EI.n.toUpperCase()+' muncul!');sfx('boss');shake=Math.max(shake,.6);
-  for(let k=0;k<4;k++)own(k*.15,()=>fx.push({x:W/2,y:H/2-140,ring:60+k*50,t:.5,col:'#ffe27a'}));
-  burst(W/2,H/2-140,'#ffe27a',40,300,.8);
+  for(let k=0;k<4;k++)own(k*.15,()=>fx.push({x:EP[0],y:EP[1]-140,ring:60+k*50,t:.5,col:'#ffe27a'}));
+  burst(EP[0],EP[1]-140,'#ffe27a',40,300,.8);
 }
 function endCut(){
   state='play';const UL=ULTS[wkey()];if(!UL)return;
@@ -2232,12 +2233,12 @@ function updExtras(dt){
 }
 function drawGround(T){
   {const EI=state==='play'&&evoInfo();if(EI&&!evoAlive()){
-    const rdy=P.ultCd<=0,inn=Math.hypot(P.x-W/2,P.y-H/2)<=RITUAL_R,al=inn&&rdy?.95:rdy?.5+.2*Math.sin(T*4):.2;
-    ctx.save();ctx.translate(W/2,H/2);ctx.rotate(T*.5);const EC=(window.__EVC&&window.__EVC[curTheme])||'255,226,122';ctx.strokeStyle='rgba('+EC+','+al+')';ctx.shadowColor='rgb('+EC+')';ctx.shadowBlur=inn&&rdy?16:6;ctx.lineWidth=2.5;ctx.setLineDash([10,8]);
+    const EP=evoPos(),rdy=P.ultCd<=0,inn=Math.hypot(P.x-EP[0],P.y-EP[1])<=RITUAL_R,al=inn&&rdy?.95:rdy?.5+.2*Math.sin(T*4):.2;
+    ctx.save();ctx.translate(EP[0],EP[1]);ctx.rotate(T*.5);const EC=(window.__EVC&&window.__EVC[curTheme])||'255,226,122';ctx.strokeStyle='rgba('+EC+','+al+')';ctx.shadowColor='rgb('+EC+')';ctx.shadowBlur=inn&&rdy?16:6;ctx.lineWidth=2.5;ctx.setLineDash([10,8]);
     ctx.beginPath();ctx.arc(0,0,RITUAL_R,0,7);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=2;
     for(const off of[0,1]){ctx.beginPath();for(let i=0;i<=3;i++){const an=(i*2+off)/6*Math.PI*2;ctx.lineTo(Math.cos(an)*RITUAL_R*.8,Math.sin(an)*RITUAL_R*.8)}ctx.stroke()}
     ctx.restore();ctx.save();ctx.textAlign='center';ctx.globalAlpha=Math.min(1,al+.2);ctx.fillStyle='rgb('+((window.__EVC&&window.__EVC[curTheme])||'255,226,122')+')';ctx.font='bold 11px sans-serif';
-    ctx.fillText((window.__EVN&&window.__EVN[curTheme])||'RITUAL EVOLUSI',W/2,H/2-RITUAL_R-22);ctx.font='10px sans-serif';ctx.fillText(rdy?(inn?'Tekan ULT sekarang!':'Berdiri di sini & pakai ULT'):'Tunggu ULT siap',W/2,H/2-RITUAL_R-9);ctx.restore()}}
+    ctx.fillText((window.__EVN&&window.__EVN[curTheme])||'ALTAR EVOLUSI',EP[0],EP[1]-RITUAL_R-22);ctx.font='10px sans-serif';ctx.fillText(rdy?(inn?'Tekan ULT sekarang!':'Berdiri di sini & pakai ULT'):'Tunggu ULT siap',EP[0],EP[1]-RITUAL_R-9);ctx.restore()}}
   drawBubbles(T);
   for(const z of zones){const al=Math.min(1,(z.life-z.t)*2)*.3,fz=z.fire;ctx.fillStyle=fz?'rgba(255,90,30,'+al+')':'rgba(150,220,255,'+al+')';ctx.strokeStyle=fz?'rgba(255,170,60,'+al*2+')':'rgba(200,240,255,'+al*2+')';ctx.lineWidth=2;
     ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,7);ctx.fill();ctx.stroke();
@@ -4079,7 +4080,7 @@ function drawHudWave(WW_,HH_){
   const mw=84,mh=Math.round(mw*HH_/WW_),mx=8,my=100,sx=mw/WW_,sy=mh/HH_;
   ctx.save();ctx.globalAlpha=.75;ctx.fillStyle='#000';ctx.fillRect(mx-2,my-2,mw+4,mh+4);ctx.globalAlpha=1;ctx.fillStyle='rgba(34,34,58,.92)';ctx.fillRect(mx,my,mw,mh);
   ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1;ctx.strokeRect(mx+CAM.x*sx,my+CAM.y*sy,VW*sx,VH*sy);
-  if(WW_>VW+200){ctx.strokeStyle='#ffe27a';ctx.beginPath();ctx.arc(mx+WW_/2*sx,my+HH_/2*sy,3.5,0,7);ctx.stroke()}
+  if(WW_>VW+200){ctx.strokeStyle='#ffe27a';ctx.beginPath();ctx.arc(mx+evoPos()[0]*sx,my+evoPos()[1]*sy,3.5,0,7);ctx.stroke()}
   for(const e of enemies){ctx.fillStyle=e.boss?'#ff3030':e.mini?'#ff9a3a':(e.special||e.lord||e.reaper||e.gabriel||e.archmage)?'#ffe27a':'#ff6a6a';const s=e.boss?5:e.mini?4:2;ctx.fillRect(mx+e.x*sx-s/2,my+e.y*sy-s/2,s,s)}
   ctx.fillStyle='#6f6';for(const m of minions)ctx.fillRect(mx+m.x*sx-1,my+m.y*sy-1,2,2);
   ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(mx+P.x*sx,my+P.y*sy,3,0,7);ctx.fill();ctx.restore();
@@ -5577,7 +5578,7 @@ for(let m=1;m<=5;m++)CINE['A_lf'+m]=luCine(m);
 {const _p=pickWeapon;pickWeapon=function(k){_p(k);const l=$('wpnList');if(!l)return;[...l.querySelectorAll('span')].forEach(s=>{if(s.textContent==='Asli'){const b=s.closest('button');if(b&&/Bajak Laut Karet/.test(b.textContent))s.textContent=WEAPONS.luffy.bn}})}}
 // ===== LUFFY: mekanik EVOLUSI bertahap (T1→T5), varian hanya untuk bentuk T4 =====
 LUC.push('#e8b020','#8a9aaa');LUC2.push('#fff2b0','#ffb060');LUN.push('Raja Ular','Raja Tank');
-Object.assign(WEAPONS.luffy,{bn:'T4: Raja Pantul (Bounceman)',bd:'Evolusi bertahap: T1 Karet Dasar → T2 Pompa Darah → T3 Raksasa Karet → T4 (pilih bentuk) → T5 Dewa Matahari. Pakai ULT di tengah arena & kalahkan penjaganya untuk naik tingkat.',d:'Khusus Anime (GODLY). Mulai dari T1 Karet Dasar. Pakai ULT di tengah arena, kalahkan penjaga evolusi untuk naik: T2 Pompa Darah, T3 Raksasa Karet, T4 (Raja Pantul/Raja Ular/Raja Tank sesuai varian), T5 Dewa Matahari.'});
+Object.assign(WEAPONS.luffy,{bn:'T4: Raja Pantul (Bounceman)',bd:'Evolusi bertahap: T1 Karet Dasar → T2 Pompa Darah → T3 Raksasa Karet → T4 (pilih bentuk) → T5 Dewa Matahari. Pakai ULT di Altar Evolusi & kalahkan penjaganya untuk naik tingkat.',d:'Khusus Anime (GODLY). Mulai dari T1 Karet Dasar. Pakai ULT di Altar Evolusi, kalahkan penjaga evolusi untuk naik: T2 Pompa Darah, T3 Raksasa Karet, T4 (Raja Pantul/Raja Ular/Raja Tank sesuai varian), T5 Dewa Matahari.'});
 const LSTG={1:{r:110,t:.42,b:.824},2:{r:110,t:.30,b:.79},3:{r:150,t:.47,b:1.68},4:{r:125,t:.42,b:2.245},5:{r:135,t:.34,b:2.288},6:{r:165,t:.38,b:1.696},7:{r:100,t:.5,b:2.375}};
 const LGUARD=[null,null,{n:'Juara Uap',col:'#ff7aa8'},{n:'Raksasa Penjaga Pulau',col:'#ff9a2a'},{n:'Panglima Baja',col:'#e0203a'},{n:'Kaisar Mimpi',col:'#ffffff'}];
 for(const g of LGUARD)if(g)COS[g.n]=CP(g.col,[K.aura(g.col)],[K.hat('#2a2a2a')],'sword',{eye:g.col,nm:g.n.toUpperCase(),nc:g.col,sc:1.45});
@@ -9265,7 +9266,7 @@ const minionAdd=(n,hp0,dmg0,life,spread,ox,oy)=>{for(let i=0;i<n;i++){if(minions
 const GW={
 // ---------- 1. PEDANG PEMBELAH DIMENSI (warrior) ----------
 riftblade:{n:'🗡️ Pedang Pembelah Dimensi',cls:'warrior',col:'#7fe8ff',
- d:'Khusus Warrior (GODLY). Katana dimensi: tebasan sangat cepat, damage +35%, kritis +12%.\n✨ Pasif: tiap 4 serangan melepas Retakan Dimensi (garis tebasan jauh).\n🎯 Skill: Penghakiman Dimensi (tandai 6 musuh lalu tebas serentak) • Pedang Zenit (6 pedang melayang melesat).\n⚡ ULT: Pembelah Dunia (dunia terbelah ratusan tebasan).\n🔮 Bisa berevolusi dengan mengalahkan Penjaga Celah Dimensi (ritual ULT di tengah arena): Pedang Singularitas: Zenith Hampa.',
+ d:'Khusus Warrior (GODLY). Katana dimensi: tebasan sangat cepat, damage +35%, kritis +12%.\n✨ Pasif: tiap 4 serangan melepas Retakan Dimensi (garis tebasan jauh).\n🎯 Skill: Penghakiman Dimensi (tandai 6 musuh lalu tebas serentak) • Pedang Zenit (6 pedang melayang melesat).\n⚡ ULT: Pembelah Dunia (dunia terbelah ratusan tebasan).\n🔮 Bisa berevolusi dengan mengalahkan Penjaga Celah Dimensi (ULT di Altar Evolusi): Pedang Singularitas: Zenith Hampa.',
  init(){P.type='melee';P.range=80;P.dmg*=1.35;P.rate=Math.max(.3,P.rate*.88);P.crit+=.12},
  av(t){const a=t?Math.atan2(t.y-P.y,t.x-P.x):A(),x=t?t.x:P.x+Math.cos(a)*70,y=t?t.y:P.y+Math.sin(a)*70,s=Math.random()*9;V(.22,p=>{crack(x-Math.cos(a+.7)*50*(1-p*.3),y-Math.sin(a+.7)*50*(1-p*.3),x+Math.cos(a+.7)*50,y+Math.sin(a+.7)*50,'#7fe8ff',2.2*(1-p)+.6,1-p,s)});nz(.08,.2,4500,0,'highpass');tn(1400,.08,'sine',.06,.5)},
  pas:[4,t=>{const a=t?Math.atan2(t.y-P.y,t.x-P.x):A(),x1=P.x+Math.cos(a)*440,y1=P.y+Math.sin(a)*440,x0=P.x,y0=P.y;line(x0,y0,x1,y1,26,2.6,'#7fe8ff');V(.5,p=>{crack(x0,y0,x1,y1,'#7fe8ff',5*(1-p)+.8,1-p*p,a*9)});sfx('swing');tn(220,.3,'sawtooth',.08,2.5);nz(.15,.2,3000,0,'highpass')}],
@@ -9282,7 +9283,7 @@ riftblade:{n:'🗡️ Pedang Pembelah Dimensi',cls:'warrior',col:'#7fe8ff',
   later(2.5,()=>{if(state!=='play')return;for(const e of enemies.slice()){if(e.hp<=0)continue;dm(e,15,'#ffffff');stn(e,1.5)}shake=1.5;sfx('boom');nz(.9,.5,1200);tn(60,1,'sawtooth',.2,.3);ringV(P.x,P.y,10,720,'#7fe8ff',.9,16);burst(P.x,P.y,'#ffffff',50,520,.9)})}]},
 // ---------- 2. BUSUR GERBANG HARTA LANGIT (archer) ----------
 babelbow:{n:'🏺 Busur Gerbang Langit',cls:'archer',col:'#ffd24d',
- d:'Khusus Archer (GODLY). Busur raja emas: panah +35% damage, kritis +15%. Tiap tembakan memanggil senjata emas jatuh dari gerbang langit; tiap 3 tembakan Hujan Harta menghantam 3 musuh. \n🎯 Skill: Gerbang Emas (5 gerbang menembakkan tombak) • Rantai Penahan (rantai langit melumpuhkan musuh terkuat).\n⚡ ULT: Gudang Harta Terbuka (langit penuh gerbang menghujani arena).\n🔮 Bisa berevolusi dengan mengalahkan Penjaga Gerbang Emas (ritual ULT di tengah arena): Busur Pusaran Penciptaan.',
+ d:'Khusus Archer (GODLY). Busur raja emas: panah +35% damage, kritis +15%. Tiap tembakan memanggil senjata emas jatuh dari gerbang langit; tiap 3 tembakan Hujan Harta menghantam 3 musuh. \n🎯 Skill: Gerbang Emas (5 gerbang menembakkan tombak) • Rantai Penahan (rantai langit melumpuhkan musuh terkuat).\n⚡ ULT: Gudang Harta Terbuka (langit penuh gerbang menghujani arena).\n🔮 Bisa berevolusi dengan mengalahkan Penjaga Gerbang Emas (ULT di Altar Evolusi): Busur Pusaran Penciptaan.',
  init(){P.type='proj';P.range=360;P.dmg*=1.35;P.rate=Math.max(.2,P.rate*.9);P.crit+=.15},
  av(t){const x=t?t.x:P.x+(P.face>0?150:-150),y=t?t.y:P.y;const sy=y-170,a0=rr(-.15,.15);V(.4,(p,tt)=>{if(p<.6)portal(x,sy,20,'#ffd24d',tt,Math.min(1,p*4)*(1-p));const q=cl((p-.15)/.3,0,1);if(q>0&&q<1)spear(x,sy+(y-sy)*q,1.57+a0,34,'#ffe27a')});later(.2,()=>{if(state!=='play')return;aoe(t&&t.hp>0?t.x:x,t&&t.hp>0?t.y:y,52,.55,'#ffe27a');burst(x,y,'#ffd24d',4,120,.3)});tn(1300,.1,'triangle',.07,.5);tn(1950,.1,'sine',.04,.5,.03)},
  pas:[3,()=>{const L=nearestN(3);for(const e of L){const x=e.x,y=e.y;V(.55,(p,tt)=>{portal(x,y-210,30,'#ffd24d',tt,Math.min(1,p*5)*(1-p*.5));const q=cl((p-.2)/.3,0,1);spear(x,y-210+210*q,1.57,60,'#fff3c0');if(q>=1){ctx.save();ctx.globalAlpha=1-p;ctx.strokeStyle='#ffd24d';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y,30*(p-.5)*4,12*(p-.5)*4,0,0,TAU);ctx.stroke();ctx.restore()}});later(.25,()=>{if(state!=='play')return;aoe(e.hp>0?e.x:x,e.hp>0?e.y:y,64,2.6,'#ffe27a');shake=.2;sfx('hit');burst(x,y,'#ffd24d',8,200,.4)})}tn(900,.3,'sine',.1,1.8);tn(1350,.3,'sine',.06,1.5,.04)}],
@@ -10475,7 +10476,7 @@ Object.assign(AW,{gungnir:(r,oc,T)=>{const ev=evo();ctx.save();
  ctx.restore()}});
 // ---------- DEFINISI ----------
 WEAPONS.gungnir={n:'🔱 Gungnir, Tombak Takdir',r:'Mythic',col:GOLD,only:'warrior',
- d:'Tombak Odin yang tak pernah meleset. Tusukan jarak jauh +75% damage, kritis +12%, curi 4% HP.\n✨ Pasif Tak Pernah Meleset: tiap tusukan menembus semua musuh di garis serang; tiap 4 tusukan melempar Tombak Cahaya sepanjang layar.\n🎯 Skill: Lemparan Odin (tombak jatuh + petir berantai) • Badai Valkyrie (dash & 14 tusukan beruntun).\n⚡ ULT: Sumpah Einherjar (hujan tombak + tombak raksasa + prajurit arwah).\n🔮 Bisa berevolusi dengan mengalahkan Valkyrie Jatuh (ritual ULT di tengah arena): Gungnir: Bifrost.'};
+ d:'Tombak Odin yang tak pernah meleset. Tusukan jarak jauh +75% damage, kritis +12%, curi 4% HP.\n✨ Pasif Tak Pernah Meleset: tiap tusukan menembus semua musuh di garis serang; tiap 4 tusukan melempar Tombak Cahaya sepanjang layar.\n🎯 Skill: Lemparan Odin (tombak jatuh + petir berantai) • Badai Valkyrie (dash & 14 tusukan beruntun).\n⚡ ULT: Sumpah Einherjar (hujan tombak + tombak raksasa + prajurit arwah).\n🔮 Bisa berevolusi dengan mengalahkan Valkyrie Jatuh (ULT di Altar Evolusi): Gungnir: Bifrost.'};
 WCOL.gungnir=GOLD;if(!WK.includes('gungnir'))WK.push('gungnir');TIER.gungnir=3;TIER.gungnirE=4;
 window.__NG={gungnir:1};
 SPECIALS.gungnir={n:'Valkyrie Jatuh',col:'#9fd0ff',myth:1};EVN.gungnir='Gungnir: Bifrost';
@@ -10847,7 +10848,7 @@ Object.assign(AW,{thalassa:(r,oc,T)=>{const ev=evo();ctx.save();ctx.translate(r*
  ctx.fillStyle=ev?TEAL:FOAM;ctx.globalAlpha=.7;for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(r*.6+sn(T*3+i)*3,-r*.9+((T*14+i*7)%(r*1.8)),1.6,0,TAU);ctx.fill()}ctx.restore()}});
 // ---------- DEFINISI ----------
 WEAPONS.thalassa={n:'🌊 Thalassa, Busur Samudra Dalam',r:'Mythic',col:CY,only:'archer',
- d:'Busur penguasa samudra. Panah air +45% damage, kritis +12%, tiap panah menimbulkan percikan area.\n✨ Pasif Pasang Naik: tiap panah menembus musuh di garisnya; tiap 4 tembakan melepas Panah Ombak sepanjang layar.\n🎯 Skill: Badai Pasang (hujan panah & pusaran) • Cengkeraman Kraken (tentakel menghantam & melumpuhkan).\n⚡ ULT: Tsunami Samudra (tiga gelombang raksasa menyapu arena + pusaran maut).\n🔮 Bisa berevolusi dengan mengalahkan Kraken Palung (ritual ULT di tengah arena): Thalassa: Leviathan.'};
+ d:'Busur penguasa samudra. Panah air +45% damage, kritis +12%, tiap panah menimbulkan percikan area.\n✨ Pasif Pasang Naik: tiap panah menembus musuh di garisnya; tiap 4 tembakan melepas Panah Ombak sepanjang layar.\n🎯 Skill: Badai Pasang (hujan panah & pusaran) • Cengkeraman Kraken (tentakel menghantam & melumpuhkan).\n⚡ ULT: Tsunami Samudra (tiga gelombang raksasa menyapu arena + pusaran maut).\n🔮 Bisa berevolusi dengan mengalahkan Kraken Palung (ULT di Altar Evolusi): Thalassa: Leviathan.'};
 WCOL.thalassa=CY;if(!WK.includes('thalassa'))WK.push('thalassa');TIER.thalassa=3;TIER.thalassaE=4;
 window.__NG=window.__NG||{};window.__NG.thalassa=1;
 SPECIALS.thalassa={n:'Kraken Palung',col:'#3ac8ff',myth:1};EVN.thalassa='Thalassa: Leviathan';
@@ -11185,7 +11186,7 @@ Object.assign(AW,{opus:(r,oc,T)=>{const ev=evo(),A=ev?CRIM:RED;ctx.save();
  ctx.fillStyle=ev?'#ffb0b8':GOLD;for(let i=0;i<(ev?7:4);i++){const t=(T*.6+i*.23)%1;ctx.globalAlpha=1-t;ctx.beginPath();ctx.arc(sn(i*2.3)*r*.9,-r*3.4-t*r*1.4,r*.07,0,TAU);ctx.fill()}ctx.globalAlpha=1;
  ctx.restore()}});
 WEAPONS.opus={n:'⚗️ Opus, Tongkat Filsuf',r:'Mythic',col:GOLD,only:'mage',
- d:'Tongkat alkemis agung. Damage +50%, kritis +12%. Sihir transmutasi meledakkan lingkaran alkimia di target.\n✨ Pasif Transmutasi Emas: tiap 4 sihir mengubah musuh di sekitar target jadi patung emas (pingsan).\n🎯 Skill: Lingkaran Transmutasi (geyser emas cair) • Homunculus (memanggil 2 makhluk labu alkimia).\n⚡ ULT: Magnum Opus (4 tahap: Nigredo, Albedo, Citrinitas, Rubedo, ditutup Batu Filsuf).\n🔮 Bisa berevolusi dengan mengalahkan Homunculus Gagal (ritual ULT di tengah arena): Opus Magnum: Rubedo.\n🐾 Summon: Homunculus (menyihir musuh jadi emas).'};
+ d:'Tongkat alkemis agung. Damage +50%, kritis +12%. Sihir transmutasi meledakkan lingkaran alkimia di target.\n✨ Pasif Transmutasi Emas: tiap 4 sihir mengubah musuh di sekitar target jadi patung emas (pingsan).\n🎯 Skill: Lingkaran Transmutasi (geyser emas cair) • Homunculus (memanggil 2 makhluk labu alkimia).\n⚡ ULT: Magnum Opus (4 tahap: Nigredo, Albedo, Citrinitas, Rubedo, ditutup Batu Filsuf).\n🔮 Bisa berevolusi dengan mengalahkan Homunculus Gagal (ULT di Altar Evolusi): Opus Magnum: Rubedo.\n🐾 Summon: Homunculus (menyihir musuh jadi emas).'};
 WCOL.opus=GOLD;if(!WK.includes('opus'))WK.push('opus');TIER.opus=3;TIER.opusE=4;
 window.__NG=window.__NG||{};window.__NG.opus=1;
 SPECIALS.opus={n:'Homunculus Gagal',col:RED,myth:1};EVN.opus='Opus Magnum: Rubedo';
@@ -11520,7 +11521,7 @@ Object.assign(AW,{jadeseal:(r,oc,T)=>{const ev=evo(),C=ev?JADE:'#8affc8';ctx.sav
  ctx.strokeStyle=RED;ctx.lineWidth=Math.max(1.4,r*.1);for(const k of[-1,1]){ctx.beginPath();ctx.moveTo(k*r*.4,-r*2.4);ctx.quadraticCurveTo(k*r*(.7+sn(T*3)*.15),-r*1.9,k*r*.5,-r*1.4);ctx.stroke()}
  ctx.fillStyle=ev?JADE:'#ffb070';for(let i=0;i<(ev?6:3);i++){const t=(T*.5+i*.3)%1;ctx.globalAlpha=1-t;ctx.beginPath();ctx.arc(sn(i*2.1)*r*.9,-r*3.4-t*r*1.4,r*.07,0,TAU);ctx.fill()}ctx.globalAlpha=1;ctx.restore()}});
 WEAPONS.jadeseal={n:'🏯 Segel Giok Kaisar',r:'Mythic',col:JADE,only:'summoner',
- d:'Khusus Summoner (MYTHIC). Segel kaisar pertama pemanggil pasukan makam. Damage +30%, kapasitas pasukan +3 dan lebih kuat.\n✨ Pasif Titah Kaisar: tiap 3 serangan, 2 Prajurit Terakota bangkit dari tanah.\n🎯 Skill: Barisan Terakota (dinding tombak) • Titah Kaisar (segel raksasa menghantam, pasukan menguat).\n⚡ ULT: Pasukan Abadi (retakan bumi, pasukan bangkit, hujan panah, kereta perang, segel pamungkas).\n🔮 Bisa berevolusi dengan mengalahkan Jenderal Terakota (ritual ULT di tengah arena): Segel Naga Mandat Surga.\n🐾 Summon: Prajurit Terakota (tebasan tombak area).'};
+ d:'Khusus Summoner (MYTHIC). Segel kaisar pertama pemanggil pasukan makam. Damage +30%, kapasitas pasukan +3 dan lebih kuat.\n✨ Pasif Titah Kaisar: tiap 3 serangan, 2 Prajurit Terakota bangkit dari tanah.\n🎯 Skill: Barisan Terakota (dinding tombak) • Titah Kaisar (segel raksasa menghantam, pasukan menguat).\n⚡ ULT: Pasukan Abadi (retakan bumi, pasukan bangkit, hujan panah, kereta perang, segel pamungkas).\n🔮 Bisa berevolusi dengan mengalahkan Jenderal Terakota (ULT di Altar Evolusi): Segel Naga Mandat Surga.\n🐾 Summon: Prajurit Terakota (tebasan tombak area).'};
 WCOL.jadeseal=JADE;if(!WK.includes('jadeseal'))WK.push('jadeseal');TIER.jadeseal=3;TIER.jadesealE=4;
 window.__NG=window.__NG||{};window.__NG.jadeseal=1;
 SPECIALS.jadeseal={n:'Jenderal Terakota',col:'#d8905a',myth:1};EVN.jadeseal='Segel Naga Mandat Surga';
@@ -11762,7 +11763,7 @@ const EVS={ // baris statistik evolusi (yang dibuat tangan)
  riftblade:'✨ Damage +40%, jangkauan +22, kritis +8%, serangan 8% lebih cepat. Tiap serangan diikuti tebasan cermin.'};
 const evd=id=>{if(!EVN[id]&&!SPECIALS[id])return null;const E=id+'E',sk=[SKILLS[E],SKILLS2[E]].filter(Boolean).map(x=>x.n);
  let s='🔮 EVOLUSI: '+(EVN[id]||WEAPONS[id].n);if(EVS[id])s+='\n'+EVS[id];if(sk.length)s+='\n🎯 Skill baru: '+sk.join(' • ');if(ULTS[E])s+='\n⚡ ULT baru: '+ULTS[E].n;
- s+='\n👹 Syarat: pakai ULT di tengah arena, lalu kalahkan '+(SPECIALS[id]?SPECIALS[id].n:'musuh evolusi')+'.';return s};
+ s+='\n👹 Syarat: pakai ULT di Altar Evolusi, lalu kalahkan '+(SPECIALS[id]?SPECIALS[id].n:'musuh evolusi')+'.';return s};
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
 const _p=pickWeapon;pickWeapon=function(k){_p.apply(this,arguments);const l=$('wpnList');if(!l)return;
  const names=Object.keys(WEAPONS).map(id=>[WEAPONS[id].n,id]).sort((a,b)=>b[0].length-a[0].length);
@@ -12003,7 +12004,7 @@ AW.moirai=(r,oc,T)=>{const ev=!!(P&&P.evoM&&P.weapon==='moirai'),C=ev?IND:TH;ctx
  ctx.restore()};
 // ---------- registrasi ----------
 WEAPONS.moirai={n:'🧵 Roda Pintal Moirai',r:'Mythic',col:TH,only:'mage',
- d:'Khusus Mage (MYTHIC). Tongkat pemintal para Moirai penentu takdir. Damage +45%, kritis +10%. Tiap sihir menjerat target dengan benang takdir.\n✨ Pasif Simpul Takdir: tiap 4 sihir mengikat musuh di sekitar target (pingsan) dan benang melompat ke 4 musuh terdekat.\n🎯 Skill: Jaring Benang (8 benang menjerat, jaring menyayat) • Gunting Atropos (gunting emas raksasa memotong silang, musuh sekarat langsung terpotong).\n⚡ ULT: Permadani Takdir (hujan benang, mesin tenun menyapu arena, simpul besar, pemotongan takdir).\n🔮 Bisa berevolusi dengan mengalahkan Penenun Gelap (ritual ULT di tengah arena): Mesin Tenun Semesta.'};
+ d:'Khusus Mage (MYTHIC). Tongkat pemintal para Moirai penentu takdir. Damage +45%, kritis +10%. Tiap sihir menjerat target dengan benang takdir.\n✨ Pasif Simpul Takdir: tiap 4 sihir mengikat musuh di sekitar target (pingsan) dan benang melompat ke 4 musuh terdekat.\n🎯 Skill: Jaring Benang (8 benang menjerat, jaring menyayat) • Gunting Atropos (gunting emas raksasa memotong silang, musuh sekarat langsung terpotong).\n⚡ ULT: Permadani Takdir (hujan benang, mesin tenun menyapu arena, simpul besar, pemotongan takdir).\n🔮 Bisa berevolusi dengan mengalahkan Penenun Gelap (ULT di Altar Evolusi): Mesin Tenun Semesta.'};
 WCOL.moirai=TH;if(!WK.includes('moirai'))WK.push('moirai');TIER.moirai=3;TIER.moiraiE=4;
 window.__NG=window.__NG||{};window.__NG.moirai=1;
 SPECIALS.moirai={n:'Penenun Gelap',col:RS,myth:1};EVN.moirai='Mesin Tenun Semesta';
@@ -12882,9 +12883,7 @@ const SET={
  for(const[x,y]of[[190,480],[1250,1360]])O.push([y,()=>lm(g,x,y+30,1.6,0,0)]);
  for(const[x,y]of[[150,200],[1290,220],[150,1650],[1290,1630]])O.push([y,()=>lm(g,x,y,2,0,1)]);
  for(const[x,y]of[[1250,480],[190,1360]])O.push([y,()=>lm(g,x,y+30,1.6,0,0)]);
- // garis bahaya sekitar tengah
- g.save();g.beginPath();g.rect(520,700,400,24);g.rect(520,1076,400,24);g.clip();g.fillStyle='#e8c030';g.fillRect(500,690,440,420);g.fillStyle='#14181e';for(let x=490;x<950;x+=28){g.beginPath();g.moveTo(x,1110);g.lineTo(x+14,1110);g.lineTo(x+40,690);g.lineTo(x+26,690);g.fill()}g.restore();
- for(const[x,y]of[[320,860],[1120,940],[400,1100],[1060,700]])O.push([y,()=>lm(g,x,y,1.2,0,2)]);
+ for(const[x,y]of[[320,860],[400,1100],[1060,700]])O.push([y,()=>lm(g,x,y,1.2,0,2)]);
  run(g,O)},
 9:(g,W,H,L)=>{ // DIMENSI KACAU
  const O=[],lm=LM()[9],r=rs(99),C=['#ff3aa0','#3ad8ff','#ffe03a','#9a5aff'];
@@ -12901,7 +12900,7 @@ window.__SET=SET;
 
 // ===== nv85: TEMPAT EVOLUSI menyatu dengan map (tepi memudar, nyambung ke jalan/karpet map) =====
 {
-const TAU=6.2832,sn=Math.sin,cs=Math.cos,CX=720,CY=900;
+const TAU=6.2832,sn=Math.sin,cs=Math.cos;let CX=720,CY=900;
 const rs=s=>()=>((s=(s*1664525+1013904223)>>>0)/4294967296);
 const soft=(g,x,y,r,c)=>{const q=g.createRadialGradient(x,y,0,x,y,r);q.addColorStop(0,c);q.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=q;g.fillRect(x-r,y-r,r*2,r*2)};
 // bidang tanah dengan tepi memudar (feather)
@@ -12975,7 +12974,7 @@ const EV={
  g.strokeStyle='rgba(255,255,255,.05)';g.lineWidth=1;for(let i=-5;i<=5;i++){g.beginPath();g.moveTo(CX+i*34,CY-120);g.lineTo(CX+i*34,CY+120);g.stroke()}
  g.save();g.beginPath();g.ellipse(CX,CY,150,100,0,0,TAU);g.ellipse(CX,CY,134,88,0,0,TAU);g.clip('evenodd');g.fillStyle='#e8c030';g.globalAlpha=.8;g.fillRect(CX-160,CY-110,320,220);g.fillStyle='#14181e';for(let x=CX-170;x<CX+170;x+=26){g.beginPath();g.moveTo(x,CY+110);g.lineTo(x+12,CY+110);g.lineTo(x+40,CY-110);g.lineTo(x+28,CY-110);g.fill()}g.restore();
  glyph(g,'120,255,210',.7,92,2.2);soft(g,CX,CY,130,'rgba(100,255,200,.2)');
- g.strokeStyle='#14181e';g.lineWidth=7;g.lineCap='round';for(const[x2,y2]of[[CX-60,CY-260],[CX+90,CY+330]]){g.beginPath();g.moveTo(CX+(x2>CX?60:-40),CY+(y2>CY?90:-90));g.quadraticCurveTo(CX+(x2-CX)*.3,(CY+y2)/2,x2,y2);g.stroke()}
+ g.strokeStyle='#14181e';g.lineWidth=7;g.lineCap='round';for(const[x2,y2]of[[CX-40,520],[CX+30,1330]]){g.beginPath();g.moveTo(CX+(y2>CY?30:-30),CY+(y2>CY?90:-90));g.quadraticCurveTo(CX+(x2-CX)*.3,(CY+y2)/2,x2,y2);g.stroke()}
  for(const[x,y]of[[CX-160,CY+10],[CX+160,CY-10]]){sh(g,x,y+3,12);g.fillStyle='#3a4250';g.fillRect(x-6,y-48,12,48);g.fillStyle='#7affd0';g.beginPath();g.arc(x,y-56,7,0,TAU);g.fill();soft(g,x,y-56,56,'rgba(100,255,200,.4)');L.push({x,y:y-52,r:110,c:'100,255,200',a:.5,st:0})}},
 9:(g,L)=>{ // robekan dimensi di tanah, retakan map memancar darinya
  soft(g,CX,CY,220,'rgba(150,80,255,.3)');
@@ -12983,7 +12982,9 @@ const EV={
  const C=['#ff3aa0','#3ad8ff','#ffe03a','#9a5aff'];g.save();g.translate(CX,CY);g.scale(1,.68);for(let k=0;k<4;k++){g.strokeStyle=C[k];g.shadowColor=C[k];g.shadowBlur=10;g.lineWidth=2;g.beginPath();g.arc(0,0,56+k*22,k*1.3,k*1.3+2.6);g.stroke()}g.restore();g.shadowBlur=0;
  glyph(g,'255,255,255',.3,100,1.6);
  bits(g,8,90,190,91,(x,y,q,i)=>{g.save();g.translate(x,y-22-q*26);g.rotate(i);g.fillStyle=C[i%4];g.globalAlpha=.8;g.fillRect(-9,-9,18,18);g.strokeStyle='#fff';g.lineWidth=1.2;g.strokeRect(-9,-9,18,18);g.restore();sh(g,x,y+2,9,.25);L.push({x,y:y-24,r:80,c:'170,110,255',a:.4,st:0})})}};
-window.__EVS=EV;
+const POS={0:[1120,330],1:[1120,320],2:[300,400],3:[720,372],4:[420,980],5:[330,1050],6:[720,1480],7:[250,900],8:[1090,1020],9:[720,1380]};
+for(const k in EV){const f=EV[k];EV[k]=(g,L)=>{CX=POS[k][0];CY=POS[k][1];f(g,L)}}
+window.__EVP=POS;window.__EVS=EV;
 window.__EVC={0:'255,90,70',1:'110,220,255',2:'150,255,170',3:'190,120,255',4:'255,160,235',5:'255,214,100',6:'255,140,50',7:'170,235,255',8:'120,255,210',9:'255,110,220'};
 window.__EVN={0:'DAIS SINGGASANA ONI',1:'LUBANG KRISTAL TAMBANG',2:'MAKAM TERBUKA',3:'PUSARAN BAYANGAN',4:'CINCIN PERI JAMUR',5:'PLAZA MATAHARI KUNO',6:'LANTAI OBSIDIAN',7:'LANTAI ES BEKU',8:'PELAT TELEPORTASI',9:'ROBEKAN DIMENSI'};
 }
