@@ -13195,7 +13195,7 @@ const STEPS=[
  {t:'SERANGAN OTOMATIS',x:()=>'Karaktermu <b>menyerang sendiri</b> ke musuh terdekat — kamu cukup fokus mengatur posisi. Kalahkan <b>3 musuh</b>.',init:s=>{s.k0=stats.kills},ok:s=>stats.kills-s.k0>=3},
  {t:'DASH',x:()=>'Gunakan <b>💨 DASH</b> ('+(touch?'tombol kiri-bawah':'Shift / K')+') untuk meluncur dan <b>kebal sesaat</b>. Dash juga menghapus efek bakar/racun/lambat.',tgt:'dashBtn',ok:()=>P.dashCd>1},
  {t:'SKILL AKTIF',x:()=>'Tiap senjata punya <b>skill aktif ✨</b> ('+(touch?'tombol ✨ kanan-bawah':'Q / Z, skill kedua X / C')+'). Cooldown-nya singkat, pakai sesering mungkin!',tgt:'skillBtn',skip:()=>!vis('skillBtn'),ok:()=>P.skCd>0||P.sk2Cd>0},
- {t:'ULTIMATE',x:()=>'<b>ULT</b> ('+(touch?'tombol bulat besar di kanan':'Spasi / E')+') adalah serangan pamungkas dengan cutscene. Cooldown lama, simpan untuk saat genting atau boss. Senjata biasa belum punya ULT — dapatkan senjata Epic ke atas!',tgt:'ult',skip:()=>!vis('ult'),info:1},
+ {t:'ULTIMATE',x:()=>'<b>ULT</b> ('+(touch?'tombol bulat besar di kanan':'Spasi / E')+') adalah serangan pamungkas dengan cutscene. Cooldown lama, simpan untuk saat genting atau boss. Senjata biasa belum punya ULT — dapatkan senjata Epic ke atas!',tgt:'ult',skip:()=>!vis('ult'),info:1,i2:()=>P.ultCd>5&&P.ultCd<9999&&(window.__ultUsed=1)&&false},
  {t:'ORB & EMAS',x:()=>'Musuh menjatuhkan <b>orb</b>: 💚 hijau = pulihkan HP, 🔴 merah = <b>amarah</b> (damage naik). Dekati untuk mengambilnya — emas & item otomatis tertarik.',info:1},
  {t:'MINIMAP',x:()=>'Lihat <b>minimap di kiri atas</b>: titik putih = kamu, merah = musuh, oranye = mini boss, <b>lingkaran kuning = Altar Evolusi</b>. Map luas, jadi pantau posisi musuh!',info:1},
  {t:'UPGRADE',x:s=>s.seen?'Pilih <b>satu upgrade</b> yang cocok dengan gaya mainmu. Upgrade muncul tiap beberapa gelombang — kombinasikan agar makin kuat.':'Habiskan musuh di gelombang ini. Setelah selesai kamu akan <b>memilih upgrade</b> — terus bertarung!',ok:s=>{if(state==='upg')s.seen=1;return s.seen&&state==='play'},ev:1},
@@ -13206,14 +13206,18 @@ const setHi=id=>{if(hi){hi.classList.remove('tutHi');hi=null}if(id){const b=$t(i
 const render=()=>{if(!TUT)return;const s=STEPS[TUT.i],d=$t('tutD');d.innerHTML=STEPS.map((_,k)=>'<i class="'+(k<TUT.i?'d':k===TUT.i?'c':'')+'"></i>').join('');$t('tutT').textContent='🎓 TUTORIAL '+(TUT.i+1)+'/'+STEPS.length+' · '+s.t;const nb=$t('tutNext');const info=s.info||false;nb.style.display=info?'':'none';nb.textContent=s.last?'Mulai ▶':'Lanjut ▶';$t('tutSkip').style.display=s.last?'none':'';$t('tutX').innerHTML=s.x(TUT.s)+(s.done?'':'');setHi(s.tgt)};
 const go=i=>{if(!TUT)return;TUT.i=i;TUT.okd=0;if(i>=STEPS.length){end(true);return}const s=STEPS[i];if(s.skip&&s.skip(TUT.s)){go(i+1);return}TUT.s={};TUT.ts=0;if(s.init)s.init(TUT.s);render();try{sfx('win')}catch(e){}};
 const end=ok=>{mark();TUT=null;setHi(null);el.classList.remove('on')};
-$t('tutNext').onclick=()=>{if(!TUT)return;if(STEPS[TUT.i].last)end(true);else go(TUT.i+1)};
-$t('tutSkip').onclick=()=>end(false);
+const bind=(id,fn)=>{const b=$t(id);let lk=0;const f=e=>{if(e){e.stopPropagation();if(e.cancelable)e.preventDefault()}const n=performance.now();if(n-lk<350)return;lk=n;fn()};for(const ev of['pointerup','touchend','click'])b.addEventListener(ev,f,{passive:false});for(const ev of['pointerdown','touchstart','mousedown'])b.addEventListener(ev,e=>e.stopPropagation(),{passive:true})};
+bind('tutNext',()=>{if(!TUT)return;if(STEPS[TUT.i].last)end(true);else go(TUT.i+1)});
+bind('tutSkip',()=>end(false));
+for(const ev of['pointerdown','touchstart','mousedown','pointerup','touchend'])el.addEventListener(ev,e=>e.stopPropagation(),{passive:true});
 const begin=()=>{TUT={i:0,s:{},ts:0,adv:0};el.classList.add('on');go(0)};
 {const _s=start;start=function(){const r=_s.apply(this,arguments);try{if(TUT)end(false);if(!TR.on&&(Q||!done())&&state==='play'){Q=false;begin()}else if(!TR.on&&(Q||!done())){Q=false;setTimeout(()=>{if(!TUT&&P&&(state==='play'||state==='upg'))begin()},50)}}catch(e){window.__TUTE=String(e)}return r}}
 {const _st=showTitle;showTitle=function(){if(TUT)end(false);return _st.apply(this,arguments)}}
 {const _u=update;update=function(dt){_u.call(this,dt);if(!TUT||!P)return;const s=STEPS[TUT.i];if(!s)return;
+ if(s.info&&!s.last){TUT.ts+=dt;const L=Math.max(0,Math.ceil(11-TUT.ts));const nb=$t('tutNext');const tx='Lanjut ▶ ('+L+')';if(nb.textContent!==tx)nb.textContent=tx;if(TUT.ts>=11){go(TUT.i+1);return}}
+ if(s.i2&&s.i2(TUT.s)){go(TUT.i+1);return}
  if(P.hp<P.max*.5)P.hp=Math.min(P.max,P.max*.5);
- if(s.ok&&TUT.i<STEPS.length){TUT.ts+=dt;if(TUT.okd||s.ok(TUT.s)){TUT.okd=1;const nb=$t('tutX');nb.innerHTML='<span class="ok">✔ Bagus!</span>';TUT.adv=(TUT.adv||0)+dt;if(TUT.adv>.9){TUT.adv=0;go(TUT.i+1)}else return}}
+ if(s.ok&&TUT.i<STEPS.length){TUT.ts+=dt;if(TUT.ts>30&&!TUT.okd&&s.t!=='BERGERAK'&&s.t!=='SERANGAN OTOMATIS'&&s.t!=='UPGRADE'){go(TUT.i+1);return}if(TUT.okd||s.ok(TUT.s)){TUT.okd=1;const nb=$t('tutX');nb.innerHTML='<span class="ok">✔ Bagus!</span>';TUT.adv=(TUT.adv||0)+dt;if(TUT.adv>.9){TUT.adv=0;go(TUT.i+1)}else return}}
  if(s.ev&&state==='upg'){render()}
  else if(s.ok&&TUT.ts%1<dt)render()}}
 // tombol di lobi
