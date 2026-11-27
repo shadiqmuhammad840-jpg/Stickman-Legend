@@ -13171,6 +13171,58 @@ function drawIntro(){const I=EIN,t=I.t,o=I.o,e=I.e,f=cv.width/VW;const c=ctx;c.s
  c.restore()}
 }
 
+// ===== nv87: TUTORIAL PEMAIN BARU (interaktif, bisa dilewati, bisa diulang dari lobi) =====
+{
+const touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+const LSK='stickman_tut';
+const done=()=>{try{return localStorage.getItem(LSK)==='1'}catch(e){return false}};
+const mark=()=>{try{localStorage.setItem(LSK,'1')}catch(e){}};
+const st=document.createElement('style');
+st.textContent='#tut{position:fixed;left:50%;top:54px;transform:translateX(-50%);z-index:99990;pointer-events:none;width:min(440px,92vw);font-family:system-ui,sans-serif;display:none}'
++'#tut.on{display:block}#tut .tc{pointer-events:auto;background:linear-gradient(180deg,rgba(24,18,44,.95),rgba(12,10,26,.95));border:2px solid #ffd24d;border-radius:12px;padding:8px 12px 9px;box-shadow:0 0 22px rgba(255,210,77,.35);color:#fff}'
++'#tut .tt{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#ffd24d;display:flex;justify-content:space-between;align-items:center}#tut .dots{display:flex;gap:4px}#tut .dots i{width:7px;height:7px;border-radius:50%;background:#4a4464}#tut .dots i.d{background:#7dff9a}#tut .dots i.c{background:#ffd24d;box-shadow:0 0 6px #ffd24d}'
++'#tut .tx{font-size:14px;line-height:1.35;margin:5px 0 6px}#tut .tx b{color:#ffd24d}#tut .tb{display:flex;gap:8px;justify-content:flex-end}#tut button{pointer-events:auto;font-size:12px;padding:5px 12px;border-radius:8px;border:1px solid #6a5a9a;background:#2a2050;color:#fff;cursor:pointer;width:auto;min-width:0;max-width:none;margin:0}#tut button.p{background:#ffd24d;color:#201800;border-color:#ffd24d;font-weight:800}'
++'#tut .ok{color:#7dff9a;font-weight:800}.tutHi{animation:tutP 1s infinite!important;outline:3px solid #ffd24d!important;outline-offset:3px;z-index:99980!important}@keyframes tutP{0%,100%{box-shadow:0 0 0 0 rgba(255,210,77,.9),0 0 18px #ffd24d}50%{box-shadow:0 0 0 12px rgba(255,210,77,0),0 0 30px #ffd24d}}'
++'@media (max-height:420px){#tut{top:46px}#tut .tx{font-size:12.5px;margin:3px 0 4px}#tut .tc{padding:6px 10px}}';
+document.head.appendChild(st);
+const el=document.createElement('div');el.id='tut';el.innerHTML='<div class="tc"><div class="tt"><span id="tutT"></span><span class="dots" id="tutD"></span></div><div class="tx" id="tutX"></div><div class="tb"><button id="tutSkip">Lewati tutorial</button><button id="tutNext" class="p">Lanjut ▶</button></div></div>';document.body.appendChild(el);
+const $t=id=>document.getElementById(id);
+const vis=id=>{const b=$t(id);return b&&!b.classList.contains('hide')&&b.offsetParent!==null};
+let TUT=null,Q=false,hi=null;
+const mv=touch?'<b>geser jari</b> di layar (joystik muncul di mana pun kamu menyentuh)':'tekan <b>W A S D</b> atau tombol <b>panah</b>';
+const STEPS=[
+ {t:'BERGERAK',x:()=>'Pertama, mari bergerak: '+mv+'. Jelajahi map — kamera akan mengikutimu.',init:s=>{s.x0=P.x;s.y0=P.y},ok:s=>Math.hypot(P.x-s.x0,P.y-s.y0)>160},
+ {t:'SERANGAN OTOMATIS',x:()=>'Karaktermu <b>menyerang sendiri</b> ke musuh terdekat — kamu cukup fokus mengatur posisi. Kalahkan <b>3 musuh</b>.',init:s=>{s.k0=stats.kills},ok:s=>stats.kills-s.k0>=3},
+ {t:'DASH',x:()=>'Gunakan <b>💨 DASH</b> ('+(touch?'tombol kiri-bawah':'Shift / K')+') untuk meluncur dan <b>kebal sesaat</b>. Dash juga menghapus efek bakar/racun/lambat.',tgt:'dashBtn',ok:()=>P.dashCd>1},
+ {t:'SKILL AKTIF',x:()=>'Tiap senjata punya <b>skill aktif ✨</b> ('+(touch?'tombol ✨ kanan-bawah':'Q / Z, skill kedua X / C')+'). Cooldown-nya singkat, pakai sesering mungkin!',tgt:'skillBtn',skip:()=>!vis('skillBtn'),ok:()=>P.skCd>0||P.sk2Cd>0},
+ {t:'ULTIMATE',x:()=>'<b>ULT</b> ('+(touch?'tombol bulat besar di kanan':'Spasi / E')+') adalah serangan pamungkas dengan cutscene. Cooldown lama, simpan untuk saat genting atau boss. Senjata biasa belum punya ULT — dapatkan senjata Epic ke atas!',tgt:'ult',skip:()=>!vis('ult'),info:1},
+ {t:'ORB & EMAS',x:()=>'Musuh menjatuhkan <b>orb</b>: 💚 hijau = pulihkan HP, 🔴 merah = <b>amarah</b> (damage naik). Dekati untuk mengambilnya — emas & item otomatis tertarik.',info:1},
+ {t:'MINIMAP',x:()=>'Lihat <b>minimap di kiri atas</b>: titik putih = kamu, merah = musuh, oranye = mini boss, <b>lingkaran kuning = Altar Evolusi</b>. Map luas, jadi pantau posisi musuh!',info:1},
+ {t:'UPGRADE',x:s=>s.seen?'Pilih <b>satu upgrade</b> yang cocok dengan gaya mainmu. Upgrade muncul tiap beberapa gelombang — kombinasikan agar makin kuat.':'Habiskan musuh di gelombang ini. Setelah selesai kamu akan <b>memilih upgrade</b> — terus bertarung!',ok:s=>{if(state==='upg')s.seen=1;return s.seen&&state==='play'},ev:1},
+ {t:'BOSS & MINI BOSS',x:()=>'<b>Mini boss</b> muncul tiap 5 gelombang, <b>boss</b> tiap 10 gelombang. Jangan diam saat ada <b>lingkaran merah</b> — itu serangan area! Sebelum boss ada <b>toko</b> untuk belanja relik, ramuan, dan pasukan.',info:1},
+ {t:'EVOLUSI SENJATA',x:()=>'Senjata tertentu bisa <b>berevolusi</b>: berdiri di <b>Altar Evolusi</b> (tanda kuning di minimap), pakai <b>ULT</b>, lalu kalahkan musuh evolusi yang muncul. Cek deskripsinya di menu pilih senjata.',info:1},
+ {t:'SIAP BERTARUNG',x:()=>'🎉 <b>Tutorial selesai!</b> Tips: kuil abadi memberi upgrade permanen, Mode Latihan untuk mencoba senjata. Selamat bermain, Legenda!',info:1,last:1}];
+const setHi=id=>{if(hi){hi.classList.remove('tutHi');hi=null}if(id){const b=$t(id);if(b&&vis(id)){b.classList.add('tutHi');hi=b}}};
+const render=()=>{if(!TUT)return;const s=STEPS[TUT.i],d=$t('tutD');d.innerHTML=STEPS.map((_,k)=>'<i class="'+(k<TUT.i?'d':k===TUT.i?'c':'')+'"></i>').join('');$t('tutT').textContent='🎓 TUTORIAL '+(TUT.i+1)+'/'+STEPS.length+' · '+s.t;const nb=$t('tutNext');const info=s.info||false;nb.style.display=info?'':'none';nb.textContent=s.last?'Mulai ▶':'Lanjut ▶';$t('tutSkip').style.display=s.last?'none':'';$t('tutX').innerHTML=s.x(TUT.s)+(s.done?'':'');setHi(s.tgt)};
+const go=i=>{if(!TUT)return;TUT.i=i;TUT.okd=0;if(i>=STEPS.length){end(true);return}const s=STEPS[i];if(s.skip&&s.skip(TUT.s)){go(i+1);return}TUT.s={};TUT.ts=0;if(s.init)s.init(TUT.s);render();try{sfx('win')}catch(e){}};
+const end=ok=>{mark();TUT=null;setHi(null);el.classList.remove('on')};
+$t('tutNext').onclick=()=>{if(!TUT)return;if(STEPS[TUT.i].last)end(true);else go(TUT.i+1)};
+$t('tutSkip').onclick=()=>end(false);
+const begin=()=>{TUT={i:0,s:{},ts:0,adv:0};el.classList.add('on');go(0)};
+{const _s=start;start=function(){const r=_s.apply(this,arguments);try{if(TUT)end(false);if(!TR.on&&(Q||!done())&&state==='play'){Q=false;begin()}else if(!TR.on&&(Q||!done())){Q=false;setTimeout(()=>{if(!TUT&&P&&(state==='play'||state==='upg'))begin()},50)}}catch(e){window.__TUTE=String(e)}return r}}
+{const _st=showTitle;showTitle=function(){if(TUT)end(false);return _st.apply(this,arguments)}}
+{const _u=update;update=function(dt){_u.call(this,dt);if(!TUT||!P)return;const s=STEPS[TUT.i];if(!s)return;
+ if(P.hp<P.max*.5)P.hp=Math.min(P.max,P.max*.5);
+ if(s.ok&&TUT.i<STEPS.length){TUT.ts+=dt;if(TUT.okd||s.ok(TUT.s)){TUT.okd=1;const nb=$t('tutX');nb.innerHTML='<span class="ok">✔ Bagus!</span>';TUT.adv=(TUT.adv||0)+dt;if(TUT.adv>.9){TUT.adv=0;go(TUT.i+1)}else return}}
+ if(s.ev&&state==='upg'){render()}
+ else if(s.ok&&TUT.ts%1<dt)render()}}
+// tombol di lobi
+{const b=document.createElement('button');b.id='btnTut';b.textContent='🎓 Tutorial';b.style.borderColor='#7dff9a';const h=$t('btnHow');h.parentNode.insertBefore(b,h);b.onclick=()=>{Q=true;$t('btnPlay').onclick()}}
+// sorotan tombol Tutorial untuk pemain baru
+if(!done()){const b=$t('btnTut');b.classList.add('tutHi')}
+window.__TUT={steps:STEPS,begin,get cur(){return TUT},done};
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
