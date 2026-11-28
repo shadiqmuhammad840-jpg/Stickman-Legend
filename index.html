@@ -13227,6 +13227,82 @@ if(!done()){const b=$t('btnTut');b.classList.add('tutHi')}
 window.__TUT={steps:STEPS,begin,get cur(){return TUT},done};
 }
 
+// ===== nv88: GEM + TOKO SENJATA (senjata dibeli dengan Gem; senjata boss rahasia dikecualikan) =====
+{
+const LS='gem40';
+const G=(()=>{let o=null;try{o=JSON.parse(localStorage.getItem(LS)||'null')}catch(e){}if(!o||typeof o!=='object'){o={g:150,own:{},gift:1}}if(!o.own)o.own={};o.g=+o.g||0;return o})();
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(G))}catch(e){}};save();
+const FREE=new Set(['default','wand','bonk','bladefist']);
+const PRICE={Common:25,Uncommon:70,Rare:160,Epic:350,Legendary:700,Mythic:1400,Godly:2800};
+const RO=['Common','Uncommon','Rare','Epic','Legendary','Mythic','Godly'];
+const price=id=>{const w=WEAPONS[id];return FREE.has(id)?0:(PRICE[w.r]||500)};
+const secretW=id=>WEAPONS[id]&&WEAPONS[id].only==='boss';
+const owned=id=>!WEAPONS[id]||secretW(id)||price(id)===0||!!G.own[id];
+const isTrain=()=>{try{return TR.on}catch(e){return false}};
+let runG=0;
+const gemHud=document.createElement('div');gemHud.id='gemHud';document.body.appendChild(gemHud);
+const css=document.createElement('style');css.textContent='#gemHud{position:fixed;top:46px;right:8px;z-index:60;background:rgba(8,20,48,.85);border:1.5px solid #4aa8ff;color:#bfe0ff;font:700 13px system-ui,sans-serif;padding:3px 9px;border-radius:12px;display:none;pointer-events:none;box-shadow:0 0 10px #4aa8ff66}#gemHud.on{display:block}'
++'#wshop h1{margin:6px 0}#wsGem{font:800 16px system-ui,sans-serif;color:#7fc4ff;text-align:center;margin-bottom:6px}#wsTabs{margin-bottom:8px;display:flex!important;flex-direction:row!important;flex-wrap:wrap;gap:6px;justify-content:center;max-width:94vw}#wsTabs button{width:auto!important;min-width:0!important;max-width:none!important;padding:6px 12px!important;font-size:13px!important;margin:0!important}#wsList{max-width:640px}#wsList button.cls{width:100%}#wsTabs button.on{background:#2a4a80;border-color:#7fc4ff}#wsList button.cls{position:relative;text-align:left}#wsList .st{display:block;margin-top:5px;font-weight:800;font-size:13px}#wsList .own{color:#7dff9a}#wsList .buy{color:#7fc4ff}#wsList .no{color:#ff8a8a}#wsList button.sel{outline:3px solid #ffd24d}'
++'.lockw{opacity:.62;filter:saturate(.5)}';
+document.head.appendChild(css);
+const ov=document.createElement('div');ov.id='wshop';ov.className='ov hide';ov.innerHTML='<h1>🛒 Toko Senjata</h1><div id="wsGem"></div><div class="row" id="wsTabs"></div><div class="row" id="wsList"></div><button id="wsBack">⬅ Kembali</button>';
+document.body.appendChild(ov);
+const $g=id=>document.getElementById(id);
+const clsKeys=()=>Object.keys(CLASSES).filter(k=>k!=='boss');
+let tab='warrior',sel=null,conf=null,from='title';
+const rcol=r=>(typeof RCOL!=='undefined'&&RCOL[r])||'#ffd21f';
+const fmt=n=>n.toLocaleString('id-ID');
+const upd=()=>{const t=' · 🔷 '+fmt(G.g);try{const b=$g('bestTxt');if(b&&!/🔷/.test(b.textContent))b.textContent+=t;else if(b)b.textContent=b.textContent.replace(/ · 🔷 [\d.,]+/,t)}catch(e){}gemHud.textContent='🔷 '+fmt(G.g)+(runG?'  (+'+runG+')':'')};
+const render=()=>{$g('wsGem').textContent='🔷 Gem kamu: '+fmt(G.g);const T=$g('wsTabs');T.innerHTML='';
+ for(const k of clsKeys()){const b=document.createElement('button');b.textContent=CLASSES[k].n;if(k===tab)b.className='on';b.onclick=()=>{tab=k;conf=null;render()};T.appendChild(b)}
+ const L=$g('wsList');L.innerHTML='';
+ const ids=Object.keys(WEAPONS).filter(id=>!secretW(id)&&(!WEAPONS[id].only||WEAPONS[id].only===tab)).sort((a,b)=>RO.indexOf(WEAPONS[a].r)-RO.indexOf(WEAPONS[b].r)||price(a)-price(b));
+ for(const id of ids){const w=WEAPONS[id],p=price(id),own=owned(id),b=document.createElement('button');b.className='cls'+(id===sel?' sel':'');b.style.borderColor=rcol(w.r);
+  const d=(w.d||'').replace(/\s+/g,' ');
+  b.innerHTML='<b style="color:'+rcol(w.r)+'">'+w.n+' ['+w.r+']</b><small>'+(d.length>130?d.slice(0,127)+'…':d)+'</small>'+(own?'<span class="st own">✅ '+(p===0?'Gratis · dimiliki':'Dimiliki')+'</span>':'<span class="st '+(G.g>=p?'buy':'no')+'">'+(conf===id?'Ketuk lagi untuk membeli':'🔒 '+fmt(p)+' 🔷'+(G.g>=p?'':' — Gem kurang'))+'</span>');
+  b.onclick=()=>{if(own){sel=id;conf=null;render();return}if(G.g<p){conf=null;sel=id;render();try{sfx('hurt')}catch(e){}return}if(conf!==id){conf=id;sel=id;render();return}
+   G.g-=p;G.own[id]=1;save();conf=null;try{sfx('win');tone(900,.15,'sine',.1);tone(1350,.25,'sine',.1,0,.1)}catch(e){}render();upd()};
+  L.appendChild(b)}};
+const open=(k,id,fr)=>{if(k&&CLASSES[k]&&k!=='boss')tab=k;sel=id||null;conf=null;from=fr||'title';for(const e of document.querySelectorAll('.ov'))e.classList.add('hide');ov.classList.remove('hide');render()};
+$g('wsBack').onclick=()=>{ov.classList.add('hide');if(from==='wpn'&&window.__lastPickK){pickWeapon(window.__lastPickK)}else{$g('title').classList.remove('hide')}upd()};
+window.__openShop=open;
+// tombol lobi
+{const b=document.createElement('button');b.id='btnWShop';b.textContent='🛒 Toko Senjata';b.style.borderColor='#4aa8ff';const t=$g('btnTemple');t.parentNode.insertBefore(b,t);b.onclick=()=>open(tab,null,'title')}
+// daftar pilih senjata: kunci yang belum dibeli
+const nameId=txt=>{let best=null,bl=0;for(const id in WEAPONS){const n=WEAPONS[id].n;if(n&&txt.includes(n)&&n.length>bl){best=id;bl=n.length}}return best};
+{const _p=pickWeapon;pickWeapon=function(k){window.__lastPickK=k;_p.apply(this,arguments);const l=$g('wpnList');if(!l)return;
+ for(const b of l.querySelectorAll('button')){const bb=b.querySelector('b');if(!bb)continue;const id=nameId(bb.textContent);if(!id||owned(id))continue;
+  b.classList.add('lockw');const p=price(id);bb.innerHTML='🔒 '+bb.innerHTML;const s=document.createElement('small');s.style.cssText='display:block;margin-top:4px;color:#7fc4ff;font-weight:800';s.textContent='Beli di Toko Senjata — '+fmt(p)+' 🔷';b.appendChild(s);b.onclick=e=>{if(e)e.stopImmediatePropagation();open(k,id,'wpn')}}}}
+{const _s=start;start=function(k,w){const id=w||'default';if(!isTrain()&&!window.__GEMFREE&&WEAPONS[id]&&!owned(id)){try{flash('🔒 Beli '+WEAPONS[id].n+' di Toko Senjata')}catch(e){}open(k,id,'wpn');return}runG=0;const r=_s.apply(this,arguments);upd();return r}}
+// ===== Penghasilan gem =====
+const award=(n,x,y,why)=>{n=Math.max(1,Math.round(n));G.g+=n;runG+=n;save();upd();try{burst(x,y,'#4aa8ff',16,210,.8);burst(x,y,'#bfe8ff',8,150,.6);fx.push({x,y,ring:70,t:.5,col:'#4aa8ff'});flash('+'+n+' 🔷 Gem'+(why?' · '+why:''));tone(1000,.12,'sine',.1);tone(1500,.2,'sine',.1,0,.08)}catch(e){}};
+{const _k=killHook;killHook=function(e){_k(e);try{if(!P||isTrain()||!e||e.army||e.conv||e.evo&&!e.boss)return;const f=floor||1;
+ if(e.boss&&!e.army){let n=(20+f*1.3)*(.85+Math.random()*.3);if(e.secret)n*=3;if(e.gemB)n*=3;award(n,e.x,e.y,e.gemB?'Boss Permata!':e.secret?'Boss Rahasia':'Boss')}
+ else if(e.mini){award((4+f*.45)*(.85+Math.random()*.3),e.x,e.y,'Mini Boss')}
+ else if(e.gemE){award(2+Math.floor(Math.random()*4)+Math.floor(f/20),e.x,e.y,'Musuh Gem')}}catch(er){window.__GEME=String(er)}}}
+// undi musuh gem / boss permata (sekali per musuh)
+{const _u=update;update=function(dt){_u.call(this,dt);if(!P||state!=='play'||isTrain())return;const f=floor||1;
+ for(const e of enemies){if(e.gr!==undefined)continue;e.gr=1;if(e.evo||e.conv||e.army||e.hp<=0)continue;
+  if(e.boss){if(Math.random()<.07){e.gemB=true;e.col='#3aa8ff';try{flash('💎 BOSS PERMATA! Hadiah gem x3');fx.push({x:e.x,y:e.y,ring:140,t:.7,col:'#4aa8ff'});sfx('boss')}catch(x){}}}
+  else if(!e.mini&&f>=2&&Math.random()<.04){e.gemE=true;e.col='#3aa8ff'}}
+ upd()}}
+// tampilan: musuh biru + aura permata
+{const _d=draw;draw=function(){_d.apply(this,arguments);if(!P||state==='menu')return;let any=false;for(const e of enemies)if(e.gemE||e.gemB){any=true;break}
+ if(runG>0||any)gemHud.classList.add('on');else gemHud.classList.remove('on');
+ if(!any)return;const c=ctx,f=cv.width/VW,T=performance.now()/1000;c.save();c.setTransform(f,0,0,f,0,0);c.translate(-CAM.x,-CAM.y);
+ for(const e of enemies){if(!(e.gemE||e.gemB))continue;if(e.x<CAM.x-120||e.x>CAM.x+VW+120||e.y<CAM.y-120||e.y>CAM.y+VH+120)continue;const R=e.r*(e.gemB?1.15:1.3);
+  c.save();c.globalCompositeOperation='lighter';const g=c.createRadialGradient(e.x,e.y,2,e.x,e.y,R*2.1);g.addColorStop(0,'rgba(80,170,255,.55)');g.addColorStop(1,'rgba(40,100,255,0)');c.fillStyle=g;c.fillRect(e.x-R*2.2,e.y-R*2.2,R*4.4,R*4.4);c.restore();
+  c.save();c.globalAlpha=e.gemB?.38:.5;c.fillStyle='#2a8cff';c.beginPath();c.ellipse(e.x,e.y,R,R*.95,0,0,6.2832);c.fill();c.restore();
+  const n=e.gemB?6:3;c.save();c.fillStyle='#bfe8ff';c.strokeStyle='#2a8cff';c.lineWidth=1.4;for(let i=0;i<n;i++){const a=T*(e.gemB?1:2)+i/n*6.2832,gx=e.x+Math.cos(a)*(R+8),gy=e.y+Math.sin(a)*(R+8)*.7-4,s=e.gemB?9:5;c.beginPath();c.moveTo(gx,gy-s);c.lineTo(gx+s*.7,gy);c.lineTo(gx,gy+s);c.lineTo(gx-s*.7,gy);c.closePath();c.fill();c.stroke()}c.restore()}
+ c.restore()}}
+// ringkasan akhir run & HUD
+{const _e=endGame;endGame=function(w){_e.apply(this,arguments);try{if(runG>0)$g('endP').innerHTML+='<br>🔷 Gem didapat: <b>'+runG+'</b> · total '+fmt(G.g)}catch(e){}gemHud.classList.remove('on')}}
+{const _t=showTitle;showTitle=function(){const r=_t.apply(this,arguments);upd();gemHud.classList.remove('on');return r}}
+{const _ub=updBest;updBest=function(){_ub.apply(this,arguments);upd()}}
+upd();
+window.__GEM={G,price,owned,award,PRICE,FREE,get runG(){return runG}};
+}
+
 TWISTS.survive.min=9999;
 </script>
 </body>
